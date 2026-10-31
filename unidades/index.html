@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#14181c">
+<title>Residencial Vivá · Unidades em 3D</title>
+<link rel="icon" href="logo-viva.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Apresentação 3D de vendas: prédio em tela cheia; painel de vidro escuro à esquerda (lista/filtros); cartão de detalhe à direita. */
+:root{
+  --bg:#14181c; --ink:#f3efe8; --mut:#b9b3a9; --dim:#8a857d; --line:rgba(243,239,232,.16);
+  --glass:rgba(18,22,26,.72); --glass-2:rgba(255,255,255,.06);
+  --ouro:#c8a170; --ouro-2:#e2c39b; --terra:#c97f68;
+  --ok:#6fcf97; --res:#f2c94c; --vend:#eb7a6a;
+  --f-disp:"Cormorant Garamond",Georgia,serif; --f:"Manrope",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--f);overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+#cena{position:fixed;inset:0;background:linear-gradient(180deg,#4f86bd 0%,#9cc0dd 48%,#e4ebef 100%)}
+#cena canvas{display:block;width:100%;height:100%;outline:none}
+.vinheta{position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,14,.78) 0%,rgba(10,12,14,.35) 32%,rgba(10,12,14,0) 55%),linear-gradient(180deg,rgba(10,12,14,.55) 0%,rgba(10,12,14,0) 18%)}
+/* topo */
+.topo{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;gap:18px;padding:calc(12px + env(safe-area-inset-top,0px)) max(22px,env(safe-area-inset-right,0px)) 12px max(22px,env(safe-area-inset-left,0px));z-index:5}
+.topo img{height:46px;width:auto}
+.nav{display:flex;gap:4px;margin:0 auto}
+.nav button{background:none;border:0;padding:10px 16px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);cursor:pointer;border-bottom:1px solid transparent}
+.nav button[aria-current="true"]{color:var(--ink);border-color:var(--ink)}
+.cta{background:var(--terra);border:0;border-radius:4px;padding:11px 18px;font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-decoration:none;white-space:nowrap}
+/* início */
+.hero{position:fixed;left:max(44px,env(safe-area-inset-left,0px));top:120px;max-width:430px;z-index:4;transition:opacity .4s}
+.hero h1{font-family:var(--f-disp);font-weight:500;font-size:clamp(40px,5.2vw,68px);line-height:1;margin:0 0 18px;letter-spacing:.01em}
+.hero h1 i{color:var(--ouro-2)}
+.hero p{color:var(--mut);line-height:1.6;margin:0 0 24px;font-size:15px}
+.hero hr{border:0;border-top:1px solid var(--line);margin:0 0 22px}
+.nums{display:flex;gap:30px;margin-bottom:26px}
+.nums b{display:block;font-family:var(--f-disp);font-size:40px;font-weight:500;line-height:1}
+.nums span{font-size:12.5px;color:var(--mut)}
+.end{display:flex;align-items:center;gap:12px;font-size:13.5px;color:var(--mut)}
+.end i{width:36px;height:36px;border-radius:50%;background:var(--ink);display:grid;place-items:center;flex:none}
+.btn-ver{margin-top:28px;background:none;border:1px solid var(--ink);color:var(--ink);padding:12px 22px;letter-spacing:.12em;text-transform:uppercase;font-size:12.5px;cursor:pointer}
+/* painel de unidades */
+.painel{position:fixed;left:max(22px,env(safe-area-inset-left,0px));top:86px;bottom:22px;width:390px;z-index:4;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;transition:transform .35s,opacity .35s}
+.painel[hidden]{display:flex;opacity:0;transform:translateX(-24px);pointer-events:none}
+.painel h2{font-family:var(--f-disp);font-weight:500;font-size:30px;margin:0;letter-spacing:.02em}
+.ph{padding:18px 18px 10px}
+.flt{padding:0 18px 12px;border-bottom:1px solid var(--line)}
+.flt .lb{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:12px 0 7px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 11px;font-size:12.5px;cursor:pointer;color:var(--mut)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#16191c;border-color:var(--ink)}
+.rng{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--mut)}
+.rng input{flex:1;accent-color:var(--ouro)}
+.tg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);margin-top:10px;cursor:pointer}
+.tg input{accent-color:var(--ouro);width:16px;height:16px}
+.cont{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:12px 18px 6px}
+.cont button{background:none;border:0;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;font-size:11.5px;cursor:pointer;text-decoration:underline}
+.lista{flex:1;overflow:auto;padding:4px 12px 14px;scrollbar-width:thin}
+.un{display:grid;grid-template-columns:76px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;background:var(--glass-2);border:1px solid var(--line);border-radius:4px;padding:10px 12px;margin-bottom:7px;cursor:pointer;color:var(--ink)}
+.un:hover{border-color:rgba(243,239,232,.4)}
+.un[aria-current="true"]{background:rgba(243,239,232,.88);color:#16191c}
+.un[aria-current="true"] small,.un[aria-current="true"] .k{color:#4a4640}
+.un .n small{display:block;font-size:10.5px;letter-spacing:.1em;color:var(--dim)}
+.un .n b{font-size:20px;font-weight:600}
+.un .k{font-size:11px;line-height:1.55;color:var(--mut)}
+.un .p{text-align:right;font-weight:600;font-size:14px}
+.un .p em{display:block;font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.st-disponivel{color:var(--ok)}.st-reservado{color:var(--res)}.st-vendido{color:var(--vend)}
+.un[aria-current="true"] .st-disponivel{color:#1d7a46}.un[aria-current="true"] .st-vendido{color:#b4372a}.un[aria-current="true"] .st-reservado{color:#9a6a00}
+.un.vend{opacity:.55}
+/* detalhe */
+.det{position:fixed;right:max(22px,env(safe-area-inset-right,0px));top:86px;width:380px;max-height:calc(100% - 108px);overflow:auto;z-index:4;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:6px;padding:18px;transition:opacity .3s,transform .3s}
+.det[hidden]{display:block;opacity:0;transform:translateX(24px);pointer-events:none}
+.det .x{float:right;background:none;border:0;font-size:24px;line-height:1;cursor:pointer;color:var(--mut)}
+.det h3{font-family:var(--f-disp);font-size:34px;font-weight:500;margin:0}
+.det .sub{color:var(--mut);font-size:13px;margin:2px 0 12px}
+.planta{background:#fff;border-radius:4px;padding:6px;margin:6px 0 12px;cursor:zoom-in}
+.planta img{width:100%;display:block}
+.tb{width:100%;border-collapse:collapse;font-size:13px}
+.tb td{padding:7px 0;border-bottom:1px solid var(--line)}
+.tb td:last-child{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.tb tr.tot td{font-size:16px;border-bottom:0;padding-top:10px}
+.tb tr.tot td:last-child{color:var(--ouro-2)}
+.sec{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:14px 0 2px}
+.det .acoes{display:flex;gap:8px;margin-top:14px}
+.det .acoes .cta{flex:1;text-align:center}
+.nota{font-size:11px;color:var(--dim);margin-top:10px;line-height:1.5}
+/* legenda + dica */
+.leg{position:fixed;right:max(22px,env(safe-area-inset-right,0px));bottom:20px;z-index:3;display:flex;gap:14px;align-items:center;font-size:12px;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:8px 14px;backdrop-filter:blur(10px)}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tip{position:fixed;z-index:6;pointer-events:none;background:rgba(243,239,232,.95);color:#16191c;font-size:12.5px;padding:7px 10px;border-radius:4px;transform:translate(-50%,-130%);white-space:nowrap;display:none}
+.tip b{font-weight:700}
+.carregando{position:fixed;inset:0;display:grid;place-items:center;z-index:20;background:var(--bg);transition:opacity .6s}
+.carregando div{text-align:center}
+.carregando img{height:80px;opacity:.9}
+.carregando p{color:var(--mut);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.barra{width:220px;height:2px;background:var(--line);margin:14px auto 0}
+.barra i{display:block;height:100%;width:0;background:var(--ouro);transition:width .2s}
+.zoom{position:fixed;inset:0;z-index:30;background:rgba(10,12,14,.92);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+.zoom img{max-width:100%;max-height:100%;background:#fff;border-radius:4px}
+.ajuda{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:3;font-size:12px;color:rgba(255,255,255,.85);background:rgba(10,12,14,.45);padding:7px 14px;border-radius:999px;pointer-events:none;transition:opacity .6s}
+:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+@media (max-width:900px){
+  .topo{padding-top:calc(10px + env(safe-area-inset-top,0px))}
+  .topo img{height:36px}
+  .nav{position:fixed;left:0;right:0;bottom:0;justify-content:space-around;background:var(--glass);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:4px 0 calc(4px + env(safe-area-inset-bottom,0px));margin:0;z-index:7}
+  .cta.topo-cta{padding:9px 12px;font-size:11.5px}
+  .vinheta{background:linear-gradient(180deg,rgba(10,12,14,.65) 0%,rgba(10,12,14,0) 25%,rgba(10,12,14,0) 55%,rgba(10,12,14,.75) 100%)}
+  .hero{top:auto;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:20px;right:20px;max-width:none}
+  .hero h1{font-size:40px;margin-bottom:10px}.hero p{font-size:14px;margin-bottom:14px}.nums{gap:22px;margin-bottom:14px}.nums b{font-size:30px}.hero hr,.end{display:none}.btn-ver{margin-top:6px}
+  .painel{left:0;right:0;width:auto;top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));height:46%;border-radius:12px 12px 0 0}
+  .painel h2{font-size:24px}.ph{padding:12px 16px 4px}
+  .flt{padding:0 16px 8px;display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;align-items:center}
+  .flt .lb,.flt .rng,.flt .tg{display:none}.flt .chips{flex-wrap:nowrap}
+  .det{left:10px;right:10px;width:auto;top:64px;max-height:calc(54% - 70px)}
+  .leg{display:none}.ajuda{bottom:auto;top:70px}
+  body.det-aberto .painel{opacity:0;pointer-events:none}
+  .det{top:60px;bottom:calc(56px + env(safe-area-inset-bottom,0px));max-height:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body>
+<div id="cena"></div>
+<div class="vinheta"></div>
+<header class="topo">
+  <img src="logo-viva.png" alt="Vivá Residencial">
+  <nav class="nav" id="nav">
+    <button data-m="inicio" aria-current="true">Início</button>
+    <button data-m="aptos">Apartamentos</button>
+    <button data-m="obra" onclick="location.href='../'">Obra</button>
+  </nav>
+  <a class="cta topo-cta" id="ctaTopo" target="_blank" rel="noopener">Agendar visita</a>
+</header>
+
+<section class="hero" id="hero">
+  <h1>Você no momento <i>certo</i>, no ponto certo.</h1>
+  <p>A 100 metros do mar, no coração do Guilhermina, o Residencial Vivá une sofisticação, conforto e localização estratégica em Praia Grande.</p>
+  <hr>
+  <div class="nums"><div><b id="nTot">85</b><span>apartamentos</span></div><div><b id="nDisp">—</b><span>disponíveis</span></div><div><b>22</b><span>pavimentos</span></div></div>
+  <div class="end"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16191c" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></i>Av. Guilhermina, 109 · esquina com R. Guarapari · Praia Grande</div>
+  <button class="btn-ver" data-m="aptos">Ver apartamentos</button>
+</section>
+
+<aside class="painel" id="painel" hidden aria-label="Lista de apartamentos">
+  <div class="ph"><h2>Apartamentos</h2></div>
+  <div class="flt" id="flt">
+    <div class="lb">Tipo</div>
+    <div class="chips" id="fFinal"></div>
+    <div class="lb">Andar <span id="vAndar"></span></div>
+    <div class="rng"><span>6º</span><input type="range" id="fAndarMin" min="6" max="22" value="6"><input type="range" id="fAndarMax" min="6" max="22" value="22"><span>22º</span></div>
+    <div class="lb">Valor até <span id="vPreco"></span></div>
+    <div class="rng"><input type="range" id="fPreco" min="1050000" max="2410000" step="10000" value="2410000"></div>
+    <label class="tg"><input type="checkbox" id="fDisp"> Somente disponíveis</label>
+  </div>
+  <div class="cont"><span id="nAchados"></span><button id="limpar">Limpar</button></div>
+  <div class="lista" id="lista"></div>
+</aside>
+
+<aside class="det" id="det" hidden aria-live="polite"></aside>
+<div class="leg" id="leg"><span><i style="background:var(--ok)"></i>Disponível</span><span><i style="background:var(--res)"></i>Reservado</span><span><i style="background:var(--vend)"></i>Vendido</span></div>
+<div class="ajuda" id="ajuda">Arraste para girar · role ou use dois dedos para aproximar</div>
+<div class="tip" id="tip"></div>
+<div class="carregando" id="carregando"><div><img src="logo-viva.png" alt=""><p>Carregando o prédio em 3D</p><div class="barra"><i id="barra"></i></div></div></div>
+
+<script type="importmap">{"imports":{"three":"./lib/three.module.js","three/addons/":"./lib/addons/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+const $=s=>document.querySelector(s);
+const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const m2=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+' m²';
+const WHATS='5513991155075';
+const zap=t=>`https://wa.me/${WHATS}?text=${encodeURIComponent(t)}`;
+$('#ctaTopo').href=zap('Olá! Gostaria de agendar uma visita ao Residencial Vivá.');
+const STL={disponivel:'Disponível',reservado:'Reservado',vendido:'Vendido'};
+const COR={disponivel:0x6fcf97,reservado:0xf2c94c,vendido:0xeb7a6a};
+const TIPO={1:'3 suítes',2:'3 suítes',3:'2 suítes',4:'2 dorm. (1 suíte)',5:'2 dorm. (1 suíte)'};
+
+/* polígonos de cada final no pavimento tipo (coordenadas do modelo, metros) */
+const POLY={"1":[[-8.13,-0.02],[5.75,-0.02],[5.75,10.84],[-8.13,10.84]],"2":[[-8.13,10.84],[5.75,10.84],[5.75,21.6],[-8.13,21.6]],"3":[[-22.1,13.95],[-8.13,13.95],[-8.13,21.6],[-10.3,21.6],[-17.5,18.8],[-22.1,16.4]],"4":[[-27.26,1.4],[-19.25,1.05],[-19.25,10.04],[-22.1,10.04],[-22.1,13.77],[-26.55,13.77],[-28.15,11.64],[-28.15,3.09]],"5":[[-19.25,-0.02],[-8.13,-0.02],[-8.13,8.43],[-19.25,8.43]]};
+const OFF=-66.63; const yAndar=a=>18.80+2.80*(a-6)+OFF; // 6º andar = 1º tipo (nível +18,80)
+
+/* ---------- cena ---------- */
+const box=$('#cena');
+const R=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);
+R.outputColorSpace=THREE.SRGBColorSpace;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;
+const LEVE=/leve/.test(location.search);if(LEVE)R.setPixelRatio(1);
+R.shadowMap.enabled=innerWidth>900&&!LEVE;R.shadowMap.type=THREE.PCFSoftShadowMap;
+box.appendChild(R.domElement);
+const S=new THREE.Scene();
+const pm=new THREE.PMREMGenerator(R);S.environment=pm.fromScene(new RoomEnvironment(),0.04).texture;
+S.fog=new THREE.Fog(0xe4ebef,160,900);
+const sol=new THREE.DirectionalLight(0xfff1dc,2.4);sol.position.set(60,90,-40);sol.castShadow=true;
+sol.shadow.mapSize.set(2048,2048);Object.assign(sol.shadow.camera,{left:-60,right:60,top:60,bottom:-60,near:1,far:300});sol.shadow.bias=-0.0004;
+S.add(sol);S.add(new THREE.HemisphereLight(0xdfe9f3,0x8a7f6c,0.6));
+const cam=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,0.5,2000);
+const C=new OrbitControls(cam,R.domElement);C.enableDamping=true;C.dampingFactor=.07;C.maxPolarAngle=Math.PI*0.495;C.minDistance=25;C.maxDistance=260;C.autoRotate=true;C.autoRotateSpeed=0.35;C.enablePan=false;
+
+/* chão e entorno simples */
+const chao=new THREE.Mesh(new THREE.CircleGeometry(3000,96),new THREE.MeshStandardMaterial({color:0xb9b4aa,roughness:1}));
+chao.rotation.x=-Math.PI/2;chao.position.y=OFF+0.98;chao.receiveShadow=true;S.add(chao);
+
+/* materiais da maquete (provisórios até chegarem os materiais originais) */
+const M={
+  fachada:new THREE.MeshStandardMaterial({color:0xece6dc,roughness:.82}),
+  vidro:new THREE.MeshPhysicalMaterial({color:0x7f98a6,roughness:.06,metalness:.15,transparent:true,opacity:.55,envMapIntensity:1.4}),
+  metal:new THREE.MeshStandardMaterial({color:0x34383c,roughness:.45,metalness:.6}),
+  verde:new THREE.MeshStandardMaterial({color:0x6d8a4c,roughness:.95}),
+  agua:new THREE.MeshPhysicalMaterial({color:0x3fa3c4,roughness:.08,metalness:0,transmission:0,clearcoat:1}),
+  piso:new THREE.MeshStandardMaterial({color:0xcdc3b3,roughness:.9}),
+  madeira:new THREE.MeshStandardMaterial({color:0x8a5a3a,roughness:.7}),
+};
+const CACHE={};
+function ajustar(m){const k=m.name||'x';if(CACHE[k])return CACHE[k];let n=m;
+  if(k==='vidro'){n=new THREE.MeshPhysicalMaterial({color:m.color,roughness:.04,metalness:.25,envMapIntensity:1.6,clearcoat:1,side:THREE.DoubleSide});}
+  else if(k==='guarda'){n=new THREE.MeshPhysicalMaterial({color:m.color,roughness:.03,metalness:0,transparent:true,opacity:.32,envMapIntensity:1.5,depthWrite:false,side:THREE.DoubleSide});}
+  else if(k==='agua'){n=new THREE.MeshPhysicalMaterial({color:m.color,roughness:.03,clearcoat:1,envMapIntensity:1.3});}
+  else {m.envMapIntensity=.9;}
+  n.name=k;return CACHE[k]=n;}
+function matPara(nome,orig){
+  const n=(nome||'').toUpperCase();const on=(orig?.name||'').toUpperCase();
+  if(/ESQUADRIA|VIDRO|GLASS|JANELA/.test(n))return M.vidro;
+  if(/GRADIL|PERGOLADO|ŠROUB|SROUB|HLAVA|PORTAO|TUBE|M8X40|NUT|COMPONENT/.test(n)||/ALUMIN|DIMGRAY/.test(on))return M.metal;
+  if(/GRAMA|PLANTA|SCATTER|GRAVEL|ARALIA/.test(n))return M.verde;
+  if(/PISCINA/.test(n))return M.agua;
+  if(/PISO|PSIO|RAMPA|ESCADA|VAGA|COFFEE|RESTAURANTE|REJUNTE|BANCO/.test(n))return M.piso;
+  if(/SADDLEBROWN/.test(on))return M.madeira;
+  return M.fachada;
+}
+
+/* ---------- dados ---------- */
+let U=[];let sel=null;const vol={};
+const F={final:new Set(),aMin:6,aMax:22,preco:2410000,disp:false};
+
+function grupoUnidades(){
+  const g=new THREE.Group();
+  for(const u of U){
+    const p=POLY[u.final];const sh=new THREE.Shape(p.map(([x,z])=>new THREE.Vector2(x,-z)));
+    const geo=new THREE.ExtrudeGeometry(sh,{depth:2.62,bevelEnabled:false});geo.rotateX(-Math.PI/2);
+    const mat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false});
+    const me=new THREE.Mesh(geo,mat);me.position.y=yAndar(u.andar)+0.08;me.userData.u=u;me.renderOrder=2;
+    const ed=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0}));
+    me.add(ed);me.userData.ed=ed;g.add(me);vol[u.un]=me;
+  }
+  S.add(g);return g;
+}
+let modoSituacao=false;
+function pintar(){
+  for(const u of U){const me=vol[u.un];if(!me)continue;const m=me.material,e=me.userData.ed.material;
+    const visivel=passa(u);
+    if(sel&&sel.un===u.un){m.color.set(0xffffff);m.opacity=.38;e.color.set(0xffffff);e.opacity=1;continue;}
+    if(modoSituacao&&visivel){m.color.set(COR[u.status]);m.opacity=.30;e.color.set(COR[u.status]);e.opacity=.55;}
+    else{m.opacity=0;e.opacity=0;}
+  }
+}
+
+/* ---------- lista e filtros ---------- */
+const passa=u=>(!F.final.size||F.final.has(u.final))&&u.andar>=F.aMin&&u.andar<=F.aMax&&u.total<=F.preco&&(!F.disp||u.status==='disponivel');
+function montarFiltros(){
+  $('#fFinal').innerHTML=[1,2,3,4,5].map(f=>`<button class="chip" data-f="${f}" aria-pressed="false">Final ${f} · ${TIPO[f]}</button>`).join('');
+  $('#fFinal').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=+b.dataset.f;F.final.has(f)?F.final.delete(f):F.final.add(f);b.setAttribute('aria-pressed',F.final.has(f));atualizar();};
+  const amin=$('#fAndarMin'),amax=$('#fAndarMax'),pr=$('#fPreco');
+  const lerA=()=>{let a=+amin.value,b=+amax.value;if(a>b)[a,b]=[b,a];F.aMin=a;F.aMax=b;$('#vAndar').textContent=`· ${a}º ao ${b}º`;atualizar();};
+  amin.oninput=lerA;amax.oninput=lerA;
+  pr.oninput=()=>{F.preco=+pr.value;$('#vPreco').textContent='· '+brl(F.preco);atualizar();};
+  $('#fDisp').onchange=e=>{F.disp=e.target.checked;atualizar();};
+  $('#limpar').onclick=()=>{F.final.clear();F.aMin=6;F.aMax=22;F.preco=2410000;F.disp=false;amin.value=6;amax.value=22;pr.value=2410000;$('#fDisp').checked=false;$('#vAndar').textContent='';$('#vPreco').textContent='';document.querySelectorAll('#fFinal .chip').forEach(c=>c.setAttribute('aria-pressed','false'));atualizar();};
+}
+function atualizar(){
+  const l=U.filter(passa);
+  $('#nAchados').textContent=`${l.length} apartamento${l.length===1?'':'s'}`;
+  $('#lista').innerHTML=l.map(u=>`<button class="un ${u.status==='vendido'?'vend':''}" data-un="${u.un}" aria-current="${sel?.un===u.un}">
+    <span class="n"><small>APTO</small><b>${u.un}</b></span>
+    <span class="k">${u.andar}º andar · Final ${u.final}<br>${TIPO[u.final]} · ${m2(u.util).replace(' m²','')} m² · ${u.vagas} vaga${u.vagas>1?'s':''}</span>
+    <span class="p">${u.status==='vendido'?'—':brl(u.total)}<em class="st-${u.status}">${STL[u.status]}</em></span></button>`).join('')||'<p style="color:var(--mut);padding:10px">Nenhum apartamento com esses filtros.</p>';
+  pintar();
+}
+$('#lista').addEventListener('click',e=>{const b=e.target.closest('[data-un]');if(b)selecionar(+b.dataset.un,true);});
+
+/* ---------- seleção ---------- */
+function selecionar(un,voar){
+  const u=U.find(x=>x.un===un);if(!u)return;sel=u;C.autoRotate=false;
+  document.querySelectorAll('.un').forEach(b=>b.setAttribute('aria-current',+b.dataset.un===un));
+  const vend=u.status==='vendido';
+  $('#det').innerHTML=`<button class="x" aria-label="Fechar">×</button>
+    <h3>Apto ${u.un}</h3><div class="sub">${u.andar}º andar · Final ${u.final} · ${TIPO[u.final]} · <b class="st-${u.status}">${STL[u.status]}</b></div>
+    <div class="planta" id="planta"><img src="plantas/final-${u.final}.jpg" alt="Planta do final ${u.final}"></div>
+    <table class="tb">
+      <tr><td>Área útil</td><td>${m2(u.util)}</td></tr>
+      <tr><td>Área privativa</td><td>${m2(u.priv)}</td></tr>
+      <tr><td>Vagas demarcadas</td><td>${u.vagas} · ${u.piso_vaga}</td></tr>
+    </table>
+    ${vend?'':`<div class="sec">Condição de pagamento</div><table class="tb">
+      <tr><td>Ato</td><td>${brl(u.ato)}</td></tr>
+      <tr><td>48 mensais de</td><td>${brl(u.mensal)}</td></tr>
+      <tr><td>Chaves</td><td>${brl(u.chaves)}</td></tr>
+      <tr><td>Financiamento</td><td>${brl(u.financ)}</td></tr>
+      <tr class="tot"><td>Valor total</td><td>${brl(u.total)}</td></tr></table>`}
+    <div class="acoes"><a class="cta" target="_blank" rel="noopener" href="${zap(`Olá! Tenho interesse no apartamento ${u.un} (${u.andar}º andar, final ${u.final}) do Residencial Vivá.`)}">${vend?'Ver outras unidades':'Tenho interesse'}</a></div>
+    <p class="nota">Tabela de vendas de junho/2026. Valores sujeitos a alteração sem aviso prévio; parcelas reajustadas pelo INCC até as chaves. Imagens e plantas ilustrativas.</p>`;
+  $('#det').hidden=false;document.body.classList.add('det-aberto');
+  $('#det .x').onclick=()=>{sel=null;$('#det').hidden=true;document.body.classList.remove('det-aberto');document.querySelectorAll('.un').forEach(b=>b.setAttribute('aria-current','false'));pintar();};
+  $('#planta').onclick=()=>{const z=document.createElement('div');z.className='zoom';z.innerHTML=`<img src="plantas/final-${u.final}.jpg" alt="">`;z.onclick=()=>z.remove();document.body.appendChild(z);};
+  pintar();
+  if(voar)voarPara(u);
+  const b=document.querySelector(`.un[data-un="${un}"]`);if(b)b.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+/* animação de câmera até o apartamento */
+let anim=null;
+function voarPara(u){
+  const p=POLY[u.final];const cx=p.reduce((s,q)=>s+q[0],0)/p.length,cz=p.reduce((s,q)=>s+q[1],0)/p.length;
+  const alvo=new THREE.Vector3(cx,yAndar(u.andar)+1.3,cz);
+  const centro=new THREE.Vector3(-11,alvo.y,10.8);const dir=alvo.clone().sub(centro).setY(0).normalize();
+  const dist=innerWidth<900?62:52;
+  const pos=alvo.clone().add(dir.multiplyScalar(dist)).add(new THREE.Vector3(0,10,0));
+  anim={t:0,p0:cam.position.clone(),p1:pos,a0:C.target.clone(),a1:alvo};
+}
+
+/* ---------- interação no prédio ---------- */
+const ray=new THREE.Raycaster();const mouse=new THREE.Vector2();let grupo=null;
+function pick(ev){if(!grupo)return null;const r=R.domElement.getBoundingClientRect();mouse.set((ev.clientX-r.left)/r.width*2-1,-(ev.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,cam);
+  const hits=ray.intersectObjects(grupo.children,false).filter(h=>passa(h.object.userData.u));return hits[0]?.object.userData.u||null;}
+let hov=null;
+R.domElement.addEventListener('pointermove',ev=>{if(modo!=='aptos'||ev.pointerType==='touch')return;const u=pick(ev);const t=$('#tip');
+  if(hov&&hov!==u&&(!sel||hov.un!==sel.un)){pintar();}
+  hov=u;if(u){const me=vol[u.un];if(!sel||sel.un!==u.un){me.material.opacity=.22;me.material.color.set(0xffffff);me.userData.ed.material.opacity=.9;me.userData.ed.material.color.set(0xffffff);}
+    t.style.display='block';t.style.left=ev.clientX+'px';t.style.top=ev.clientY+'px';t.innerHTML=`<b>Apto ${u.un}</b> · ${u.andar}º andar · ${STL[u.status]}`;R.domElement.style.cursor='pointer';}
+  else{t.style.display='none';R.domElement.style.cursor='';}});
+let down=null;R.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];$('#ajuda').style.opacity=0;});
+R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;if(modo!=='aptos')return;const u=pick(e);if(u)selecionar(u.un,false);});
+
+/* ---------- modos ---------- */
+let modo='inicio';
+function irModo(m){if(m==='obra')return;modo=m;document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
+  $('#hero').style.opacity=m==='inicio'?1:0;$('#hero').style.pointerEvents=m==='inicio'?'':'none';
+  $('#painel').hidden=m!=='aptos';$('#leg').style.display=m==='aptos'&&innerWidth>900?'':'none';
+  modoSituacao=m==='aptos';enquadrar();document.body.classList.toggle('det-aberto',false);if(m==='inicio'){sel=null;$('#det').hidden=true;C.autoRotate=true;}pintar();
+  try{history.replaceState(null,'','#'+m);}catch(_){}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b&&b.dataset.m!=='obra')irModo(b.dataset.m);});
+
+/* ---------- carregar ---------- */
+const L=new GLTFLoader();L.setMeshoptDecoder(MeshoptDecoder);
+const [dados]=await Promise.all([fetch('unidades.json?v='+Date.now()).then(r=>r.json())]);
+U=dados.unidades;$('#nDisp').textContent=U.filter(u=>u.status==='disponivel').length;$('#nTot').textContent=U.length;
+montarFiltros();atualizar();
+L.load('viva.glb',g=>{
+  const o=g.scene;
+  o.traverse(n=>{if(n.isMesh){n.material=ajustar(n.material);n.castShadow=R.shadowMap.enabled&&n.material.name!=='guarda';n.receiveShadow=R.shadowMap.enabled;}});
+  S.add(o);grupo=grupoUnidades();pintar();
+  const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());
+  C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();
+  $('#carregando').style.opacity=0;setTimeout(()=>$('#carregando').remove(),700);
+  const h=location.hash.slice(1);irModo(h==='aptos'?'aptos':'inicio');
+  window.pronto=true;
+},x=>{if(x.total)$('#barra').style.width=(x.loaded/x.total*100)+'%';},e=>{$('#carregando p').textContent='Não foi possível carregar o modelo';console.error(e);});
+
+function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;
+  if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else{cam.clearViewOffset();}
+  cam.updateProjectionMatrix();}
+addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);enquadrar();});
+const clock=new THREE.Clock();
+R.setAnimationLoop(()=>{const dt=clock.getDelta();
+  if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
+  C.update();R.render(S,cam);});
+window.__v={selecionar,irModo,cam,C,R,S,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
+</script>
+</body></html>
