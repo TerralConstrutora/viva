@@ -471,6 +471,9 @@ L.load('viva.glb',g=>{
   o.traverse(n=>{if(n.isMesh){n.material=ajustar(n.material);
     
     n.castShadow=R.shadowMap.enabled&&n.material.name!=='guarda';n.receiveShadow=R.shadowMap.enabled;}});
+  /* vidros planos (bordas de laje, cobertura) e a borda curva do jardim do lazer aparecem pretos: viram brancos */
+  o.traverse(n=>{if(!n.isMesh)return;const k=n.material.name;if(k!=='vidro'&&!(k==='alu'&&n.name==='Line013'))return;
+    const bb=new THREE.Box3().setFromObject(n);if(k==='alu'||bb.max.y-bb.min.y<0.3||bb.min.y>-12)n.material=ajustar({name:'branco'});});
   const pedras=[];o.traverse(n=>{if(n.isMesh&&n.material.name==='brick'){const bb=new THREE.Box3().setFromObject(n);if(bb.min.y<yLazer)pedras.push(bb);}});
   S.add(o);grupo=grupoUnidades();pintar();
   const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
