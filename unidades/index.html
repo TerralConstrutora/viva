@@ -120,6 +120,23 @@ button,input,select{font:inherit;color:inherit}
   .det{top:60px;bottom:calc(56px + env(safe-area-inset-bottom,0px));max-height:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.aba{display:none}
+@media (max-width:900px){
+  .painel{left:auto;right:0;top:calc(60px + env(safe-area-inset-top,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));height:auto;width:min(44vw,180px);border-radius:12px 0 0 12px;border-right:0}
+  .painel.recolhida{transform:translateX(100%)}
+  .painel[hidden]{transform:translateX(100%)}
+  .aba{display:flex;align-items:center;justify-content:center;position:absolute;left:-30px;top:50%;margin-top:-28px;width:30px;height:56px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-right:0;border-radius:10px 0 0 10px;color:var(--ink);font-size:22px;cursor:pointer;padding:0}
+  .painel.recolhida .aba{transform:rotate(180deg);border-radius:0 10px 10px 0;border-right:1px solid var(--line);border-left:0}
+  .painel h2{font-size:18px}.ph{padding:10px 10px 2px}
+  .flt{display:none}
+  .cont{padding:2px 10px 6px;font-size:10px}
+  .lista{padding:2px 6px 10px}
+  .un{grid-template-columns:1fr auto;gap:0 6px;padding:7px 8px;margin-bottom:5px}
+  .un .k{display:none}
+  .un .n small{font-size:9px}.un .n b{font-size:17px}
+  .un .p{font-size:11px}.un .p em{font-size:8.5px;letter-spacing:.04em}
+  .det{top:auto!important;height:54%;bottom:calc(52px + env(safe-area-inset-bottom,0px))!important;left:0;right:0;border-radius:12px 12px 0 0}
+}
 .creditos{position:fixed;left:8px;bottom:6px;z-index:2;display:flex;align-items:center;gap:8px;font:11px/1.3 Arial,sans-serif;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.8);pointer-events:none;max-width:60vw}
 .creditos b{font:500 15px/1 'Product Sans',Arial,sans-serif;letter-spacing:-.2px}
 </style></head>
@@ -146,6 +163,7 @@ button,input,select{font:inherit;color:inherit}
 </section>
 
 <aside class="painel" id="painel" hidden aria-label="Lista de apartamentos">
+  <button class="aba" id="aba" aria-label="Mostrar ou esconder a lista">›</button>
   <div class="ph"><h2>Apartamentos</h2></div>
   <div class="flt" id="flt">
     <div class="lb">Tipo</div>
@@ -403,6 +421,7 @@ function atualizar(){
     <span class="p">${u.status!=='disponivel'?'—':brl(u.total)}<em class="st-${u.status}">${STL[u.status]}</em></span></button>`).join('')||'<p style="color:var(--mut);padding:10px">Nenhum apartamento com esses filtros.</p>';
   pintar();
 }
+$('#aba').onclick=()=>{$('#painel').classList.toggle('recolhida');enquadrar();};
 $('#lista').addEventListener('click',e=>{const b=e.target.closest('[data-un]');if(b)selecionar(+b.dataset.un,true);});
 
 /* ---------- seleção ---------- */
@@ -427,9 +446,9 @@ function selecionar(un,voar){
     <div class="acoes"><a class="cta" target="_blank" rel="noopener" href="${zap(`Olá! Tenho interesse no apartamento ${u.un} (${u.andar}º andar, final ${u.final}) do Residencial Vivá.`)}">${vend?'Ver outras unidades':'Tenho interesse'}</a></div>
     <p class="nota">Tabela de vendas de junho/2026. Valores sujeitos a alteração sem aviso prévio; parcelas reajustadas pelo INCC até as chaves. Imagens e plantas ilustrativas.</p>`;
   $('#det').hidden=false;document.body.classList.add('det-aberto');
-  $('#det .x').onclick=()=>{sel=null;$('#det').hidden=true;document.body.classList.remove('det-aberto');document.querySelectorAll('.un').forEach(b=>b.setAttribute('aria-current','false'));pintar();};
+  $('#det .x').onclick=()=>{sel=null;$('#det').hidden=true;document.body.classList.remove('det-aberto');document.querySelectorAll('.un').forEach(b=>b.setAttribute('aria-current','false'));pintar();if(innerWidth<=900)enquadrar();};
   $('#planta').onclick=()=>{const z=document.createElement('div');z.className='zoom';z.innerHTML=`<img src="plantas/humanizada-final-${u.final}.jpg" alt="">`;z.onclick=()=>z.remove();document.body.appendChild(z);};
-  pintar();
+  pintar();if(innerWidth<=900)enquadrar();
   if(voar)voarPara(u);
   const b=document.querySelector(`.un[data-un="${un}"]`);if(b)b.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
@@ -517,7 +536,7 @@ function cobogos(lajes,pedras=[]){
   const me=new THREE.Mesh(g,ajustar({name:'branco'}));me.castShadow=me.receiveShadow=R.shadowMap.enabled;S.add(me);
 }
 function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;
-  if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else{cam.clearViewOffset();}
+  if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else if(sel&&modo==='aptos'){cam.setViewOffset(w,h,0,h*.26,w,h);}else if(modo==='aptos'&&!document.querySelector('#painel').classList.contains('recolhida')){cam.setViewOffset(w,h,Math.min(w*.44,180)/2,0,w,h);}else{cam.clearViewOffset();}
   cam.updateProjectionMatrix();}
 addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);enquadrar();});
 const clock=new THREE.Clock();let nq=0;
