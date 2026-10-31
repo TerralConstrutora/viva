@@ -216,7 +216,7 @@ const QS=new URLSearchParams(location.search);
 const GOOGLE_KEY='AIzaSyCcCc0FER2QaBxxLFmznfa2n5bCwXoSzWk'; /* chave da Map Tiles API, restrita a terralconstrutora.github.io */
 /* esquina do pódio (x=6, z=21,1 do modelo) = Av. Guilhermina × R. Guarapari; rot = rumo do eixo +z do modelo */
 const GEO={lat:+(QS.get('lat')||-24.012568),lon:+(QS.get('lon')||-46.420496),rot:+(QS.get('rot')||161),ax:6,az:21.1,dy:+(QS.get('dy')||0)};
-const LOTE={x0:-44,x1:7,z0:-8,z1:22}; /* o que o Google mostra dentro do terreno é escondido */
+const LOTE={x0:-49.5,x1:12,z0:-8,z1:29.2}; /* o que o Google mostra dentro do terreno é escondido */
 const cidade={on:false,tiles:null,geo:null};
 function recortar(mat){
   mat.toneMapped=false;
@@ -241,7 +241,7 @@ async function iniciarCidade(yChao){
     t.errorTarget=innerWidth<900||LEVE?24:14;
     const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
     t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
-    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+1.2}});
+    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao-0.6}});
     t.addEventListener('load-model',({scene})=>scene.traverse(n=>{if(n.isMesh){recortar(n.material);n.castShadow=n.receiveShadow=false;}}));
     t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
@@ -261,8 +261,8 @@ let nivelN=0;
 function nivelar(){
   if(!cidade.on)return;const t=cidade.tiles;
   const amostras=[[9.5,8],[9.5,0],[-5,26],[-20,25.5],[9.5,16]];const hs=[];const rc=new THREE.Raycaster();
-  for(const [x,z] of amostras){rc.set(new THREE.Vector3(x,cidade.yChao+400,z),new THREE.Vector3(0,-1,0));const h=rc.intersectObject(t.group,true)[0];if(h)hs.push(h.point.y);}
-  if(hs.length>=3){hs.sort((a,b)=>a-b);const med=hs[hs.length>>1];const d=cidade.yChao-med;if(Math.abs(d)>0.05&&!QS.get('dy'))cidade.geo.position.y+=d;}
+  for(const [x,z] of amostras){rc.set(new THREE.Vector3(x,cidade.yChao+400,z),new THREE.Vector3(0,-1,0));const h=rc.intersectObject(t.group,true).at(-1);if(h)hs.push(h.point.y);}
+  if(hs.length>=3){hs.sort((a,b)=>a-b);const med=hs[hs.length>>1];const d=cidade.yChao-med;const ny=cidade.geo.position.y+d;if(Math.abs(d)>0.05&&Math.abs(ny-cidade.yChao)<40&&!QS.get('dy'))cidade.geo.position.y=ny;}
   if(++nivelN<12)setTimeout(nivelar,1500);
 }
 function creditos(){if(!cidade.on||!cidade.tiles)return;const a=[];cidade.tiles.getAttributions(a);const s=a.filter(x=>x.type==='string').map(x=>x.value).join(' ');const el=$('#credTxt');if(el.textContent!==s)el.textContent=s;}
