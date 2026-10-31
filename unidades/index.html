@@ -204,7 +204,7 @@ const cam=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,0.5,2000);
 const C=new OrbitControls(cam,R.domElement);C.enableDamping=true;C.dampingFactor=.07;C.maxPolarAngle=Math.PI*0.495;C.minDistance=25;C.maxDistance=260;C.autoRotate=true;C.autoRotateSpeed=0.35;C.enablePan=false;
 
 /* chão e entorno simples */
-const chao=new THREE.Mesh(new THREE.CircleGeometry(3000,96),new THREE.MeshStandardMaterial({color:0xb9b4aa,roughness:1}));
+const chao=new THREE.Mesh(new THREE.CircleGeometry(3000,96),new THREE.MeshStandardMaterial({color:0x5c5d60,roughness:.95}));
 chao.rotation.x=-Math.PI/2;chao.position.y=OFF+0.98;chao.receiveShadow=true;S.add(chao);
 
 /* materiais da maquete (provisórios até chegarem os materiais originais) */
@@ -413,7 +413,7 @@ L.load('viva.glb',g=>{
     n.castShadow=R.shadowMap.enabled&&n.material.name!=='guarda';n.receiveShadow=R.shadowMap.enabled;}});
   const pedras=[];o.traverse(n=>{if(n.isMesh&&n.material.name==='brick'){const bb=new THREE.Box3().setFromObject(n);if(bb.min.y<yLazer)pedras.push(bb);}});
   S.add(o);grupo=grupoUnidades();pintar();
-  const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());
+  const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
   C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();
   $('#carregando').style.opacity=0;setTimeout(()=>$('#carregando').remove(),700);
   const h=location.hash.slice(1);irModo(h==='aptos'?'aptos':'inicio');
