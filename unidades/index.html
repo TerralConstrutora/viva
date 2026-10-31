@@ -375,7 +375,8 @@ function pintar(){
     const visivel=passa(u);
     const eSel=sel&&sel.un===u.un;m.depthTest=e.depthTest=!eSel;me.renderOrder=eSel?10:2;me.userData.ed.renderOrder=eSel?11:2;
     if(eSel){m.color.set(0x18d860);m.opacity=.7;e.color.set(0x7dffb0);e.opacity=1;continue;}
-    if(modoSituacao&&visivel&&!sel){m.color.set(COR[u.status]);m.opacity=.30;e.color.set(COR[u.status]);e.opacity=.55;}
+    if(visivel&&!sel&&u.status!=='disponivel'){m.color.set(COR[u.status]);m.opacity=.5;e.color.set(COR[u.status]);e.opacity=.9;}
+    else if(modoSituacao&&visivel&&!sel){m.color.set(COR[u.status]);m.opacity=.30;e.color.set(COR[u.status]);e.opacity=.55;}
     else{m.opacity=0;e.opacity=0;}
   }
 }
