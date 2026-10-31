@@ -221,7 +221,7 @@ const M={
 const CACHE={};
 const TL=new THREE.TextureLoader();
 function tex(u){const t=TL.load(u);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;return t;}
-const TX={pedra:tex('tex/pedra.jpg'),reboco:tex('tex/reboco.jpg'),madeira:tex('tex/madeira.jpg'),atlas:tex('tex/atlas_branco.jpg'),cobogo:tex('tex/cobogo.jpg')};
+const TX={pedra:tex('tex/pedra.jpg?v=2'),reboco:tex('tex/reboco.jpg'),madeira:tex('tex/madeira.jpg'),atlas:tex('tex/atlas_branco.jpg'),cobogo:tex('tex/cobogo.jpg')};
 /* textura por projeção (triplanar): o modelo veio sem coordenadas UV */
 function brancoCobogo(){
   const t=TX.atlas;t.colorSpace=THREE.SRGBColorSpace;
@@ -269,7 +269,7 @@ function ajustar(m){const k=m.name||'x';if(CACHE[k])return CACHE[k];let n=m;
   if(k==='vidro'){n=new THREE.MeshPhysicalMaterial({color:m.color,roughness:.04,metalness:.25,envMapIntensity:1.6,clearcoat:1,side:THREE.DoubleSide});}
   else if(k==='guarda'){n=new THREE.MeshPhysicalMaterial({color:m.color,roughness:.03,metalness:0,transparent:true,opacity:.32,envMapIntensity:1.5,depthWrite:false,side:THREE.DoubleSide});}
   else if(k==='agua'){n=new THREE.MeshPhysicalMaterial({color:m.color,roughness:.03,clearcoat:1,envMapIntensity:1.3});}
-  else if(k==='brick'||k==='marrom'){n=triplanar(new THREE.MeshStandardMaterial({roughness:.82,metalness:0,envMapIntensity:.8}),TX.pedra,1.2,0x9c8a80);}
+  else if(k==='brick'||k==='marrom'){n=triplanar(new THREE.MeshStandardMaterial({roughness:.82,metalness:0,envMapIntensity:.8}),TX.pedra,1.2,0xc9b5a8);}
   else if(k==='branco'){n=brancoCobogo();}
   else if(k==='cobogo'){n=triplanar(new THREE.MeshStandardMaterial({roughness:.85,metalness:0,envMapIntensity:.8,side:THREE.DoubleSide}),TX.cobogo,0.8,0xffffff);}
   else if(k==='folha'){n=new THREE.MeshStandardMaterial({color:m.color,roughness:.85,side:THREE.DoubleSide});}
