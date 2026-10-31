@@ -120,6 +120,8 @@ button,input,select{font:inherit;color:inherit}
   .det{top:60px;bottom:calc(56px + env(safe-area-inset-bottom,0px));max-height:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.creditos{position:fixed;left:8px;bottom:6px;z-index:2;display:flex;align-items:center;gap:8px;font:11px/1.3 Arial,sans-serif;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.8);pointer-events:none;max-width:60vw}
+.creditos b{font:500 15px/1 'Product Sans',Arial,sans-serif;letter-spacing:-.2px}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -160,6 +162,7 @@ button,input,select{font:inherit;color:inherit}
 
 <aside class="det" id="det" hidden aria-live="polite"></aside>
 <div class="leg" id="leg"><span><i style="background:var(--ok)"></i>Disponível</span><span><i style="background:var(--res)"></i>Reservado</span><span><i style="background:var(--vend)"></i>Vendido</span></div>
+<div class="creditos" id="creditos" hidden><b>Google</b><span id="credTxt"></span></div>
 <div class="ajuda" id="ajuda">Arraste para girar · role ou use dois dedos para aproximar</div>
 <div class="tip" id="tip"></div>
 <div class="carregando" id="carregando"><div><img src="logo-viva.png" alt=""><p>Carregando o prédio em 3D</p><div class="barra"><i id="barra"></i></div></div></div>
@@ -206,6 +209,63 @@ const C=new OrbitControls(cam,R.domElement);C.enableDamping=true;C.dampingFactor
 /* chão e entorno simples */
 const chao=new THREE.Mesh(new THREE.CircleGeometry(3000,96),new THREE.MeshStandardMaterial({color:0x5c5d60,roughness:.95}));
 chao.rotation.x=-Math.PI/2;chao.position.y=OFF+0.98;chao.receiveShadow=true;S.add(chao);
+
+/* ---------- cidade real ao redor (Google Photorealistic 3D Tiles) ----------
+   Sem chave, ou se a chave falhar/estourar a cota, a página volta sozinha para o fundo simples. */
+const QS=new URLSearchParams(location.search);
+const GOOGLE_KEY=''; /* chave da Map Tiles API, restrita a terralconstrutora.github.io */
+/* esquina do pódio (x=6, z=21,1 do modelo) = Av. Guilhermina × R. Guarapari; rot = rumo do eixo +z do modelo */
+const GEO={lat:+(QS.get('lat')||-24.012568),lon:+(QS.get('lon')||-46.420496),rot:+(QS.get('rot')||161),ax:6,az:21.1,dy:+(QS.get('dy')||0)};
+const LOTE={x0:-44,x1:7,z0:-8,z1:22}; /* o que o Google mostra dentro do terreno é escondido */
+const cidade={on:false,tiles:null,geo:null};
+function recortar(mat){
+  mat.toneMapped=false;
+  mat.onBeforeCompile=sh=>{
+    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
+      .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform float cY;')
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY)discard;');
+  };
+  mat.customProgramCacheKey=()=>'cid';
+}
+async function iniciarCidade(yChao){
+  const key=QS.get('gkey')||GOOGLE_KEY;if(!key||QS.get('cidade')==='0')return;
+  try{
+    const [T3,{DRACOLoader}]=await Promise.all([import('./lib/tiles.js'),import('three/addons/loaders/DRACOLoader.js')]);
+    const t=new T3.TilesRenderer();
+    t.registerPlugin(new T3.GoogleCloudAuthPlugin({apiToken:key}));
+    t.registerPlugin(new T3.ReorientationPlugin({lat:GEO.lat*Math.PI/180,lon:GEO.lon*Math.PI/180,height:0,recenter:true}));
+    t.registerPlugin(new T3.TileCompressionPlugin());t.registerPlugin(new T3.UnloadTilesPlugin());
+    t.registerPlugin(new T3.GLTFExtensionsPlugin({dracoLoader:new DRACOLoader().setDecoderPath('lib/addons/libs/draco/gltf/')}));
+    t.errorTarget=innerWidth<900||LEVE?24:14;
+    const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
+    t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
+    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+1.2}});
+    t.addEventListener('load-model',({scene})=>scene.traverse(n=>{if(n.isMesh){recortar(n.material);n.castShadow=n.receiveShadow=false;}}));
+    t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
+    t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
+    setTimeout(()=>{if(!cidade.ok)desligarCidade();},15000);
+    chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;
+    $('#creditos').hidden=false;
+    nivelar();
+  }catch(e){console.warn('cidade:',e);desligarCidade();}
+}
+function desligarCidade(){
+  if(cidade.geo){cidade.geo.removeFromParent();try{cidade.tiles.dispose();}catch(_){}}
+  Object.assign(cidade,{on:false,tiles:null,geo:null});
+  chao.visible=true;S.fog.near=160;S.fog.far=900;S.fog.color.set(0xe4ebef);cam.near=.5;cam.far=2000;cam.updateProjectionMatrix();C.maxDistance=260;$('#creditos').hidden=true;
+}
+/* acerta a altura do chão do Google com a calçada do modelo (mede em pontos da rua, fora do terreno) */
+let nivelN=0;
+function nivelar(){
+  if(!cidade.on)return;const t=cidade.tiles;
+  const amostras=[[9.5,8],[9.5,0],[-5,26],[-20,25.5],[9.5,16]];const hs=[];const rc=new THREE.Raycaster();
+  for(const [x,z] of amostras){rc.set(new THREE.Vector3(x,cidade.yChao+400,z),new THREE.Vector3(0,-1,0));const h=rc.intersectObject(t.group,true)[0];if(h)hs.push(h.point.y);}
+  if(hs.length>=3){hs.sort((a,b)=>a-b);const med=hs[hs.length>>1];const d=cidade.yChao-med;if(Math.abs(d)>0.05&&!QS.get('dy'))cidade.geo.position.y+=d;}
+  if(++nivelN<12)setTimeout(nivelar,1500);
+}
+function creditos(){if(!cidade.on||!cidade.tiles)return;const a=[];cidade.tiles.getAttributions(a);const s=a.filter(x=>x.type==='string').map(x=>x.value).join(' ');const el=$('#credTxt');if(el.textContent!==s)el.textContent=s;}
 
 /* materiais da maquete (provisórios até chegarem os materiais originais) */
 const M={
@@ -418,6 +478,7 @@ L.load('viva.glb',g=>{
   $('#carregando').style.opacity=0;setTimeout(()=>$('#carregando').remove(),700);
   const h=location.hash.slice(1);irModo(h==='aptos'?'aptos':'inicio');
   window.pronto=true;
+  iniciarCidade(b.min.y);
 },x=>{if(x.total)$('#barra').style.width=(x.loaded/x.total*100)+'%';},e=>{$('#carregando p').textContent='Não foi possível carregar o modelo';console.error(e);});
 
 /* cobogós nas aberturas das garagens G1–G4: painéis seguindo o contorno externo das lajes */
@@ -448,10 +509,10 @@ function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;
   if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else{cam.clearViewOffset();}
   cam.updateProjectionMatrix();}
 addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);enquadrar();});
-const clock=new THREE.Clock();
+const clock=new THREE.Clock();let nq=0;
 R.setAnimationLoop(()=>{const dt=clock.getDelta();
   if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
-  C.update();R.render(S,cam);});
-window.__v={selecionar,irModo,cam,C,R,S,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
+  C.update();if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);});
+window.__v={selecionar,irModo,cam,C,R,S,cidade,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
 </script>
 </body></html>
