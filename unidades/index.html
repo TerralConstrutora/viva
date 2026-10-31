@@ -216,16 +216,17 @@ const QS=new URLSearchParams(location.search);
 const GOOGLE_KEY='AIzaSyCcCc0FER2QaBxxLFmznfa2n5bCwXoSzWk'; /* chave da Map Tiles API, restrita a terralconstrutora.github.io */
 /* esquina do pódio (x=6, z=21,1 do modelo) = Av. Guilhermina × R. Guarapari; rot = rumo do eixo +z do modelo */
 const GEO={lat:+(QS.get('lat')||-24.012568),lon:+(QS.get('lon')||-46.420496),rot:+(QS.get('rot')||161),ax:6,az:21.1,dy:+(QS.get('dy')||0)};
-const LOTE={x0:-49.5,x1:12,z0:-8,z1:29.2}; /* o que o Google mostra dentro do terreno é escondido */
+const LOTE={x0:-49.5,x1:12,z0:-8,z1:29.2};
+const ENTORNO={x0:-58,x1:24,z0:-8,z1:40}; /* ruas em volta: tira só árvores e o que passa de 1,8 m (o chão fica) */ /* o que o Google mostra dentro do terreno é escondido */
 const cidade={on:false,tiles:null,geo:null};
 function recortar(mat){
   mat.toneMapped=false;
   mat.onBeforeCompile=sh=>{
-    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;
+    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;sh.uniforms.cOut={value:new THREE.Vector4(ENTORNO.x0,ENTORNO.x1,ENTORNO.z0,ENTORNO.z1)};
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
       .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
-    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform float cY;')
-      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform vec4 cOut;uniform float cY;')
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+2.4)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
   };
   mat.customProgramCacheKey=()=>'cid';
 }
