@@ -216,17 +216,18 @@ const QS=new URLSearchParams(location.search);
 const GOOGLE_KEY='AIzaSyCcCc0FER2QaBxxLFmznfa2n5bCwXoSzWk'; /* chave da Map Tiles API, restrita a terralconstrutora.github.io */
 /* esquina do pódio (x=6, z=21,1 do modelo) = Av. Guilhermina × R. Guarapari; rot = rumo do eixo +z do modelo */
 const GEO={lat:+(QS.get('lat')||-24.012568),lon:+(QS.get('lon')||-46.420496),rot:+(QS.get('rot')||161),ax:6,az:21.1,dy:+(QS.get('dy')||0)};
-const LOTE={x0:-49.5,x1:12,z0:-8,z1:29.2};
+const LOTE={x0:-49.5,x1:12,z0:-8,z1:29.2}; /* calçadas do modelo */
+const PODIO={x0:-43.2,x1:6.2,z0:-7.5,z1:21.3}; /* área coberta pelo prédio */
 const ENTORNO={x0:-58,x1:24,z0:-8,z1:40}; /* ruas em volta: tira só árvores e o que passa de 1,8 m (o chão fica) */ /* o que o Google mostra dentro do terreno é escondido */
 const cidade={on:false,tiles:null,geo:null};
 function recortar(mat){
   mat.toneMapped=false;
   mat.onBeforeCompile=sh=>{
-    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;sh.uniforms.cOut={value:new THREE.Vector4(ENTORNO.x0,ENTORNO.x1,ENTORNO.z0,ENTORNO.z1)};
+    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;sh.uniforms.cPod={value:new THREE.Vector4(PODIO.x0,PODIO.x1,PODIO.z0,PODIO.z1)};sh.uniforms.cOut={value:new THREE.Vector4(ENTORNO.x0,ENTORNO.x1,ENTORNO.z0,ENTORNO.z1)};
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
       .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
-    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform vec4 cOut;uniform float cY;')
-      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+2.4)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform vec4 cPod;uniform vec4 cOut;uniform float cY;')
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cPod.x&&vCw.x<cPod.y&&vCw.z>cPod.z&&vCw.z<cPod.w&&vCw.y>cY-1.5)discard;\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY+0.1)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+1.8)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
   };
   mat.customProgramCacheKey=()=>'cid';
 }
@@ -240,15 +241,15 @@ async function iniciarCidade(yChao){
     t.registerPlugin(new T3.TileCompressionPlugin());t.registerPlugin(new T3.UnloadTilesPlugin());
     t.registerPlugin(new T3.GLTFExtensionsPlugin({dracoLoader:new DRACOLoader().setDecoderPath('lib/addons/libs/draco/gltf/')}));
     t.errorTarget=innerWidth<900||LEVE?24:14;
-    const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
+    const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+0.93+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
     t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
-    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao-0.6}});
+    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+0.93}});
     t.addEventListener('load-model',({scene})=>scene.traverse(n=>{if(n.isMesh){recortar(n.material);n.castShadow=n.receiveShadow=false;}}));
     t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
     setTimeout(()=>{if(!cidade.ok)desligarCidade();},15000);
-    const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x6e6b66,roughness:.95}));
-    piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao-0.08,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;S.add(piso);cidade.piso=piso;
+    const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x4f4d4a,roughness:.95}));
+    piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
     $('#creditos').hidden=false;
     nivelar();
@@ -266,7 +267,7 @@ function nivelar(){
   if(!cidade.on)return;const t=cidade.tiles;
   const amostras=[[9.5,8],[9.5,0],[-5,26],[-20,25.5],[9.5,16]];const hs=[];const rc=new THREE.Raycaster();
   for(const [x,z] of amostras){rc.set(new THREE.Vector3(x,cidade.yChao+400,z),new THREE.Vector3(0,-1,0));const h=rc.intersectObject(t.group,true).at(-1);if(h)hs.push(h.point.y);}
-  if(hs.length>=3){hs.sort((a,b)=>a-b);const med=hs[hs.length>>1];const d=cidade.yChao-med;const ny=cidade.geo.position.y+d;if(Math.abs(d)>0.05&&Math.abs(ny-cidade.yChao)<40&&!QS.get('dy'))cidade.geo.position.y=ny;}
+  if(hs.length>=3){hs.sort((a,b)=>a-b);const med=hs[hs.length>>1];const d=cidade.cY.value-med;const ny=cidade.geo.position.y+d;if(Math.abs(d)>0.05&&Math.abs(ny-cidade.yChao)<40&&!QS.get('dy'))cidade.geo.position.y=ny;}
   if(++nivelN<12)setTimeout(nivelar,1500);
 }
 function creditos(){if(!cidade.on||!cidade.tiles)return;const a=[];cidade.tiles.getAttributions(a);const s=a.filter(x=>x.type==='string').map(x=>x.value).join(' ');const el=$('#credTxt');if(el.textContent!==s)el.textContent=s;}
