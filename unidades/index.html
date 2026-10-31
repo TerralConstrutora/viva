@@ -154,7 +154,7 @@ button,input,select{font:inherit;color:inherit}
     <div class="rng"><span>6º</span><input type="range" id="fAndarMin" min="6" max="22" value="6"><input type="range" id="fAndarMax" min="6" max="22" value="22"><span>22º</span></div>
     <div class="lb">Valor até <span id="vPreco"></span></div>
     <div class="rng"><input type="range" id="fPreco" min="1050000" max="2410000" step="10000" value="2410000"></div>
-    <label class="tg"><input type="checkbox" id="fDisp"> Somente disponíveis</label>
+    <div style="display:flex;gap:18px;flex-wrap:wrap"><label class="tg"><input type="checkbox" id="fDisp"> Somente disponíveis</label><label class="tg"><input type="checkbox" id="fRes"> Somente reservados</label></div>
   </div>
   <div class="cont"><span id="nAchados"></span><button id="limpar">Limpar</button></div>
   <div class="lista" id="lista"></div>
@@ -355,7 +355,7 @@ function matPara(nome,orig){
 
 /* ---------- dados ---------- */
 let U=[];let sel=null;const vol={};
-const F={final:new Set(),aMin:6,aMax:22,preco:2410000,disp:false};
+const F={final:new Set(),aMin:6,aMax:22,preco:2410000,disp:false,res:false};
 
 function grupoUnidades(){
   const g=new THREE.Group();
@@ -382,7 +382,7 @@ function pintar(){
 }
 
 /* ---------- lista e filtros ---------- */
-const passa=u=>(!F.final.size||F.final.has(u.final))&&u.andar>=F.aMin&&u.andar<=F.aMax&&u.total<=F.preco&&(!F.disp||u.status==='disponivel');
+const passa=u=>(!F.final.size||F.final.has(u.final))&&u.andar>=F.aMin&&u.andar<=F.aMax&&u.total<=F.preco&&(!F.disp||u.status==='disponivel')&&(!F.res||u.status==='reservado');
 function montarFiltros(){
   $('#fFinal').innerHTML=[1,2,3,4,5].map(f=>`<button class="chip" data-f="${f}" aria-pressed="false">Final ${f} · ${TIPO[f]}</button>`).join('');
   $('#fFinal').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=+b.dataset.f;F.final.has(f)?F.final.delete(f):F.final.add(f);b.setAttribute('aria-pressed',F.final.has(f));atualizar();};
@@ -390,8 +390,9 @@ function montarFiltros(){
   const lerA=()=>{let a=+amin.value,b=+amax.value;if(a>b)[a,b]=[b,a];F.aMin=a;F.aMax=b;$('#vAndar').textContent=`· ${a}º ao ${b}º`;atualizar();};
   amin.oninput=lerA;amax.oninput=lerA;
   pr.oninput=()=>{F.preco=+pr.value;$('#vPreco').textContent='· '+brl(F.preco);atualizar();};
-  $('#fDisp').onchange=e=>{F.disp=e.target.checked;atualizar();};
-  $('#limpar').onclick=()=>{F.final.clear();F.aMin=6;F.aMax=22;F.preco=2410000;F.disp=false;amin.value=6;amax.value=22;pr.value=2410000;$('#fDisp').checked=false;$('#vAndar').textContent='';$('#vPreco').textContent='';document.querySelectorAll('#fFinal .chip').forEach(c=>c.setAttribute('aria-pressed','false'));atualizar();};
+  $('#fDisp').onchange=e=>{F.disp=e.target.checked;if(F.disp){F.res=false;$('#fRes').checked=false;}atualizar();};
+  $('#fRes').onchange=e=>{F.res=e.target.checked;if(F.res){F.disp=false;$('#fDisp').checked=false;}atualizar();};
+  $('#limpar').onclick=()=>{F.final.clear();F.aMin=6;F.aMax=22;F.preco=2410000;F.disp=false;F.res=false;$('#fRes').checked=false;amin.value=6;amax.value=22;pr.value=2410000;$('#fDisp').checked=false;$('#vAndar').textContent='';$('#vPreco').textContent='';document.querySelectorAll('#fFinal .chip').forEach(c=>c.setAttribute('aria-pressed','false'));atualizar();};
 }
 function atualizar(){
   const l=U.filter(passa);
