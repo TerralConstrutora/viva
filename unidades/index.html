@@ -246,12 +246,15 @@ async function iniciarCidade(yChao){
     t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
     setTimeout(()=>{if(!cidade.ok)desligarCidade();},15000);
+    const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x9b968e,roughness:.95}));
+    piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao-0.08,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;
     $('#creditos').hidden=false;
     nivelar();
   }catch(e){console.warn('cidade:',e);desligarCidade();}
 }
 function desligarCidade(){
+  if(cidade.piso)cidade.piso.removeFromParent();
   if(cidade.geo){cidade.geo.removeFromParent();try{cidade.tiles.dispose();}catch(_){}}
   Object.assign(cidade,{on:false,tiles:null,geo:null});
   chao.visible=true;S.fog.near=160;S.fog.far=900;S.fog.color.set(0xe4ebef);cam.near=.5;cam.far=2000;cam.updateProjectionMatrix();C.maxDistance=260;$('#creditos').hidden=true;
