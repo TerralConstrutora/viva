@@ -270,7 +270,7 @@ async function iniciarCidade(yChao){
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
     $('#creditos').hidden=false;
-    if(!sel&&!anim){const k=innerWidth<900?1.5:1;cam.position.copy(C.target).add(new THREE.Vector3(110*k,70*k,125*k));C.update();}
+    if(innerWidth<=900&&!sel&&!anim){const k=1.5;cam.position.copy(C.target).add(new THREE.Vector3(110*k,70*k,125*k));C.update();}
     nivelar();
   }catch(e){console.warn('cidade:',e);desligarCidade();}
 }
