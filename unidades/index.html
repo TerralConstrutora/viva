@@ -213,7 +213,7 @@ chao.rotation.x=-Math.PI/2;chao.position.y=OFF+0.98;chao.receiveShadow=true;S.ad
 /* ---------- cidade real ao redor (Google Photorealistic 3D Tiles) ----------
    Sem chave, ou se a chave falhar/estourar a cota, a página volta sozinha para o fundo simples. */
 const QS=new URLSearchParams(location.search);
-const GOOGLE_KEY=''; /* chave da Map Tiles API, restrita a terralconstrutora.github.io */
+const GOOGLE_KEY='AIzaSyCcCc0FER2QaBxxLFmznfa2n5bCwXoSzWk'; /* chave da Map Tiles API, restrita a terralconstrutora.github.io */
 /* esquina do pódio (x=6, z=21,1 do modelo) = Av. Guilhermina × R. Guarapari; rot = rumo do eixo +z do modelo */
 const GEO={lat:+(QS.get('lat')||-24.012568),lon:+(QS.get('lon')||-46.420496),rot:+(QS.get('rot')||161),ax:6,az:21.1,dy:+(QS.get('dy')||0)};
 const LOTE={x0:-44,x1:7,z0:-8,z1:22}; /* o que o Google mostra dentro do terreno é escondido */
