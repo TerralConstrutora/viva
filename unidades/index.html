@@ -227,7 +227,7 @@ function recortar(mat){
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
       .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
     sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform vec4 cPod;uniform vec4 cOut;uniform float cY;')
-      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cPod.x&&vCw.x<cPod.y&&vCw.z>cPod.z&&vCw.z<cPod.w&&vCw.y>cY-1.5)discard;\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY+0.1)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+1.8)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cPod.x&&vCw.x<cPod.y&&vCw.z>cPod.z&&vCw.z<cPod.w&&vCw.y>cY+0.15)discard;\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY+1.0)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+1.8)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
   };
   mat.customProgramCacheKey=()=>'cid';
 }
@@ -249,7 +249,7 @@ async function iniciarCidade(yChao){
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
     setTimeout(()=>{if(!cidade.ok)desligarCidade();},15000);
     const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x4f4d4a,roughness:.95}));
-    piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;S.add(piso);cidade.piso=piso;
+    piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
     $('#creditos').hidden=false;
     nivelar();
