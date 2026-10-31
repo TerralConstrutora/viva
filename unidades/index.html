@@ -398,7 +398,7 @@ function atualizar(){
   $('#lista').innerHTML=l.map(u=>`<button class="un ${u.status==='vendido'?'vend':''}" data-un="${u.un}" aria-current="${sel?.un===u.un}">
     <span class="n"><small>APTO</small><b>${u.un}</b></span>
     <span class="k">${u.andar}º andar · Final ${u.final}<br>${TIPO[u.final]} · ${m2(u.util).replace(' m²','')} m² · ${u.vagas} vaga${u.vagas>1?'s':''}</span>
-    <span class="p">${u.status==='vendido'?'—':brl(u.total)}<em class="st-${u.status}">${STL[u.status]}</em></span></button>`).join('')||'<p style="color:var(--mut);padding:10px">Nenhum apartamento com esses filtros.</p>';
+    <span class="p">${u.status!=='disponivel'?'—':brl(u.total)}<em class="st-${u.status}">${STL[u.status]}</em></span></button>`).join('')||'<p style="color:var(--mut);padding:10px">Nenhum apartamento com esses filtros.</p>';
   pintar();
 }
 $('#lista').addEventListener('click',e=>{const b=e.target.closest('[data-un]');if(b)selecionar(+b.dataset.un,true);});
@@ -407,7 +407,7 @@ $('#lista').addEventListener('click',e=>{const b=e.target.closest('[data-un]');i
 function selecionar(un,voar){
   const u=U.find(x=>x.un===un);if(!u)return;sel=u;C.autoRotate=false;
   document.querySelectorAll('.un').forEach(b=>b.setAttribute('aria-current',+b.dataset.un===un));
-  const vend=u.status==='vendido';
+  const vend=u.status!=='disponivel';
   $('#det').innerHTML=`<button class="x" aria-label="Fechar">×</button>
     <h3>Apto ${u.un}</h3><div class="sub">${u.andar}º andar · Final ${u.final} · ${TIPO[u.final]} · <b class="st-${u.status}">${STL[u.status]}</b></div>
     <div class="planta" id="planta"><img src="plantas/humanizada-final-${u.final}.jpg" alt="Planta do final ${u.final}"></div>
