@@ -374,8 +374,8 @@ function pintar(){
   for(const u of U){const me=vol[u.un];if(!me)continue;const m=me.material,e=me.userData.ed.material;
     const visivel=passa(u);
     const eSel=sel&&sel.un===u.un;m.depthTest=e.depthTest=!eSel;me.renderOrder=eSel?10:2;me.userData.ed.renderOrder=eSel?11:2;
-    if(eSel){m.color.set(0x2ee87a);m.opacity=.55;e.color.set(0x7dffb0);e.opacity=1;continue;}
-    if(modoSituacao&&visivel){m.color.set(COR[u.status]);m.opacity=.30;e.color.set(COR[u.status]);e.opacity=.55;}
+    if(eSel){m.color.set(0x18d860);m.opacity=.7;e.color.set(0x7dffb0);e.opacity=1;continue;}
+    if(modoSituacao&&visivel&&!sel){m.color.set(COR[u.status]);m.opacity=.30;e.color.set(COR[u.status]);e.opacity=.55;}
     else{m.opacity=0;e.opacity=0;}
   }
 }
@@ -521,7 +521,7 @@ addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);enquadrar();});
 const clock=new THREE.Clock();let nq=0;
 R.setAnimationLoop(()=>{const dt=clock.getDelta();
   if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
-  if(sel&&vol[sel.un]){const k=.5+.5*Math.sin(clock.elapsedTime*3.2);vol[sel.un].material.opacity=.38+.3*k;}
+  if(sel&&vol[sel.un]){const k=.5+.5*Math.sin(clock.elapsedTime*3.2);vol[sel.un].material.opacity=.55+.3*k;}
   C.update();if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);});
 window.__v={selecionar,irModo,cam,C,R,S,cidade,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
 </script>
