@@ -225,7 +225,7 @@ function recortar(mat){
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
       .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
     sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform float cY;')
-      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY)discard;');
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
   };
   mat.customProgramCacheKey=()=>'cid';
 }
@@ -246,9 +246,9 @@ async function iniciarCidade(yChao){
     t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
     setTimeout(()=>{if(!cidade.ok)desligarCidade();},15000);
-    const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x9b968e,roughness:.95}));
+    const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x6e6b66,roughness:.95}));
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao-0.08,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;S.add(piso);cidade.piso=piso;
-    chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;
+    chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
     $('#creditos').hidden=false;
     nivelar();
   }catch(e){console.warn('cidade:',e);desligarCidade();}
@@ -257,7 +257,7 @@ function desligarCidade(){
   if(cidade.piso)cidade.piso.removeFromParent();
   if(cidade.geo){cidade.geo.removeFromParent();try{cidade.tiles.dispose();}catch(_){}}
   Object.assign(cidade,{on:false,tiles:null,geo:null});
-  chao.visible=true;S.fog.near=160;S.fog.far=900;S.fog.color.set(0xe4ebef);cam.near=.5;cam.far=2000;cam.updateProjectionMatrix();C.maxDistance=260;$('#creditos').hidden=true;
+  chao.visible=true;S.fog.near=160;S.fog.far=900;S.fog.color.set(0xe4ebef);cam.near=.5;cam.far=2000;cam.updateProjectionMatrix();C.maxDistance=260;C.maxPolarAngle=Math.PI*0.495;$('#creditos').hidden=true;
 }
 /* acerta a altura do chão do Google com a calçada do modelo (mede em pontos da rua, fora do terreno) */
 let nivelN=0;
