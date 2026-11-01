@@ -548,7 +548,7 @@ async function buscarPois(){
         .filter(p=>Math.hypot((p.lat-c.latitude)*110780,(p.lon-c.longitude)*101700)<=RAIO).slice(0,b.max);
     }catch(e){console.warn('comércios:',e);return [];}
   }));
-  const vistos=new Set();const out=[{nome:'Praia da Guilhermina',cat:'praia',lat:-24.01430,lon:-46.41990}];
+  const vistos=new Set();const out=[{nome:'Praia da Guilhermina',cat:'praia',lat:-24.01358,lon:-46.42015}];
   for(const l of res)for(const p of l){if(vistos.has(p.id))continue;vistos.add(p.id);out.push(p);}
   return out;
 }
