@@ -306,7 +306,7 @@ async function iniciarCidade(yChao){
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
     $('#creditos').hidden=false;$('#explorar').hidden=false;
-    if(innerWidth<=900&&!sel&&!anim){cam.position.copy(C.target).add(new THREE.Vector3(190,120,60));C.update();}
+    if(innerWidth<=900&&!sel&&!anim){cam.position.copy(C.target).add(new THREE.Vector3(190,120,60));C.update();CASA={p:cam.position.clone(),t:C.target.clone()};}
     nivelar();
   }catch(e){console.warn('cidade:',e);desligarCidade();}
 }
@@ -605,7 +605,7 @@ function desenharPois(){
 }
 $('#arredores').onclick=()=>{
   const on=document.body.classList.toggle('arr-on');$('#arredores').setAttribute('aria-pressed',on);
-  if(!on&&!explorando&&!sel)C.autoRotate=true;
+  if(!on&&!explorando&&!sel)voltarCasa();
   if(on&&!poiLista){poiLista=[];$('#legpoi').innerHTML='<span>Buscando comércios no Google…</span>';buscarPois().then(l=>{poiLista=l;criarPois(l);});}
   if(on&&!explorando&&!sel){ /* afasta a câmera para caber o entorno */
     const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=innerWidth<900?1700:1250;
@@ -613,6 +613,11 @@ $('#arredores').onclick=()=>{
     anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.setLength(d)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
   }
 };
+let CASA=null; /* vista inicial do prédio, para onde a câmera volta */
+function voltarCasa(){if(!CASA)return;const d=document.body.classList.contains('arr-on');
+  if(d){/* com os comércios ligados, volta para a vista aberta do entorno */const dir=CASA.p.clone().sub(CASA.t);const k=innerWidth<900?1700:1250;dir.y=0;dir.setLength(k*0.6);dir.y=k*0.8;C.maxDistance=1900;anim={t:0,p0:cam.position.clone(),p1:CASA.t.clone().add(dir.setLength(k)),a0:C.target.clone(),a1:CASA.t.clone()};}
+  else{C.maxDistance=cidade.on?650:260;anim={t:0,p0:cam.position.clone(),p1:CASA.p.clone(),a0:C.target.clone(),a1:CASA.t.clone()};}
+  C.autoRotate=!sel;}
 /* ---------- explorar a cidade livremente (botão) ---------- */
 let explorando=false,salvo=null;
 function alternarExplorar(){
@@ -629,7 +634,7 @@ function alternarExplorar(){
     C.mouseButtons={LEFT:THREE.MOUSE.ROTATE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN};C.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
     if(cidade.cR)cidade.cR.value=38;enquadrar();
     $('#ajuda').textContent='Arraste para girar · role ou use dois dedos para aproximar';setTimeout(()=>{if(!explorando)$('#ajuda').style.opacity=0;},2500);
-    if(salvo){anim={t:0,p0:cam.position.clone(),p1:salvo.p,a0:C.target.clone(),a1:salvo.t};C.autoRotate=!sel;}
+    if(sel&&salvo){anim={t:0,p0:cam.position.clone(),p1:salvo.p,a0:C.target.clone(),a1:salvo.t};}else voltarCasa();
   }
 }
 $('#explorar').onclick=alternarExplorar;
@@ -664,7 +669,7 @@ L.load('viva.glb',g=>{
   const pedras=[];o.traverse(n=>{if(n.isMesh&&n.material.name==='brick'){const bb=new THREE.Box3().setFromObject(n);if(bb.min.y<yLazer)pedras.push(bb);}});
   S.add(o);grupo=grupoUnidades();pintar();
   const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
-  C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();
+  C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();CASA={p:cam.position.clone(),t:C.target.clone()};
   $('#carregando').style.opacity=0;setTimeout(()=>$('#carregando').remove(),700);
   const h=location.hash.slice(1);irModo(h==='aptos'?'aptos':'inicio');
   window.pronto=true;
