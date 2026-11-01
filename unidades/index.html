@@ -133,7 +133,11 @@ body.arr-on .pois,body.arr-on .poi-linhas{display:block}
 .poi i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
 .poi i svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .poi b{font-weight:600}.poi small{display:block;font-size:10px;color:rgba(243,239,232,.7);margin-top:1px}
-.poi.longe{opacity:.0}
+.poi{pointer-events:auto;cursor:pointer}
+.poi.mini{padding:3px;gap:0}.poi.mini span{display:none}.poi.mini.aberto{padding:4px 10px 4px 4px;gap:7px;z-index:2}.poi.mini.aberto span{display:block}
+.poi:hover{z-index:3}.poi.mini:hover{padding:4px 10px 4px 4px;gap:7px}.poi.mini:hover span{display:block}
+.legpoi button{display:flex;align-items:center;gap:5px;background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:2px 3px;border-radius:999px}
+.legpoi button[aria-pressed="false"]{opacity:.38;text-decoration:line-through}
 .legpoi{position:fixed;left:50%;transform:translateX(-50%);top:70px;z-index:3;display:none;gap:12px;flex-wrap:wrap;justify-content:center;font:500 11px var(--f);color:#f3efe8;background:rgba(18,21,24,.7);padding:7px 14px;border-radius:999px;backdrop-filter:blur(8px);max-width:92vw}
 body.arr-on .legpoi{display:flex}
 .legpoi span{display:flex;align-items:center;gap:5px}.legpoi em{width:9px;height:9px;border-radius:50%;display:inline-block}
@@ -511,54 +515,80 @@ const CAT={
   restaurante:{n:'Restaurante',c:'#e07a5f',i:'<path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5a2 2 0 0 0 2 2M9 3v5a2 2 0 0 1-2 2"/><path d="M17 3c-2 2-2 6 0 8v10"/>'},
   padaria:{n:'Padaria',c:'#c9955a',i:'<path d="M4 15a8 6 0 0 1 16 0v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 11l1 4M14 11l-1 4"/>'},
   escola:{n:'Escola',c:'#4f8fe0',i:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>'},
-  praca:{n:'Praça',c:'#6aa84f',i:'<path d="M12 22v-6"/><path d="M12 16a5 5 0 0 0 4-8 5 5 0 0 0-8 0 5 5 0 0 0 4 8z"/>'}
+  praca:{n:'Praça',c:'#6aa84f',i:'<path d="M12 22v-6"/><path d="M12 16a5 5 0 0 0 4-8 5 5 0 0 0-8 0 5 5 0 0 0 4 8z"/>'},
+  banco:{n:'Banco',c:'#5c6bc0',i:'<path d="M3 10l9-6 9 6"/><path d="M5 10v8M10 10v8M14 10v8M19 10v8M3 20h18"/>'},
+  academia:{n:'Academia',c:'#d9534f',i:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>'},
+  feira:{n:'Feira',c:'#e5b93a',i:'<path d="M3 9l2-5h14l2 5"/><path d="M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3"/><path d="M5 12v8h14v-8"/>'}
 };
-const POIS=[
-  ['Praia da Guilhermina','praia',-24.01430,-46.41990],
-  ['Mercado Extra','mercado',-24.012127,-46.420107],
-  ['Droga Raia','farmacia',-24.01184,-46.420423],
-  ['Carrefour','mercado',-24.01303,-46.418307],
-  ['Boqueirão Praia Shopping','shopping',-24.012857,-46.414419],
-  ['Beatrix Boulevard','shopping',-24.010076,-46.417772],
-  ['Restaurante Praiano Sul','restaurante',-24.011329,-46.420517],
-  ['Padaria Bello Panne','padaria',-24.007132,-46.423013],
-  ['Escola Celestin Freinet','escola',-24.007565,-46.421753],
-  ['Praça Vital Muniz','praca',-24.012136,-46.416936],
-  ['Praça Lions','praca',-24.013404,-46.41987]
+/* busca no Google (Places API) num raio de 1 km; mostra os mais conhecidos de cada tipo */
+const RAIO=1000;
+const BUSCAS=[
+  {cat:'padaria',tipos:['bakery'],aceita:['bakery'],max:5},
+  {cat:'mercado',tipos:['supermarket','grocery_store'],aceita:['supermarket','grocery_store','hypermarket'],max:5},
+  {cat:'farmacia',tipos:['pharmacy','drugstore'],aceita:['pharmacy','drugstore'],max:5},
+  {cat:'banco',tipos:['bank'],aceita:['bank'],max:6},
+  {cat:'academia',tipos:['gym','fitness_center'],aceita:['gym','fitness_center'],max:5},
+  {cat:'escola',tipos:['primary_school','secondary_school','school','preschool'],aceita:['primary_school','secondary_school','school','preschool'],max:6,fora:/idioma|ingl|petz|treinament|m[uú]sica|dan[cç]a|curso|auto ?escola|cfc|nata[cç]/i},
+  {cat:'shopping',tipos:['shopping_mall'],aceita:['shopping_mall'],max:3},
+  {cat:'restaurante',tipos:['restaurant'],aceita:null,max:6},
+  {cat:'praca',tipos:['park'],aceita:['park','plaza'],max:4},
+  {cat:'feira',texto:'feira livre',max:4}
 ];
+async function buscarPois(){
+  const H={'Content-Type':'application/json','X-Goog-Api-Key':QS.get('gkey')||GOOGLE_KEY,'X-Goog-FieldMask':'places.id,places.displayName,places.location,places.primaryType'};
+  const c={latitude:LOTE_LL[0],longitude:LOTE_LL[1]};const dl=RAIO/110780,dn=RAIO/101700;
+  const res=await Promise.all(BUSCAS.map(async b=>{
+    try{
+      const body=b.texto?{textQuery:b.texto,maxResultCount:10,languageCode:'pt-BR',locationRestriction:{rectangle:{low:{latitude:c.latitude-dl,longitude:c.longitude-dn},high:{latitude:c.latitude+dl,longitude:c.longitude+dn}}}}
+        :{includedTypes:b.tipos,maxResultCount:20,rankPreference:'POPULARITY',languageCode:'pt-BR',locationRestriction:{circle:{center:c,radius:RAIO}}};
+      const r=await fetch('https://places.googleapis.com/v1/places:'+(b.texto?'searchText':'searchNearby'),{method:'POST',headers:H,body:JSON.stringify(body)});
+      const j=await r.json();
+      return (j.places||[]).filter(p=>(!b.aceita||b.aceita.includes(p.primaryType))&&!(b.fora&&b.fora.test(p.displayName?.text||''))&&!/exclu[ií]d/i.test(p.displayName?.text||''))
+        .map(p=>({id:p.id,nome:(p.displayName?.text||'').split(/ [-–|] /)[0],cat:b.cat,lat:p.location.latitude,lon:p.location.longitude}))
+        .filter(p=>Math.hypot((p.lat-c.latitude)*110780,(p.lon-c.longitude)*101700)<=RAIO).slice(0,b.max);
+    }catch(e){console.warn('comércios:',e);return [];}
+  }));
+  const vistos=new Set();const out=[{nome:'Praia da Guilhermina',cat:'praia',lat:-24.01430,lon:-46.41990}];
+  for(const l of res)for(const p of l){if(vistos.has(p.id))continue;vistos.add(p.id);out.push(p);}
+  return out;
+}
 const LOTE_LL=[-24.01254,-46.42060]; /* centro do terreno, para medir as distâncias */
 function geoParaModelo(lat,lon){
   const e=(lon-GEO.lon)*111320*Math.cos(GEO.lat*Math.PI/180),n=(lat-GEO.lat)*110780;
   const a=GEO.rot*Math.PI/180,vx=-e,vz=n;
   return [vx*Math.cos(a)+vz*Math.sin(a)+GEO.ax,-vx*Math.sin(a)+vz*Math.cos(a)+GEO.az];
 }
-let poiEls=[],yRua=0;
-function montarPois(y){
-  yRua=y;const box=$('#pois');box.innerHTML='';
+let poiEls=[],yRua=0,poiLista=null,catOff=new Set();
+function montarPois(y){yRua=y;}
+function criarPois(lista){
+  const y=yRua;const box=$('#pois');box.innerHTML='';
   const svg=$('#poiLinhas');svg.innerHTML='';
-  poiEls=POIS.map(([nome,cat,lat,lon])=>{
+  poiEls=lista.map(({nome,cat,lat,lon},idx)=>{
     const [x,z]=geoParaModelo(lat,lon);
     const dm=Math.hypot((lat-LOTE_LL[0])*110780,(lon-LOTE_LL[1])*101700);
     const dist=dm<1000?`${Math.round(dm/10)*10} m`:`${(dm/1000).toFixed(1).replace('.',',')} km`;
     const min=Math.max(1,Math.round(dm/75));
-    const k=CAT[cat];const el=document.createElement('div');el.className='poi';
-    el.innerHTML=`<i style="background:${k.c}"><svg viewBox="0 0 24 24">${k.i}</svg></i><span><b>${nome}</b><small>${dist} · ${min} min a pé</small></span>`;
+    const curto=nome.length>30?nome.slice(0,28)+'…':nome;
+    const k=CAT[cat];const el=document.createElement('div');el.className='poi'+(dm>380&&cat!=='praia'?' mini':'');el.title=`${nome} · ${dist} · ${min} min a pé`;
+    el.innerHTML=`<i style="background:${k.c}"><svg viewBox="0 0 24 24">${k.i}</svg></i><span><b>${curto}</b><small>${dist} · ${min} min a pé</small></span>`;
+    el.onclick=()=>el.classList.toggle('aberto');
     box.appendChild(el);
-    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('stroke','rgba(255,255,255,.75)');ln.setAttribute('stroke-width','1.2');
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('stroke','rgba(255,255,255,.7)');ln.setAttribute('stroke-width','1.2');
     const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('r','3.5');dot.setAttribute('fill',k.c);dot.setAttribute('stroke','#fff');dot.setAttribute('stroke-width','1.5');
     svg.appendChild(ln);svg.appendChild(dot);
-    const alt=cat==='praia'?18:14+((x*7+z*3)%9+9)%9; /* alturas um pouco diferentes para não encavalar */
-    return {el,ln,dot,p0:new THREE.Vector3(x,y,z),p1:new THREE.Vector3(x,y+alt,z)};
+    const alt=cat==='praia'?22:10+((idx*37)%13);
+    return {el,ln,dot,cat,p0:new THREE.Vector3(x,y,z),p1:new THREE.Vector3(x,y+alt,z)};
   });
-  const usadas=[...new Set(POIS.map(p=>p[1]))];
-  $('#legpoi').innerHTML=usadas.map(c=>`<span><em style="background:${CAT[c].c}"></em>${CAT[c].n}</span>`).join('');
+  const usadas=[...new Set(lista.map(p=>p.cat))];
+  $('#legpoi').innerHTML=usadas.map(c=>`<button data-c="${c}" aria-pressed="${!catOff.has(c)}"><em style="background:${CAT[c].c}"></em>${CAT[c].n}</button>`).join('');
 }
+$('#legpoi').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const c=b.dataset.c;catOff.has(c)?catOff.delete(c):catOff.add(c);b.setAttribute('aria-pressed',!catOff.has(c));});
 const _v=new THREE.Vector3();
 function desenharPois(){
   if(!document.body.classList.contains('arr-on'))return;
   const w=innerWidth,h=innerHeight;
   for(const o of poiEls){
-    _v.copy(o.p1).project(cam);const vis=_v.z<1&&Math.abs(_v.x)<1.2&&Math.abs(_v.y)<1.2;
+    _v.copy(o.p1).project(cam);const vis=!catOff.has(o.cat)&&_v.z<1&&Math.abs(_v.x)<1.2&&Math.abs(_v.y)<1.2;
     const x1=(_v.x+1)/2*w,y1=(1-_v.y)/2*h;
     _v.copy(o.p0).project(cam);const x0=(_v.x+1)/2*w,y0=(1-_v.y)/2*h;
     o.el.style.display=o.ln.style.display=o.dot.style.display=vis?'':'none';
@@ -570,9 +600,10 @@ function desenharPois(){
 }
 $('#arredores').onclick=()=>{
   const on=document.body.classList.toggle('arr-on');$('#arredores').setAttribute('aria-pressed',on);
+  if(on&&!poiLista){poiLista=[];$('#legpoi').innerHTML='<span>Buscando comércios no Google…</span>';buscarPois().then(l=>{poiLista=l;criarPois(l);});}
   if(on&&!explorando&&!sel){ /* afasta a câmera para caber o entorno */
-    const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=innerWidth<900?1100:850;
-    dir.y=0;dir.setLength(d*0.6);dir.y=d*0.8;C.maxDistance=Math.max(C.maxDistance,1300);
+    const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=innerWidth<900?1700:1250;
+    dir.y=0;dir.setLength(d*0.6);dir.y=d*0.8;C.maxDistance=Math.max(C.maxDistance,1900);
     anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.setLength(d)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
   }
 };
