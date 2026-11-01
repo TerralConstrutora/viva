@@ -553,7 +553,7 @@ async function buscarPois(){
         .filter(p=>Math.hypot((p.lat-c.latitude)*110780,(p.lon-c.longitude)*101700)<=RAIO).slice(0,b.max);
     }catch(e){console.warn('comércios:',e);return [];}
   }));
-  const vistos=new Set();const out=[{nome:'Praia da Guilhermina',cat:'praia',lat:-24.01358,lon:-46.42015}];
+  const vistos=new Set();const out=[{nome:'Praia da Guilhermina',cat:'praia',lat:-24.01388,lon:-46.41998}];
   for(const l of res)for(const p of l){if(vistos.has(p.id))continue;vistos.add(p.id);out.push(p);}
   return out;
 }
@@ -574,8 +574,8 @@ function criarPois(lista){
     const dist=dm<1000?`${Math.round(dm/10)*10} m`:`${(dm/1000).toFixed(1).replace('.',',')} km`;
     const min=Math.max(1,Math.round(dm/75));
     const curto=nome.length>30?nome.slice(0,28)+'…':nome;
-    const k=CAT[cat];const el=document.createElement('div');el.className='poi'+(dm>380&&cat!=='praia'?' mini':'');el.title=`${nome} · ${dist} · ${min} min a pé`;
-    el.innerHTML=`<i style="background:${k.c}"><svg viewBox="0 0 24 24">${k.i}</svg></i><span><b>${curto}</b><small>${dist} · ${min} min a pé</small></span>`;
+    const k=CAT[cat];const el=document.createElement('div');el.className='poi'+(dm>380&&cat!=='praia'?' mini':'');el.title=cat==='praia'?nome:`${nome} · ${dist} · ${min} min a pé`;
+    el.innerHTML=`<i style="background:${k.c}"><svg viewBox="0 0 24 24">${k.i}</svg></i><span><b>${curto}</b>${cat==='praia'?'':`<small>${dist} · ${min} min a pé</small>`}</span>`;
     el.onclick=()=>el.classList.toggle('aberto');
     box.appendChild(el);
     const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('stroke','rgba(255,255,255,.7)');ln.setAttribute('stroke-width','1.2');
