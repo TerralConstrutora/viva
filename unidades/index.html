@@ -121,6 +121,35 @@ button,input,select{font:inherit;color:inherit}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 .aba{display:none}
+.btns-ver{display:flex;gap:10px;flex-wrap:wrap}
+.lz-pins{position:fixed;inset:0;pointer-events:none;z-index:3;display:none}
+body.m-lazer .lz-pins{display:block}
+.lz-pin{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:6px;transform:translate(-50%,-50%);background:rgba(18,21,24,.84);color:#f3efe8;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:4px 10px 4px 4px;font:600 11.5px/1 var(--f);white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.35);transition:background .2s}
+.lz-pin b{width:20px;height:20px;border-radius:50%;background:#c97b63;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px}
+.lz-pin:hover,.lz-pin.ativo{background:#c97b63}.lz-pin:hover b,.lz-pin.ativo b{background:#fff;color:#c97b63}
+.lz-painel{position:fixed;left:max(22px,env(safe-area-inset-left,0px));top:86px;bottom:22px;width:330px;z-index:4;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
+.lz-painel[hidden]{display:none}
+.lz-cab{padding:18px 18px 8px}.lz-cab h2{font-family:var(--f-disp);font-weight:500;font-size:30px;margin:0}.lz-cab p{font-size:12.5px;color:var(--mut);margin:6px 0 0;line-height:1.5}
+.lz-lista{flex:1;overflow:auto;padding:6px 12px 14px}
+.lz-it{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;width:100%;text-align:left;background:var(--glass-2);border:1px solid var(--line);border-radius:4px;padding:6px;margin-bottom:7px;cursor:pointer;color:var(--ink);font:inherit}
+.lz-it img{width:64px;height:44px;object-fit:cover;border-radius:3px;background:#222}.lz-it span{font-size:13px;font-weight:600}.lz-it small{display:block;font-size:11px;color:var(--mut);font-weight:400;margin-top:2px}
+.lz-it[aria-current="true"]{background:rgba(243,239,232,.9);color:#16191c}.lz-it[aria-current="true"] small{color:#4a4640}
+.lz-card{position:fixed;right:max(22px,env(safe-area-inset-right,0px));top:86px;width:min(560px,46vw);z-index:5;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.lz-card[hidden]{display:none}
+.lz-card .ft{position:relative;background:#111;cursor:zoom-in}.lz-card .ft img{display:block;width:100%;max-height:52vh;object-fit:cover}
+.lz-card .tx{padding:14px 18px 16px}.lz-card h3{font-family:var(--f-disp);font-size:28px;font-weight:500;margin:0}.lz-card p{font-size:13px;color:var(--mut);margin:4px 0 0;line-height:1.5}
+.lz-card .x{position:absolute;right:10px;top:8px;z-index:2;background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:50%;width:32px;height:32px;font-size:20px;cursor:pointer}
+.lz-card .nav2{position:absolute;bottom:10px;right:10px;display:flex;gap:6px}.lz-card .nav2 button{background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:999px;padding:6px 11px;font:600 11px var(--f);cursor:pointer}
+body.m-lazer .explorar.arr{display:none}
+@media (max-width:900px){
+  .lz-painel{left:auto;right:0;top:calc(60px + env(safe-area-inset-top,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));width:min(44vw,180px);border-radius:12px 0 0 12px}
+  .lz-cab p{display:none}.lz-cab h2{font-size:18px}.lz-cab{padding:10px}
+  .lz-it{grid-template-columns:1fr;padding:5px}.lz-it img{width:100%;height:60px}.lz-it span{font-size:11.5px}
+  .lz-card{left:0;right:0;top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));width:auto;border-radius:12px 12px 0 0;max-height:62%;overflow:auto}
+  .lz-pin{font-size:10px;padding:3px 7px 3px 3px}.lz-pin b{width:17px;height:17px;font-size:10px}
+  .lz-pin span{display:none}
+}
+
 .explorar{position:fixed;right:max(22px,env(safe-area-inset-right,0px));bottom:64px;z-index:6;display:flex;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:999px;padding:10px 16px;color:var(--ink);font:600 12.5px/1 var(--f);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .explorar[hidden]{display:none}
 .explorar.arr{bottom:112px}
@@ -175,6 +204,7 @@ body.explorando .ajuda{opacity:1!important}
   <nav class="nav" id="nav">
     <button data-m="inicio" aria-current="true">Início</button>
     <button data-m="aptos">Apartamentos</button>
+    <button data-m="lazer">Lazer</button>
     <button data-m="obra" onclick="location.href='../'">Obra</button>
   </nav>
   <a class="cta topo-cta" id="ctaTopo" target="_blank" rel="noopener">Agendar visita</a>
@@ -186,7 +216,7 @@ body.explorando .ajuda{opacity:1!important}
   <hr>
   <div class="nums"><div><b id="nTot">85</b><span>apartamentos</span></div><div><b id="nDisp">—</b><span>disponíveis</span></div><div><b>22</b><span>pavimentos</span></div></div>
   <div class="end"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16191c" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></i>Av. Guilhermina, 109 · esquina com R. Guarapari · Praia Grande</div>
-  <button class="btn-ver" data-m="aptos">Ver apartamentos</button>
+  <div class="btns-ver"><button class="btn-ver" data-m="aptos">Ver apartamentos</button><button class="btn-ver" data-m="lazer">Ver lazer</button></div>
 </section>
 
 <aside class="painel" id="painel" hidden aria-label="Lista de apartamentos">
@@ -211,6 +241,12 @@ body.explorando .ajuda{opacity:1!important}
 <div class="legpoi" id="legpoi"></div>
 <svg id="poiLinhas" class="poi-linhas" aria-hidden="true"></svg><div id="pois" class="pois" aria-label="Comércios e serviços ao redor"></div>
 <button class="explorar" id="explorar" hidden><span class="ic">🧭</span><span id="explorarTxt">Explorar a cidade</span></button>
+<div class="lz-pins" id="lzPins"></div>
+<aside class="lz-painel" id="lzPainel" hidden>
+  <div class="lz-cab"><h2>Lazer</h2><p>16 ambientes no 5º pavimento, em cima das garagens. Toque nos pontos da planta para ver cada um.</p></div>
+  <div class="lz-lista" id="lzLista"></div>
+</aside>
+<div class="lz-card" id="lzCard" hidden></div>
 <div class="creditos" id="creditos" hidden><b>Google</b><span id="credTxt"></span></div>
 <div class="ajuda" id="ajuda">Arraste para girar · role ou use dois dedos para aproximar</div>
 <div class="tip" id="tip"></div>
@@ -618,6 +654,73 @@ function voltarCasa(){if(!CASA)return;const d=document.body.classList.contains('
   if(d){/* com os comércios ligados, volta para a vista aberta do entorno */const dir=CASA.p.clone().sub(CASA.t);const k=innerWidth<900?1700:1250;dir.y=0;dir.setLength(k*0.6);dir.y=k*0.8;C.maxDistance=1900;anim={t:0,p0:cam.position.clone(),p1:CASA.t.clone().add(dir.setLength(k)),a0:C.target.clone(),a1:CASA.t.clone()};}
   else{C.maxDistance=cidade.on?650:260;anim={t:0,p0:cam.position.clone(),p1:CASA.p.clone(),a0:C.target.clone(),a1:CASA.t.clone()};}
   C.autoRotate=!sel;}
+
+/* ---------- LAZER: corte do prédio no pavimento de lazer, planta no piso, pontos de cada ambiente e as imagens ---------- */
+const Y_LAZER=16.00+OFF; /* nível +16,00 */
+/* planta (folha 8/13) para coordenadas do modelo: 19,6 px por metro na prancha de 1700 px */
+const pl2m=(px,py)=>[(px-1150)/19.6+7.28,(py-70)/19.6-7.3];
+const P19=(x,y)=>pl2m(x*1700/1906,y*1700/1906); /* pontos da legenda da prancha (base 1906 px) */
+const LAZER=[
+  {n:'Piscina',a:'Piscina adulto de 55,98 m², piscina infantil de 8,77 m², prainha e hidromassagem.',p:P19(360,230),img:['piscina']},
+  {n:'Deck e convivência',a:'Deck da piscina (64,96 m²) e área coberta de recreação (55,35 m²) com mesas.',p:P19(600,420),img:['convivencia']},
+  {n:'Academia',a:'38,61 m², com vista para a piscina.',p:P19(685,330),img:['academia']},
+  {n:'Sauna',a:'5,80 m².',p:P19(790,400),img:['sauna']},
+  {n:'Espaço video game/Netflix',a:'31,84 m².',p:P19(825,300),img:['cinema']},
+  {n:'Espaço Care',a:'Duas salas: feminina e masculina (4,32 m² cada).',p:pl2m(835+15,348),img:['care-feminino','care-masculino']},
+  {n:'Home working',a:'Escritório compartilhado de 21,65 m².',p:P19(940,320),img:['home-office']},
+  {n:'Salão de jogos',a:'83,49 m², com terraço de jogos de 11,95 m².',p:P19(1110,330),img:['jogos']},
+  {n:'Brinquedoteca',a:'12,57 m².',p:P19(1155,447),img:['brinquedoteca']},
+  {n:'Salão de festas',a:'77,12 m², com terraço de festas de 11,95 m².',p:P19(1110,540),img:['festas-1','festas-2']},
+  {n:'Espaço gourmet/friends',a:'23,69 m².',p:P19(1035,625),img:['gourmet']},
+  {n:'Espaço grill/pizza',a:'32,85 m².',p:P19(855,570),img:['grill']}
+];
+let lazerOn=false,lzSel=-1,lzFoto=0,planoLazer=null;const corteLazer=new THREE.Plane(new THREE.Vector3(0,-1,0),Y_LAZER+2.6);
+function prepararLazer(o){
+  /* corte: tudo acima do teto do lazer some quando o modo está ligado */
+  const mats=new Set();o.traverse(n=>{if(n.isMesh){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>mats.add(m));}});
+  mats.forEach(m=>{m.clippingPlanes=[corteLazer];m.clipShadows=true;});
+  R.localClippingEnabled=false;
+  /* planta no piso */
+  const [xa,za]=pl2m(430,175),[xb,zb]=pl2m(1250,650);
+  const t=new THREE.TextureLoader().load('lazer/planta-lazer.jpg');t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;
+  const g=new THREE.PlaneGeometry(xb-xa,zb-za);g.rotateX(-Math.PI/2);
+  planoLazer=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:.93,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4,toneMapped:false}));
+  planoLazer.position.set((xa+xb)/2,Y_LAZER+0.06,(za+zb)/2);planoLazer.visible=false;planoLazer.renderOrder=1;S.add(planoLazer);
+  /* pontos e lista */
+  $('#lzPins').innerHTML=LAZER.map((a,i)=>`<button class="lz-pin" data-i="${i}"><b>${i+1}</b><span>${a.n}</span></button>`).join('');
+  $('#lzLista').innerHTML=LAZER.map((a,i)=>`<button class="lz-it" data-i="${i}"><img src="lazer/mini-${a.img[0]}.jpg" alt="" loading="lazy"><span>${i+1}. ${a.n}<small>${a.a.split('.')[0]}</small></span></button>`).join('');
+  $('#lzPins').onclick=$('#lzLista').onclick=e=>{const b=e.target.closest('[data-i]');if(b)abrirAmbiente(+b.dataset.i);};
+}
+function abrirAmbiente(i){
+  lzSel=i;lzFoto=0;const a=LAZER[i];
+  document.querySelectorAll('.lz-pin,.lz-it').forEach(b=>{const on=+b.dataset.i===i;b.classList.toggle('ativo',on);if(b.classList.contains('lz-it'))b.setAttribute('aria-current',on);});
+  const foto=()=>`lazer/${a.img[lzFoto]}.jpg`;
+  $('#lzCard').innerHTML=`<button class="x" aria-label="Fechar">×</button><div class="ft"><img src="${foto()}" alt="${a.n}">${a.img.length>1?`<div class="nav2">${a.img.map((_,k)=>`<button data-f="${k}">${k+1}/${a.img.length}</button>`).join('')}</div>`:''}</div><div class="tx"><h3>${a.n}</h3><p>${a.a}</p><p style="font-size:11px;margin-top:8px">Imagem ilustrativa.</p></div>`;
+  $('#lzCard').hidden=false;
+  $('#lzCard .x').onclick=()=>{$('#lzCard').hidden=true;lzSel=-1;document.querySelectorAll('.lz-pin,.lz-it').forEach(b=>{b.classList.remove('ativo');b.setAttribute('aria-current','false');});};
+  $('#lzCard .ft img').onclick=()=>{const z=document.createElement('div');z.className='zoom';z.innerHTML=`<img src="${foto()}" alt="">`;z.onclick=()=>z.remove();document.body.appendChild(z);};
+  $('#lzCard').querySelectorAll('[data-f]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();lzFoto=+b.dataset.f;$('#lzCard .ft img').src=foto();});
+  /* câmera se aproxima do ambiente */
+  const [x,z]=a.p;const alvo=new THREE.Vector3(x,Y_LAZER+1,z);const dir=cam.position.clone().sub(C.target).setY(0).normalize();
+  const d=innerWidth<900?60:48;anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.multiplyScalar(d*0.55)).add(new THREE.Vector3(0,d*0.85,0)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
+}
+function modoLazer(on){
+  if(on===lazerOn)return;lazerOn=on;document.body.classList.toggle('m-lazer',on);
+  R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=on;if(grupo)grupo.visible=!on;
+  $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
+  if(on){
+    if(document.body.classList.contains('arr-on'))$('#arredores').click();
+    const alvo=new THREE.Vector3(-12,Y_LAZER,10);const d=innerWidth<900?120:85;
+    anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(new THREE.Vector3(d*0.45,d*0.85,d*0.55)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
+    if(cidade.cR)cidade.cR.value=0;
+  }else{if(cidade.cR&&!explorando)cidade.cR.value=38;if(CASA)anim={t:0,p0:cam.position.clone(),p1:CASA.p.clone(),a0:C.target.clone(),a1:CASA.t.clone()};}
+}
+const _w=new THREE.Vector3();
+function desenharLazer(){
+  if(!lazerOn)return;const w=innerWidth,h=innerHeight;
+  document.querySelectorAll('.lz-pin').forEach(b=>{const [x,z]=LAZER[+b.dataset.i].p;_w.set(x,Y_LAZER+1.2,z).project(cam);
+    const vis=_w.z<1&&Math.abs(_w.x)<1.1&&Math.abs(_w.y)<1.1;b.style.display=vis?'':'none';if(vis)b.style.transform=`translate(${(_w.x+1)/2*w}px,${(1-_w.y)/2*h}px) translate(-50%,-50%)`;});
+}
 /* ---------- explorar a cidade livremente (botão) ---------- */
 let explorando=false,salvo=null;
 function alternarExplorar(){
@@ -643,7 +746,7 @@ R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-dow
 
 /* ---------- modos ---------- */
 let modo='inicio';
-function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
+function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;modoLazer(m==='lazer');document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
   $('#hero').style.opacity=m==='inicio'?1:0;$('#hero').style.pointerEvents=m==='inicio'?'':'none';
   $('#painel').hidden=m!=='aptos';$('#leg').style.display=m==='aptos'&&innerWidth>900?'':'none';
   modoSituacao=m==='aptos';enquadrar();document.body.classList.toggle('det-aberto',false);if(m==='inicio'){sel=null;$('#det').hidden=true;C.autoRotate=true;}pintar();
@@ -671,7 +774,8 @@ L.load('viva.glb',g=>{
   const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
   C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();CASA={p:cam.position.clone(),t:C.target.clone()};
   $('#carregando').style.opacity=0;setTimeout(()=>$('#carregando').remove(),700);
-  const h=location.hash.slice(1);irModo(h==='aptos'?'aptos':'inicio');
+  prepararLazer(o);
+  const h=location.hash.slice(1);irModo(h==='aptos'||h==='lazer'?h:'inicio');
   window.pronto=true;
   montarPois(b.min.y+0.93);
   iniciarCidade(b.min.y);
@@ -710,7 +814,7 @@ R.setAnimationLoop(()=>{const dt=clock.getDelta();
   if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
   if(sel&&vol[sel.un]){const k=.5+.5*Math.sin(clock.elapsedTime*3.2);vol[sel.un].material.opacity=.55+.3*k;}
   C.update();if(cidade.on&&!cidade.ok&&++cidade.espera>1200){desligarCidade();}
-  if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);desenharPois();});
+  if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);desenharPois();desenharLazer();});
 window.__v={selecionar,irModo,cam,C,R,S,cidade,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
 </script>
 </body></html>
