@@ -273,7 +273,7 @@ async function iniciarCidade(yChao){
     t.addEventListener('load-model',({scene})=>scene.traverse(n=>{if(n.isMesh){recortar(n.material);n.castShadow=n.receiveShadow=false;}}));
     t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
-    setTimeout(()=>{if(!cidade.ok)desligarCidade();},15000);
+    cidade.espera=0; /* desiste se o Google não responder em ~20 s de tela visível */
     const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x4f4d4a,roughness:.95}));
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
@@ -572,7 +572,8 @@ const clock=new THREE.Clock();let nq=0;
 R.setAnimationLoop(()=>{const dt=clock.getDelta();
   if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
   if(sel&&vol[sel.un]){const k=.5+.5*Math.sin(clock.elapsedTime*3.2);vol[sel.un].material.opacity=.55+.3*k;}
-  C.update();if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);});
+  C.update();if(cidade.on&&!cidade.ok&&++cidade.espera>1200){desligarCidade();}
+  if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);});
 window.__v={selecionar,irModo,cam,C,R,S,cidade,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
 </script>
 </body></html>
