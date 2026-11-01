@@ -526,10 +526,10 @@ const BUSCAS=[
   {cat:'padaria',tipos:['bakery'],aceita:['bakery'],max:5},
   {cat:'mercado',tipos:['supermarket','grocery_store'],aceita:['supermarket','grocery_store','hypermarket'],max:5},
   {cat:'farmacia',tipos:['pharmacy','drugstore'],aceita:['pharmacy','drugstore'],max:5},
-  {cat:'banco',tipos:['bank'],aceita:['bank'],max:6},
+  {cat:'banco',tipos:['bank'],aceita:['bank'],max:6,so:/banco|ita[uú]|bradesco|caixa|santander|sicredi|sicoob|nubank|inter\b|safra|btg/i},
   {cat:'academia',tipos:['gym','fitness_center'],aceita:['gym','fitness_center'],max:5},
   {cat:'escola',tipos:['primary_school','secondary_school','school','preschool'],aceita:['primary_school','secondary_school','school','preschool'],max:6,fora:/idioma|ingl|petz|treinament|m[uú]sica|dan[cç]a|curso|auto ?escola|cfc|nata[cç]/i},
-  {cat:'shopping',tipos:['shopping_mall'],aceita:['shopping_mall'],max:3},
+  {cat:'shopping',tipos:['shopping_mall'],aceita:['shopping_mall'],max:3,so:/shopping|mall|boulevard|center|galeria/i},
   {cat:'restaurante',tipos:['restaurant'],aceita:null,max:6},
   {cat:'praca',tipos:['park'],aceita:['park','plaza'],max:4},
   {cat:'feira',texto:'feira livre',max:4}
@@ -543,7 +543,7 @@ async function buscarPois(){
         :{includedTypes:b.tipos,maxResultCount:20,rankPreference:'POPULARITY',languageCode:'pt-BR',locationRestriction:{circle:{center:c,radius:RAIO}}};
       const r=await fetch('https://places.googleapis.com/v1/places:'+(b.texto?'searchText':'searchNearby'),{method:'POST',headers:H,body:JSON.stringify(body)});
       const j=await r.json();
-      return (j.places||[]).filter(p=>(!b.aceita||b.aceita.includes(p.primaryType))&&!(b.fora&&b.fora.test(p.displayName?.text||''))&&!/exclu[ií]d/i.test(p.displayName?.text||''))
+      return (j.places||[]).filter(p=>(!b.aceita||b.aceita.includes(p.primaryType))&&!(b.fora&&b.fora.test(p.displayName?.text||''))&&(!b.so||b.so.test(p.displayName?.text||''))&&!/exclu[ií]d/i.test(p.displayName?.text||''))
         .map(p=>({id:p.id,nome:(p.displayName?.text||'').split(/ [-–|] /)[0],cat:b.cat,lat:p.location.latitude,lon:p.location.longitude}))
         .filter(p=>Math.hypot((p.lat-c.latitude)*110780,(p.lon-c.longitude)*101700)<=RAIO).slice(0,b.max);
     }catch(e){console.warn('comércios:',e);return [];}
