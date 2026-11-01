@@ -605,6 +605,7 @@ function desenharPois(){
 }
 $('#arredores').onclick=()=>{
   const on=document.body.classList.toggle('arr-on');$('#arredores').setAttribute('aria-pressed',on);
+  if(!on&&!explorando&&!sel)C.autoRotate=true;
   if(on&&!poiLista){poiLista=[];$('#legpoi').innerHTML='<span>Buscando comércios no Google…</span>';buscarPois().then(l=>{poiLista=l;criarPois(l);});}
   if(on&&!explorando&&!sel){ /* afasta a câmera para caber o entorno */
     const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=innerWidth<900?1700:1250;
