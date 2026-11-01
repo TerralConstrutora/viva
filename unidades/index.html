@@ -273,10 +273,15 @@ function recortar(mat){
   mat.toneMapped=false;
   mat.onBeforeCompile=sh=>{
     sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;sh.uniforms.cR=cidade.cR;sh.uniforms.cPod={value:new THREE.Vector4(PODIO.x0,PODIO.x1,PODIO.z0,PODIO.z1)};sh.uniforms.cOut={value:new THREE.Vector4(ENTORNO.x0,ENTORNO.x1,ENTORNO.z0,ENTORNO.z1)};
-    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
-      .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
+    /* em vez de recortar (o que deixava buracos com o céu aparecendo), achata no chão o que o Google tem no terreno e nas ruas em volta */
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform vec4 cOut;uniform float cY;')
+      .replace('#include <project_vertex>',`#include <project_vertex>
+        vec4 cw=modelMatrix*vec4(transformed,1.0);
+        if(cw.x>cLote.x&&cw.x<cLote.y&&cw.z>cLote.z&&cw.z<cLote.w)cw.y=min(cw.y,cY-0.05);
+        else if(cw.x>cOut.x&&cw.x<cOut.y&&cw.z>cOut.z&&cw.z<cOut.w)cw.y=min(cw.y,cY+0.05);
+        vCw=cw.xyz;mvPosition=viewMatrix*cw;gl_Position=projectionMatrix*mvPosition;`);
     sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform float cR;uniform vec4 cPod;uniform vec4 cOut;uniform float cY;')
-      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cPod.x&&vCw.x<cPod.y&&vCw.z>cPod.z&&vCw.z<cPod.w&&vCw.y>cY+0.15)discard;\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY+1.0)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+1.8)discard;\nif(distance(vCw,cameraPosition)<cR)discard;');
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(distance(vCw,cameraPosition)<cR)discard;');
   };
   mat.customProgramCacheKey=()=>'cid';
 }
