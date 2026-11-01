@@ -628,7 +628,7 @@ function alternarExplorar(){
     C.mouseButtons={LEFT:THREE.MOUSE.ROTATE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN};C.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
     if(cidade.cR)cidade.cR.value=38;enquadrar();
     $('#ajuda').textContent='Arraste para girar · role ou use dois dedos para aproximar';setTimeout(()=>{if(!explorando)$('#ajuda').style.opacity=0;},2500);
-    if(salvo){anim={t:0,p0:cam.position.clone(),p1:salvo.p,a0:C.target.clone(),a1:salvo.t};C.autoRotate=salvo.auto&&!sel;}
+    if(salvo){anim={t:0,p0:cam.position.clone(),p1:salvo.p,a0:C.target.clone(),a1:salvo.t};C.autoRotate=!sel;}
   }
 }
 $('#explorar').onclick=alternarExplorar;
