@@ -571,8 +571,8 @@ function desenharPois(){
 $('#arredores').onclick=()=>{
   const on=document.body.classList.toggle('arr-on');$('#arredores').setAttribute('aria-pressed',on);
   if(on&&!explorando&&!sel){ /* afasta a câmera para caber o entorno */
-    const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=Math.max(dir.length(),innerWidth<900?420:330);
-    dir.setLength(d);if(dir.y<d*0.55)dir.y=d*0.55;C.maxDistance=Math.max(C.maxDistance,d+50);
+    const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=innerWidth<900?1100:850;
+    dir.y=0;dir.setLength(d*0.6);dir.y=d*0.8;C.maxDistance=Math.max(C.maxDistance,1300);
     anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.setLength(d)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
   }
 };
