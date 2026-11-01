@@ -303,7 +303,7 @@ const GOOGLE_KEY='AIzaSyCcCc0FER2QaBxxLFmznfa2n5bCwXoSzWk'; /* chave da Map Tile
 const GEO={lat:+(QS.get('lat')||-24.012568),lon:+(QS.get('lon')||-46.420496),rot:+(QS.get('rot')||161),ax:6,az:21.1,dy:+(QS.get('dy')||0)};
 const LOTE={x0:-49.5,x1:12,z0:-5.5,z1:29.2}; /* calçadas do modelo */
 const PODIO={x0:-43.2,x1:6.2,z0:-7.4,z1:21.3}; /* área coberta pelo prédio */
-const ENTORNO={x0:-55,x1:22,z0:-5.5,z1:36}; /* ruas em volta: tira só árvores e o que passa de 1,8 m (o chão fica) */ /* o que o Google mostra dentro do terreno é escondido */
+const ENTORNO={x0:-49.5,x1:22,z0:-5.5,z1:32}; /* ruas em volta: tira só árvores e o que passa de 1,8 m (o chão fica) */ /* o que o Google mostra dentro do terreno é escondido */
 const cidade={on:false,tiles:null,geo:null};
 function recortar(mat){
   mat.toneMapped=false;
@@ -706,7 +706,7 @@ function abrirAmbiente(i){
 }
 function modoLazer(on){
   if(on===lazerOn)return;lazerOn=on;document.body.classList.toggle('m-lazer',on);
-  R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=on;if(grupo)grupo.visible=!on;
+  R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=false; /* o modelo já tem as paredes do lazer */if(grupo)grupo.visible=!on;
   $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
   if(on){
     if(document.body.classList.contains('arr-on'))$('#arredores').click();
