@@ -121,6 +121,13 @@ button,input,select{font:inherit;color:inherit}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 .aba{display:none}
+.explorar{position:fixed;right:max(22px,env(safe-area-inset-right,0px));bottom:64px;z-index:6;display:flex;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:999px;padding:10px 16px;color:var(--ink);font:600 12.5px/1 var(--f);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.explorar[hidden]{display:none}
+.explorar:hover{border-color:rgba(243,239,232,.5)}
+body.explorando .explorar{background:#c97b63;border-color:#c97b63;color:#fff}
+body.explorando .painel,body.explorando .det,body.explorando .hero,body.explorando .leg,body.explorando #tip{opacity:0!important;pointer-events:none!important}
+body.explorando .ajuda{opacity:1!important}
+@media (max-width:900px){.explorar{right:auto;left:12px;bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:9px 13px;font-size:12px}}
 @media (max-width:900px){
   .painel{left:auto;right:0;top:calc(60px + env(safe-area-inset-top,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));height:auto;width:min(44vw,180px);border-radius:12px 0 0 12px;border-right:0}
   .painel.recolhida{transform:translateX(100%)}
@@ -180,6 +187,7 @@ button,input,select{font:inherit;color:inherit}
 
 <aside class="det" id="det" hidden aria-live="polite"></aside>
 <div class="leg" id="leg"><span><i style="background:var(--ok)"></i>Disponível</span><span><i style="background:var(--res)"></i>Reservado</span><span><i style="background:var(--vend)"></i>Vendido</span></div>
+<button class="explorar" id="explorar" hidden><span class="ic">🧭</span><span id="explorarTxt">Explorar a cidade</span></button>
 <div class="creditos" id="creditos" hidden><b>Google</b><span id="credTxt"></span></div>
 <div class="ajuda" id="ajuda">Arraste para girar · role ou use dois dedos para aproximar</div>
 <div class="tip" id="tip"></div>
@@ -241,11 +249,11 @@ const cidade={on:false,tiles:null,geo:null};
 function recortar(mat){
   mat.toneMapped=false;
   mat.onBeforeCompile=sh=>{
-    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;sh.uniforms.cPod={value:new THREE.Vector4(PODIO.x0,PODIO.x1,PODIO.z0,PODIO.z1)};sh.uniforms.cOut={value:new THREE.Vector4(ENTORNO.x0,ENTORNO.x1,ENTORNO.z0,ENTORNO.z1)};
+    sh.uniforms.cLote={value:new THREE.Vector4(LOTE.x0,LOTE.x1,LOTE.z0,LOTE.z1)};sh.uniforms.cY=cidade.cY;sh.uniforms.cR=cidade.cR;sh.uniforms.cPod={value:new THREE.Vector4(PODIO.x0,PODIO.x1,PODIO.z0,PODIO.z1)};sh.uniforms.cOut={value:new THREE.Vector4(ENTORNO.x0,ENTORNO.x1,ENTORNO.z0,ENTORNO.z1)};
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;')
       .replace('#include <begin_vertex>','#include <begin_vertex>\nvCw=(modelMatrix*vec4(transformed,1.0)).xyz;');
-    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform vec4 cPod;uniform vec4 cOut;uniform float cY;')
-      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cPod.x&&vCw.x<cPod.y&&vCw.z>cPod.z&&vCw.z<cPod.w&&vCw.y>cY+0.15)discard;\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY+1.0)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+1.8)discard;\nif(distance(vCw,cameraPosition)<38.0)discard;');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vCw;uniform vec4 cLote;uniform float cR;uniform vec4 cPod;uniform vec4 cOut;uniform float cY;')
+      .replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif(vCw.x>cPod.x&&vCw.x<cPod.y&&vCw.z>cPod.z&&vCw.z<cPod.w&&vCw.y>cY+0.15)discard;\nif(vCw.x>cLote.x&&vCw.x<cLote.y&&vCw.z>cLote.z&&vCw.z<cLote.w&&vCw.y>cY+1.0)discard;\nif(vCw.x>cOut.x&&vCw.x<cOut.y&&vCw.z>cOut.z&&vCw.z<cOut.w&&vCw.y>cY+1.8)discard;\nif(distance(vCw,cameraPosition)<cR)discard;');
   };
   mat.customProgramCacheKey=()=>'cid';
 }
@@ -261,7 +269,7 @@ async function iniciarCidade(yChao){
     t.errorTarget=innerWidth<900||LEVE?24:14;
     const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+0.93+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
     t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
-    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+0.93}});
+    Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+0.93},cR:{value:38}});
     t.addEventListener('load-model',({scene})=>scene.traverse(n=>{if(n.isMesh){recortar(n.material);n.castShadow=n.receiveShadow=false;}}));
     t.addEventListener('load-root-tileset',()=>{cidade.ok=true;});
     t.addEventListener('load-error',e=>{console.warn('cidade:',e.error);if(!cidade.ok)desligarCidade();});
@@ -269,7 +277,7 @@ async function iniciarCidade(yChao){
     const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x4f4d4a,roughness:.95}));
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
-    $('#creditos').hidden=false;
+    $('#creditos').hidden=false;$('#explorar').hidden=false;
     if(innerWidth<=900&&!sel&&!anim){cam.position.copy(C.target).add(new THREE.Vector3(190,120,60));C.update();}
     nivelar();
   }catch(e){console.warn('cidade:',e);desligarCidade();}
@@ -278,7 +286,7 @@ function desligarCidade(){
   if(cidade.piso)cidade.piso.removeFromParent();
   if(cidade.geo){cidade.geo.removeFromParent();try{cidade.tiles.dispose();}catch(_){}}
   Object.assign(cidade,{on:false,tiles:null,geo:null});
-  chao.visible=true;S.fog.near=160;S.fog.far=900;S.fog.color.set(0xe4ebef);cam.near=.5;cam.far=2000;cam.updateProjectionMatrix();C.maxDistance=260;C.maxPolarAngle=Math.PI*0.495;$('#creditos').hidden=true;
+  chao.visible=true;S.fog.near=160;S.fog.far=900;S.fog.color.set(0xe4ebef);cam.near=.5;cam.far=2000;cam.updateProjectionMatrix();C.maxDistance=260;C.maxPolarAngle=Math.PI*0.495;$('#creditos').hidden=true;if(explorando)alternarExplorar();$('#explorar').hidden=true;
 }
 /* acerta a altura do chão do Google com a calçada do modelo (mede em pontos da rua, fora do terreno) */
 let nivelN=0;
@@ -469,17 +477,37 @@ const ray=new THREE.Raycaster();const mouse=new THREE.Vector2();let grupo=null;
 function pick(ev){if(!grupo)return null;const r=R.domElement.getBoundingClientRect();mouse.set((ev.clientX-r.left)/r.width*2-1,-(ev.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,cam);
   const hits=ray.intersectObjects(grupo.children,false).filter(h=>passa(h.object.userData.u));return hits[0]?.object.userData.u||null;}
 let hov=null;
-R.domElement.addEventListener('pointermove',ev=>{if(modo!=='aptos'||ev.pointerType==='touch')return;const u=pick(ev);const t=$('#tip');
+R.domElement.addEventListener('pointermove',ev=>{if(modo!=='aptos'||explorando||ev.pointerType==='touch')return;const u=pick(ev);const t=$('#tip');
   if(hov&&hov!==u&&(!sel||hov.un!==sel.un)){pintar();}
   hov=u;if(u){const me=vol[u.un];if(!sel||sel.un!==u.un){me.material.opacity=.22;me.material.color.set(0xffffff);me.userData.ed.material.opacity=.9;me.userData.ed.material.color.set(0xffffff);}
     t.style.display='block';t.style.left=ev.clientX+'px';t.style.top=ev.clientY+'px';t.innerHTML=`<b>Apto ${u.un}</b> · ${u.andar}º andar · ${STL[u.status]}`;R.domElement.style.cursor='pointer';}
   else{t.style.display='none';R.domElement.style.cursor='';}});
+/* ---------- explorar a cidade livremente (botão) ---------- */
+let explorando=false,salvo=null;
+function alternarExplorar(){
+  explorando=!explorando;document.body.classList.toggle('explorando',explorando);
+  $('#explorarTxt').textContent=explorando?'Voltar ao Vivá':'Explorar a cidade';
+  if(explorando){
+    salvo={p:cam.position.clone(),t:C.target.clone(),auto:C.autoRotate};anim=null;
+    C.autoRotate=false;C.enablePan=true;C.screenSpacePanning=false;C.zoomToCursor=true;C.minDistance=8;C.maxDistance=3500;C.maxPolarAngle=Math.PI*0.48;
+    C.mouseButtons={LEFT:THREE.MOUSE.PAN,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.ROTATE};C.touches={ONE:THREE.TOUCH.PAN,TWO:THREE.TOUCH.DOLLY_ROTATE};
+    if(cidade.cR)cidade.cR.value=0;cam.clearViewOffset();cam.updateProjectionMatrix();
+    $('#ajuda').textContent=innerWidth<900?'Arraste para andar · dois dedos para girar e aproximar':'Arraste para andar · botão direito para girar · role para aproximar';$('#ajuda').style.opacity=1;
+  }else{
+    C.enablePan=false;C.zoomToCursor=false;C.minDistance=25;C.maxDistance=cidade.on?650:260;C.maxPolarAngle=cidade.on?Math.PI*0.42:Math.PI*0.495;
+    C.mouseButtons={LEFT:THREE.MOUSE.ROTATE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN};C.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+    if(cidade.cR)cidade.cR.value=38;enquadrar();
+    $('#ajuda').textContent='Arraste para girar · role ou use dois dedos para aproximar';setTimeout(()=>{if(!explorando)$('#ajuda').style.opacity=0;},2500);
+    if(salvo){anim={t:0,p0:cam.position.clone(),p1:salvo.p,a0:C.target.clone(),a1:salvo.t};C.autoRotate=salvo.auto&&!sel;}
+  }
+}
+$('#explorar').onclick=alternarExplorar;
 let down=null;R.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];$('#ajuda').style.opacity=0;});
-R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;if(modo!=='aptos')return;const u=pick(e);if(u)selecionar(u.un,false);});
+R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;if(modo!=='aptos'||explorando)return;const u=pick(e);if(u)selecionar(u.un,false);});
 
 /* ---------- modos ---------- */
 let modo='inicio';
-function irModo(m){if(m==='obra')return;modo=m;document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
+function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
   $('#hero').style.opacity=m==='inicio'?1:0;$('#hero').style.pointerEvents=m==='inicio'?'':'none';
   $('#painel').hidden=m!=='aptos';$('#leg').style.display=m==='aptos'&&innerWidth>900?'':'none';
   modoSituacao=m==='aptos';enquadrar();document.body.classList.toggle('det-aberto',false);if(m==='inicio'){sel=null;$('#det').hidden=true;C.autoRotate=true;}pintar();
