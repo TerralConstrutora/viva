@@ -823,16 +823,17 @@ L.load('viva.glb',g=>{
   /* térreo com as cores dos renders: vitrines de vidro, paredes em pedra, calçada e pisos em placas cinza-claro, grama verde e gradil/portão da guarita em madeira */
   {const yb=new THREE.Box3().setFromObject(o).min.y,bb=new THREE.Box3();
    TX.calcada=tex('tex/calcada.jpg');
-   const calc=triplanar(new THREE.MeshStandardMaterial({roughness:.9,metalness:0,envMapIntensity:.7}),TX.calcada,2.0,0xffffff);calc.name='calcadaT';
+   const calc=triplanar(new THREE.MeshStandardMaterial({roughness:.9,metalness:0,envMapIntensity:.7}),TX.calcada,2.0,0xb4afa7);calc.name='calcadaT';
    const vit=new THREE.MeshPhysicalMaterial({color:0x4d5c64,roughness:.05,metalness:.3,clearcoat:1,envMapIntensity:1.7,side:THREE.DoubleSide});vit.name='vitrine';
    const pedra=ajustar({name:'brick'}),mad=ajustar({name:'deck'});let cont={};
    o.traverse(n=>{if(!n.isMesh)return;bb.setFromObject(n);if(bb.min.y>yb+6.3)return;
      const k=n.material.name,nm=n.name,h=bb.max.y-bb.min.y,sx=bb.max.x-bb.min.x,sz=bb.max.z-bb.min.z;let m=null;
-     if(/ESQUADRIA/.test(nm)&&k==='branco'&&h>1.5&&Math.min(sx,sz)<0.3&&bb.max.y<yb+6.5)m=vit;
-     else if(/^(ARQ_PAREDE|Obj_ARQ_PAREDE_1|Obj_ARQ_PAREDE_2_[123]|Box28802)$/.test(nm))m=pedra;
-     else if(/GRAMA/.test(nm))m=M.verde;
+     if(/^Obj_ARQ_ESQUADRIA_8_[12]$/.test(nm))m=pedra;
+     else if(/ESQUADRIA/.test(nm)&&k==='branco'&&h>1.5&&Math.min(sx,sz)<0.3&&bb.max.y<yb+6.5)m=vit;
+     else if(/^(ARQ_PAREDE|ARQ_PAREDE_INT|Obj_ARQ_PAREDE_1|Obj_ARQ_PAREDE_2_[123]|Box28802)$/.test(nm))m=pedra;
+     else if(/GRAMA/.test(nm)){m=M.verde;M.verde.name=M.verde.name||'grama';}
      else if(/^(ARQ_CALCADA|ARQ_PSIO|Obj_ARQ_PSIO|Obj_ARQ_PISO|ARQ_ESCADA|Obj_ARQ_ESCADA|ARQ_RAMPA|ARQ_VAGA|Rejunte_|Piso_Restaurante|LOJA|Line100|Object4109|Object38[0-4]\d)/.test(nm)&&k!=='alu'||nm==='Piso_Restaurante')m=calc;
-     else if(/^Box3(06[2-7]\d|225[7-9]|226\d)/.test(nm)||nm==='ARQ_PERGOLADO'||(/GRADIL/.test(nm)&&bb.min.x>3&&h>2))m=mad;
+     else if(/^(Box306[2-7]\d|Box32257(_\d)?|Box3226[012])$/.test(nm)||nm==='ARQ_PERGOLADO'||(/GRADIL/.test(nm)&&bb.min.x>3&&h>2))m=mad;
      if(m){n.material=m;cont[m.name]=(cont[m.name]||0)+1;}});
    console.log('térreo',cont);}
   S.add(o);modeloFachada=o;grupo=grupoUnidades();pintar();
