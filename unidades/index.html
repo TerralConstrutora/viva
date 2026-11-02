@@ -716,7 +716,11 @@ function carregarLazer(){
     o.traverse(n=>{if(!n.isMesh)return;
       const ms=Array.isArray(n.material)?n.material:[n.material];
       ms.forEach(m=>{ if(m.transmission>0){m.transmission=0;m.transparent=true;m.opacity=.35;m.roughness=.05;m.depthWrite=false;}
-        if(m.map)m.map.anisotropy=8; m.envMapIntensity=.9; });
+        if(m.map)m.map.anisotropy=8; m.envMapIntensity=.9;
+        const nm=m.name||'';
+        if(/^Water/i.test(nm)){m.color.set(0x2f9fc4);m.transparent=true;m.opacity=.85;m.roughness=.05;m.metalness=0;m.transmission=0;}
+        if(/Tiles_Pool/i.test(nm)&&!m.map)m.color.set(0x3e86a8);
+        if(/^Walnut_Floor/i.test(nm)&&!m.map)m.color.set(0x7a5235); });
       n.castShadow=R.shadowMap.enabled;n.receiveShadow=R.shadowMap.enabled;});
     o.visible=lazerOn;S.add(o);lazer3d=o;
     corteLazer.constant=Y_LAZER-0.15; /* esconde o lazer simplificado da fachada; fica o completo */
