@@ -819,7 +819,17 @@ L.load('viva.glb',g=>{
    const bb=new THREE.Box3(),yl=16.00+OFF;let nv=0;
    o.traverse(n=>{if(!n.isMesh)return;const k=n.material.name;if(k!=='brick'&&k!=='marrom')return;bb.setFromObject(n);
      if(bb.min.y>=yl-0.6&&bb.max.y<=yl+3.2&&bb.max.y-bb.min.y>=0.5){n.material=vid;n.castShadow=false;nv++;}});
-   console.log('vidros do lazer',nv);}
+   console.log('vidros do lazer',nv);
+   /* o pedaço dessas paredes que fica dentro do pilar marrom da esquina continua pedra */
+   const pil=new THREE.Box3();o.traverse(n=>{if(n.isMesh&&n.name==='Box32263')pil.setFromObject(n);});
+   if(!pil.isEmpty()){pil.expandByScalar(0.12);const pm=ajustar({name:'brick'}),vs=[],c=new THREE.Vector3(),A=new THREE.Vector3(),B=new THREE.Vector3(),Cc=new THREE.Vector3();
+    o.traverse(n=>{if(n.isMesh&&n.material===vid)vs.push(n);});
+    for(const n of vs){const g=n.geometry.index?n.geometry.toNonIndexed():n.geometry.clone();const p=g.attributes.position,keep=[],mv=[];
+      for(let i=0;i<p.count;i+=3){A.fromBufferAttribute(p,i).applyMatrix4(n.matrixWorld);B.fromBufferAttribute(p,i+1).applyMatrix4(n.matrixWorld);Cc.fromBufferAttribute(p,i+2).applyMatrix4(n.matrixWorld);
+        c.copy(A).add(B).add(Cc).divideScalar(3);(pil.containsPoint(c)?mv:keep).push(i);}
+      if(!mv.length)continue;
+      const gs=['getX','getY','getZ','getW'];const sub=idx=>{const ng=new THREE.BufferGeometry();for(const k in g.attributes){const at=g.attributes[k],is=at.itemSize,arr=new Float32Array(idx.length*3*is);idx.forEach((i,j)=>{for(let v=0;v<3;v++)for(let t=0;t<is;t++)arr[(j*3+v)*is+t]=at[gs[t]](i+v);});ng.setAttribute(k,new THREE.BufferAttribute(arr,is));}return ng;};
+      n.geometry=sub(keep);const pe=new THREE.Mesh(sub(mv),pm);pe.name=n.name+'_pilar';pe.position.copy(n.position);pe.quaternion.copy(n.quaternion);pe.scale.copy(n.scale);n.parent.add(pe);}}}
   /* térreo com as cores dos renders: vitrines de vidro, paredes em pedra, calçada e pisos em placas cinza-claro, grama verde e gradil/portão da guarita em madeira */
   {const yb=new THREE.Box3().setFromObject(o).min.y,bb=new THREE.Box3();
    TX.calcada=tex('tex/calcada.jpg');
