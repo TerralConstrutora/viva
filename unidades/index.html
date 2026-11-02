@@ -661,18 +661,18 @@ const Y_LAZER=16.00+OFF; /* nível +16,00 */
 const pl2m=(px,py)=>[(px-1150)/19.6+7.28,(py-70)/19.6-7.3];
 const P19=(x,y)=>pl2m(x*1700/1906,y*1700/1906); /* pontos da legenda da prancha (base 1906 px) */
 const LAZER=[
-  {n:'Piscina',a:'Piscina adulto de 55,98 m², piscina infantil de 8,77 m², prainha e hidromassagem.',p:P19(360,230),img:['piscina']},
-  {n:'Deck e convivência',a:'Deck da piscina (64,96 m²) e área coberta de recreação (55,35 m²) com mesas.',p:P19(600,420),img:['convivencia']},
-  {n:'Academia',a:'38,61 m², com vista para a piscina.',p:P19(685,330),img:['academia']},
-  {n:'Sauna',a:'5,80 m².',p:P19(790,400),img:['sauna']},
-  {n:'Espaço video game/Netflix',a:'31,84 m².',p:P19(825,300),img:['cinema']},
-  {n:'Espaço Care',a:'Duas salas: feminina e masculina (4,32 m² cada).',p:pl2m(835+15,348),img:['care-feminino','care-masculino']},
-  {n:'Home working',a:'Escritório compartilhado de 21,65 m².',p:P19(940,320),img:['home-office']},
-  {n:'Salão de jogos',a:'83,49 m², com terraço de jogos de 11,95 m².',p:P19(1110,330),img:['jogos']},
-  {n:'Brinquedoteca',a:'12,57 m².',p:P19(1155,447),img:['brinquedoteca']},
-  {n:'Salão de festas',a:'77,12 m², com terraço de festas de 11,95 m².',p:P19(1110,540),img:['festas-1','festas-2']},
-  {n:'Espaço gourmet/friends',a:'23,69 m².',p:P19(1035,625),img:['gourmet']},
-  {n:'Espaço grill/pizza',a:'32,85 m².',p:P19(855,570),img:['grill']}
+  {n:'Piscina',a:'Piscina adulto, piscina infantil, prainha e hidromassagem.',p:P19(360,230),img:['piscina']},
+  {n:'Deck e convivência',a:'Deck da piscina e área coberta de recreação com mesas.',p:P19(600,420),img:['convivencia']},
+  {n:'Academia',a:'Com vista para a piscina.',p:P19(685,330),img:['academia']},
+  {n:'Sauna',a:'Sauna do condomínio.',p:P19(790,400),img:['sauna']},
+  {n:'Espaço video game/Netflix',a:'Sala de cinema e games.',p:P19(825,300),img:['cinema']},
+  {n:'Espaço Care',a:'Duas salas: feminina e masculina.',p:pl2m(835+15,348),img:['care-feminino','care-masculino']},
+  {n:'Home working',a:'Escritório compartilhado.',p:P19(940,320),img:['home-office']},
+  {n:'Salão de jogos',a:'Com terraço de jogos.',p:P19(1110,330),img:['jogos']},
+  {n:'Brinquedoteca',a:'Espaço para as crianças.',p:P19(1155,447),img:['brinquedoteca']},
+  {n:'Salão de festas',a:'Com terraço de festas.',p:P19(1110,540),img:['festas-1','festas-2']},
+  {n:'Espaço gourmet/friends',a:'Cozinha e bancada para receber os amigos.',p:P19(1035,625),img:['gourmet']},
+  {n:'Espaço grill/pizza',a:'Churrasqueira e forno de pizza.',p:P19(855,570),img:['grill']}
 ];
 let lazerOn=false,lzSel=-1,lzFoto=0,planoLazer=null;const corteLazer=new THREE.Plane(new THREE.Vector3(0,-1,0),Y_LAZER+2.6);
 function prepararLazer(o){
