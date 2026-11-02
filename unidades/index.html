@@ -707,7 +707,9 @@ function abrirAmbiente(i){
   const d=innerWidth<900?60:48;anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.multiplyScalar(d*0.55)).add(new THREE.Vector3(0,d*0.85,0)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
 }
 /* 3D completo do lazer (móveis e acabamentos), exportado do Humanizada_Lazer; carrega só quando o modo é aberto */
-let lazer3d=null,lazerCarregando=false,modeloFachada=null,dupLazer=[];
+let lazer3d=null,lazerCarregando=false,modeloFachada=null,dupLazer=[],pisosLazer=[];
+const PISO_LAZER=-50.08; /* nível dos pisos no arquivo do lazer completo */
+function aplicarPisos(on){pisosLazer.forEach(n=>{const d=n.userData.dyLazer;if(on&&!n.userData.subiu){n.position.y+=d;n.userData.subiu=true;n.updateMatrixWorld();}else if(!on&&n.userData.subiu){n.position.y-=d;n.userData.subiu=false;n.updateMatrixWorld();}});}
 function carregarLazer(){
   if(lazer3d||lazerCarregando)return;lazerCarregando=true;
   const av=document.createElement('div');av.className='lz-aviso';av.id='lzAviso';av.innerHTML='Carregando o lazer em 3D… <b id="lzPct">0%</b>';document.body.appendChild(av);
@@ -727,8 +729,11 @@ function carregarLazer(){
        guarda-corpos, vidros, esquadrias de alumínio, cobogó e pedra continuam */
     if(modeloFachada){const fica=['guarda','vidro','alu','cobogo','brick','marrom','pedra','calcada'];const bb=new THREE.Box3();
       modeloFachada.traverse(n=>{if(!n.isMesh)return;bb.setFromObject(n);
-        if(bb.min.y>Y_LAZER-0.35&&bb.max.y<Y_LAZER+3.0&&!fica.includes(n.material.name))dupLazer.push(n);});}
-    dupLazer.forEach(n=>n.visible=!lazerOn);
+        if(bb.min.y>Y_LAZER-0.35&&bb.max.y<Y_LAZER+3.0&&!fica.includes(n.material.name)){
+          /* pisos (peças planas) da fachada não somem: sobem para o nível do piso do lazer completo e fecham os vãos */
+          if(bb.max.y-bb.min.y<0.08&&!n.isInstancedMesh){n.userData.dyLazer=(PISO_LAZER-0.02)-bb.max.y;pisosLazer.push(n);}
+          else dupLazer.push(n);}});}
+    dupLazer.forEach(n=>n.visible=!lazerOn);aplicarPisos(lazerOn);
     av.remove();
   },x=>{const e=$('#lzPct');if(e&&x.total)e.textContent=Math.round(x.loaded/x.total*100)+'%';},e=>{console.warn('lazer',e);av.remove();lazerCarregando=false;});
 }
@@ -736,7 +741,7 @@ function modoLazer(on){
   if(on===lazerOn)return;lazerOn=on;document.body.classList.toggle('m-lazer',on);
   R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=false; /* o modelo já tem as paredes do lazer */if(grupo)grupo.visible=!on;
   $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
-  if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);
+  if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);aplicarPisos(on);
   if(on){
     carregarLazer();
     if(document.body.classList.contains('arr-on'))$('#arredores').click();
