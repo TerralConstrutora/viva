@@ -708,7 +708,7 @@ function abrirAmbiente(i){
 }
 /* 3D completo do lazer (móveis e acabamentos), exportado do Humanizada_Lazer; carrega só quando o modo é aberto */
 let lazer3d=null,lazerCarregando=false,modeloFachada=null,dupLazer=[],pisosLazer=[];
-const PISO_LAZER=-50.08; /* nível dos pisos no arquivo do lazer completo */
+const PISO_LAZER=-50.30; /* nível dos pisos no arquivo do lazer completo */
 function aplicarPisos(on){pisosLazer.forEach(n=>{const d=n.userData.dyLazer;if(on&&!n.userData.subiu){n.position.y+=d;n.userData.subiu=true;n.updateMatrixWorld();}else if(!on&&n.userData.subiu){n.position.y-=d;n.userData.subiu=false;n.updateMatrixWorld();}});}
 function carregarLazer(){
   if(lazer3d||lazerCarregando)return;lazerCarregando=true;
