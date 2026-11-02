@@ -804,7 +804,7 @@ L.load('viva.glb',g=>{
   {const vid=new THREE.MeshPhysicalMaterial({color:0xa9c9d4,roughness:.05,metalness:.1,transparent:true,opacity:.32,envMapIntensity:1.5,depthWrite:false,side:THREE.DoubleSide});vid.name='vidroLazer';
    const bb=new THREE.Box3(),yl=16.00+OFF;let nv=0;
    o.traverse(n=>{if(!n.isMesh)return;const k=n.material.name;if(k!=='brick'&&k!=='marrom')return;bb.setFromObject(n);
-     if(bb.min.y>=yl-0.35&&bb.max.y<=yl+3.2&&bb.max.y-bb.min.y>=1.0){n.material=vid;n.castShadow=false;nv++;}});
+     if(bb.min.y>=yl-0.6&&bb.max.y<=yl+3.2&&bb.max.y-bb.min.y>=0.5){n.material=vid;n.castShadow=false;nv++;}});
    console.log('vidros do lazer',nv);}
   S.add(o);modeloFachada=o;grupo=grupoUnidades();pintar();
   const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
