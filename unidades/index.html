@@ -708,7 +708,7 @@ function abrirAmbiente(i){
 }
 /* 3D completo do lazer (móveis e acabamentos), exportado do Humanizada_Lazer; carrega só quando o modo é aberto */
 let lazer3d=null,lazerCarregando=false,modeloFachada=null,dupLazer=[],pisosLazer=[];
-const PISO_LAZER=-50.30; /* nível dos pisos no arquivo do lazer completo */
+const PISO_LAZER=-50.16; /* nível dos pisos no arquivo do lazer completo */
 function aplicarPisos(on){pisosLazer.forEach(n=>{const d=n.userData.dyLazer;if(on&&!n.userData.subiu){n.position.y+=d;n.userData.subiu=true;n.updateMatrixWorld();}else if(!on&&n.userData.subiu){n.position.y-=d;n.userData.subiu=false;n.updateMatrixWorld();}});}
 function carregarLazer(){
   if(lazer3d||lazerCarregando)return;lazerCarregando=true;
@@ -731,6 +731,7 @@ function carregarLazer(){
      const bb=new THREE.Box3();
      o.traverse(n=>{if(!n.isMesh)return;bb.setFromObject(n);if(bb.max.z>16&&bb.min.x<-7&&bb.max.x>-24){
        n.material=Array.isArray(n.material)?n.material.map(m=>{const c=m.clone();c.clippingPlanes=pls;return c;}):(()=>{const c=n.material.clone();c.clippingPlanes=pls;return c;})();}});}
+    o.traverse(n=>{if(n.name==='Piso_Brinquedoteca001')n.visible=false;}); /* piso retangular que sai pela quina arredondada; o piso da fachada cobre os terraços */
     o.visible=lazerOn;S.add(o);lazer3d=o;
     /* da fachada saem só as peças internas do andar de lazer (piso, paredes, piscina, plantas), que o 3D completo substitui;
        guarda-corpos, vidros, esquadrias de alumínio, cobogó e pedra continuam */
