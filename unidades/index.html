@@ -734,9 +734,10 @@ function carregarLazer(){
     o.visible=lazerOn;S.add(o);lazer3d=o;
     /* da fachada saem só as peças internas do andar de lazer (piso, paredes, piscina, plantas), que o 3D completo substitui;
        guarda-corpos, vidros, esquadrias de alumínio, cobogó e pedra continuam */
-    if(modeloFachada){const fica=['guarda','vidro','alu','cobogo','brick','marrom','pedra','calcada'];const bb=new THREE.Box3();
+    if(modeloFachada){const fica=['guarda','vidro','vidroLazer','alu','cobogo','brick','marrom','pedra','calcada'];const bb=new THREE.Box3();
       modeloFachada.traverse(n=>{if(!n.isMesh)return;bb.setFromObject(n);
-        if(bb.min.y>Y_LAZER-0.35&&bb.max.y<Y_LAZER+3.0&&!fica.includes(n.material.name)){
+        const borda=n.material.name==='branco'&&bb.max.y-bb.min.y>=0.08&&(bb.max.x>5.2||bb.max.z>20.6); /* faixas brancas da fachada em volta dos vidros */
+        if(bb.min.y>Y_LAZER-0.35&&bb.max.y<Y_LAZER+3.0&&!fica.includes(n.material.name)&&!borda){
           /* pisos (peças planas) da fachada não somem: sobem para o nível do piso do lazer completo e fecham os vãos */
           if(bb.max.y-bb.min.y<0.08&&!n.isInstancedMesh&&n.material.name==='branco'){n.userData.dyLazer=(PISO_LAZER-0.02)-bb.max.y;pisosLazer.push(n);}
           else dupLazer.push(n);}});}
