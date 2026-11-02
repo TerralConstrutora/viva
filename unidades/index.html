@@ -707,7 +707,7 @@ function abrirAmbiente(i){
   const d=innerWidth<900?60:48;anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.multiplyScalar(d*0.55)).add(new THREE.Vector3(0,d*0.85,0)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
 }
 /* 3D completo do lazer (móveis e acabamentos), exportado do Humanizada_Lazer; carrega só quando o modo é aberto */
-let lazer3d=null,lazerCarregando=false;
+let lazer3d=null,lazerCarregando=false,modeloFachada=null,dupLazer=[];
 function carregarLazer(){
   if(lazer3d||lazerCarregando)return;lazerCarregando=true;
   const av=document.createElement('div');av.className='lz-aviso';av.id='lzAviso';av.innerHTML='Carregando o lazer em 3D… <b id="lzPct">0%</b>';document.body.appendChild(av);
@@ -716,14 +716,19 @@ function carregarLazer(){
     o.traverse(n=>{if(!n.isMesh)return;
       const ms=Array.isArray(n.material)?n.material:[n.material];
       ms.forEach(m=>{ if(m.transmission>0){m.transmission=0;m.transparent=true;m.opacity=.35;m.roughness=.05;m.depthWrite=false;}
-        if(m.map)m.map.anisotropy=8; m.envMapIntensity=.9;
+        if(m.map)m.map.anisotropy=8; m.envMapIntensity=.9; m.polygonOffset=true;m.polygonOffsetFactor=-1;m.polygonOffsetUnits=-1;
         const nm=m.name||'';
         if(/^Water/i.test(nm)){m.color.set(0x2f9fc4);m.transparent=true;m.opacity=.85;m.roughness=.05;m.metalness=0;m.transmission=0;}
         if(/Tiles_Pool/i.test(nm)&&!m.map)m.color.set(0x3e86a8);
         if(/^Walnut_Floor/i.test(nm)&&!m.map)m.color.set(0x7a5235); });
       n.castShadow=R.shadowMap.enabled;n.receiveShadow=R.shadowMap.enabled;});
     o.visible=lazerOn;S.add(o);lazer3d=o;
-    corteLazer.constant=Y_LAZER-0.15; /* esconde o lazer simplificado da fachada; fica o completo */
+    /* da fachada saem só as peças internas do andar de lazer (piso, paredes, piscina, plantas), que o 3D completo substitui;
+       guarda-corpos, vidros, esquadrias de alumínio, cobogó e pedra continuam */
+    if(modeloFachada){const fica=['guarda','vidro','alu','cobogo','brick','marrom','pedra','calcada'];const bb=new THREE.Box3();
+      modeloFachada.traverse(n=>{if(!n.isMesh)return;bb.setFromObject(n);
+        if(bb.min.y>Y_LAZER-0.35&&bb.max.y<Y_LAZER+3.0&&!fica.includes(n.material.name))dupLazer.push(n);});}
+    dupLazer.forEach(n=>n.visible=!lazerOn);
     av.remove();
   },x=>{const e=$('#lzPct');if(e&&x.total)e.textContent=Math.round(x.loaded/x.total*100)+'%';},e=>{console.warn('lazer',e);av.remove();lazerCarregando=false;});
 }
@@ -731,7 +736,7 @@ function modoLazer(on){
   if(on===lazerOn)return;lazerOn=on;document.body.classList.toggle('m-lazer',on);
   R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=false; /* o modelo já tem as paredes do lazer */if(grupo)grupo.visible=!on;
   $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
-  if(lazer3d)lazer3d.visible=on;
+  if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);
   if(on){
     carregarLazer();
     if(document.body.classList.contains('arr-on'))$('#arredores').click();
@@ -795,7 +800,7 @@ L.load('viva.glb',g=>{
   o.traverse(n=>{if(!n.isMesh)return;const k=n.material.name;if(k!=='vidro'&&!(k==='alu'&&n.name==='Line013'))return;
     const bb=new THREE.Box3().setFromObject(n);if(k==='alu'||bb.max.y-bb.min.y<0.3||bb.min.y>-12)n.material=ajustar({name:'branco'});});
   const pedras=[];o.traverse(n=>{if(n.isMesh&&n.material.name==='brick'){const bb=new THREE.Box3().setFromObject(n);if(bb.min.y<yLazer)pedras.push(bb);}});
-  S.add(o);grupo=grupoUnidades();pintar();
+  S.add(o);modeloFachada=o;grupo=grupoUnidades();pintar();
   const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
   C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();CASA={p:cam.position.clone(),t:C.target.clone()};
   $('#carregando').style.opacity=0;setTimeout(()=>$('#carregando').remove(),700);
