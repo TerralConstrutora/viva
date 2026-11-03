@@ -571,22 +571,7 @@ const BUSCAS=[
   {cat:'feira',texto:'feira livre',max:4}
 ];
 async function buscarPois(){
-  const H={'Content-Type':'application/json','X-Goog-Api-Key':QS.get('gkey')||GOOGLE_KEY,'X-Goog-FieldMask':'places.id,places.displayName,places.location,places.primaryType'};
-  const c={latitude:LOTE_LL[0],longitude:LOTE_LL[1]};const dl=RAIO/110780,dn=RAIO/101700;
-  const res=await Promise.all(BUSCAS.map(async b=>{
-    try{
-      const body=b.texto?{textQuery:b.texto,maxResultCount:10,languageCode:'pt-BR',locationRestriction:{rectangle:{low:{latitude:c.latitude-dl,longitude:c.longitude-dn},high:{latitude:c.latitude+dl,longitude:c.longitude+dn}}}}
-        :{includedTypes:b.tipos,maxResultCount:20,rankPreference:'POPULARITY',languageCode:'pt-BR',locationRestriction:{circle:{center:c,radius:RAIO}}};
-      const r=await fetch('https://places.googleapis.com/v1/places:'+(b.texto?'searchText':'searchNearby'),{method:'POST',headers:H,body:JSON.stringify(body)});
-      const j=await r.json();
-      return (j.places||[]).filter(p=>(!b.aceita||b.aceita.includes(p.primaryType))&&!(b.fora&&b.fora.test(p.displayName?.text||''))&&(!b.so||b.so.test(p.displayName?.text||''))&&!/exclu[ií]d/i.test(p.displayName?.text||''))
-        .map(p=>({id:p.id,nome:(p.displayName?.text||'').split(/ [-–|] /)[0],cat:b.cat,lat:p.location.latitude,lon:p.location.longitude}))
-        .filter(p=>Math.hypot((p.lat-c.latitude)*110780,(p.lon-c.longitude)*101700)<=RAIO).slice(0,b.max);
-    }catch(e){console.warn('comércios:',e);return [];}
-  }));
-  const vistos=new Set();const out=[{nome:'Praia da Guilhermina',cat:'praia',lat:-24.01388,lon:-46.41998}];
-  for(const l of res)for(const p of l){if(vistos.has(p.id))continue;vistos.add(p.id);out.push(p);}
-  return out;
+  try{return await fetch('pois.json?v=1').then(r=>r.json());}catch(e){console.warn('comércios:',e);return [];}
 }
 const LOTE_LL=[-24.01254,-46.42060]; /* centro do terreno, para medir as distâncias */
 function geoParaModelo(lat,lon){
@@ -637,7 +622,7 @@ function desenharPois(){
 $('#arredores').onclick=()=>{
   const on=document.body.classList.toggle('arr-on');$('#arredores').setAttribute('aria-pressed',on);
   if(!on&&!explorando&&!sel)voltarCasa();
-  if(on&&!poiLista){poiLista=[];$('#legpoi').innerHTML='<span>Buscando comércios no Google…</span>';buscarPois().then(l=>{poiLista=l;criarPois(l);});}
+  if(on&&!poiLista){poiLista=[];$('#legpoi').innerHTML='<span>Carregando comércios…</span>';buscarPois().then(l=>{poiLista=l;criarPois(l);});}
   if(on&&!explorando&&!sel){ /* afasta a câmera para caber o entorno */
     const alvo=C.target.clone();const dir=cam.position.clone().sub(alvo);const d=innerWidth<900?1700:1250;
     dir.y=0;dir.setLength(d*0.6);dir.y=d*0.8;C.maxDistance=Math.max(C.maxDistance,1900);
