@@ -91,7 +91,7 @@ button,input,select{font:inherit;color:inherit}
 .leg{position:fixed;right:max(22px,env(safe-area-inset-right,0px));bottom:20px;z-index:3;display:flex;gap:14px;align-items:center;font-size:12px;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:8px 14px;backdrop-filter:blur(10px)}
 .legpoi{display:none!important}
 .leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-.tip{position:fixed;z-index:6;pointer-events:none;background:rgba(243,239,232,.95);color:#16191c;font-size:12.5px;padding:7px 10px;border-radius:4px;transform:translate(-50%,-130%);white-space:nowrap;display:none}
+.tip{position:fixed;z-index:6;pointer-events:none;background:rgba(243,239,232,.95);color:#16191c;font-size:12.5px;padding:7px 10px;border-radius:4px;transform:scale(var(--k,1)) translate(-50%,-130%);transform-origin:0 0;white-space:nowrap;display:none}
 .tip b{font-weight:700}
 .carregando{position:fixed;inset:0;display:grid;place-items:center;z-index:20;background:var(--bg);transition:opacity .6s}
 .carregando div{text-align:center}
@@ -199,6 +199,9 @@ body.explorando .ajuda{opacity:1!important}
 .creditos{position:fixed;left:8px;bottom:6px;z-index:2;display:flex;align-items:center;gap:8px;font:11px/1.3 Arial,sans-serif;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.8);pointer-events:none;max-width:60vw}
 .creditos b{font:500 15px/1 'Product Sans',Arial,sans-serif;letter-spacing:-.2px}
 .logo-link{display:inline-flex;cursor:pointer}
+/* escala única: o layout de 1920x1080 é reproduzido proporcionalmente em qualquer tela de computador */
+.poi,.lz-pin{transform-origin:0 0}
+@media (min-width:901px){.topo,.hero,.painel,.det,.leg,.explorar,.legpoi,.lz-painel,.lz-card,.creditos,.ajuda,.carregando>*{zoom:var(--k,1)}}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -290,7 +293,8 @@ S.fog=new THREE.Fog(0xe4ebef,160,900);
 const sol=new THREE.DirectionalLight(0xfff1dc,2.4);sol.position.set(60,90,-40);sol.castShadow=true;
 sol.shadow.mapSize.set(2048,2048);Object.assign(sol.shadow.camera,{left:-60,right:60,top:60,bottom:-60,near:1,far:300});sol.shadow.bias=-0.0004;
 S.add(sol);S.add(new THREE.HemisphereLight(0xdfe9f3,0x8a7f6c,0.6));
-const cam=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,0.5,2000);
+const cam=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,0.5,2000);const FOV0=32;
+let K=1;function escala(){const w=innerWidth,h=innerHeight;K=w>900?Math.max(.62,Math.min(w/1920,h/1080)):1;document.documentElement.style.setProperty('--k',K);}escala();
 const C=new OrbitControls(cam,R.domElement);C.enableDamping=true;C.dampingFactor=.07;C.maxPolarAngle=Math.PI*0.495;C.minDistance=25;C.maxDistance=260;C.autoRotate=true;C.autoRotateSpeed=0.35;C.enablePan=false;
 
 /* chão e entorno simples */
@@ -614,7 +618,7 @@ function desenharPois(){
     _v.copy(o.p0).project(cam);const x0=(_v.x+1)/2*w,y0=(1-_v.y)/2*h;
     o.el.style.display=o.ln.style.display=o.dot.style.display=vis?'':'none';
     if(!vis)continue;
-    o.el.style.transform=`translate(${x1}px,${y1}px) translate(-50%,-100%)`;
+    o.el.style.transform=`translate(${x1}px,${y1}px) scale(${K}) translate(-50%,-100%)`;
     o.ln.setAttribute('x1',x0);o.ln.setAttribute('y1',y0);o.ln.setAttribute('x2',x1);o.ln.setAttribute('y2',y1);
     o.dot.setAttribute('cx',x0);o.dot.setAttribute('cy',y0);
   }
@@ -741,7 +745,7 @@ const _w=new THREE.Vector3();
 function desenharLazer(){
   if(!lazerOn)return;const w=innerWidth,h=innerHeight;
   document.querySelectorAll('.lz-pin').forEach(b=>{const [x,z]=LAZER[+b.dataset.i].p;_w.set(x,Y_LAZER+1.2,z).project(cam);
-    const vis=_w.z<1&&Math.abs(_w.x)<1.1&&Math.abs(_w.y)<1.1;b.style.display=vis?'':'none';if(vis)b.style.transform=`translate(${(_w.x+1)/2*w}px,${(1-_w.y)/2*h}px) translate(-50%,-50%)`;});
+    const vis=_w.z<1&&Math.abs(_w.x)<1.1&&Math.abs(_w.y)<1.1;b.style.display=vis?'':'none';if(vis)b.style.transform=`translate(${(_w.x+1)/2*w}px,${(1-_w.y)/2*h}px) scale(${K}) translate(-50%,-50%)`;});
 }
 /* ---------- explorar a cidade livremente (botão) ---------- */
 let explorando=false,salvo=null;
@@ -859,7 +863,9 @@ function cobogos(lajes,pedras=[]){
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
   const me=new THREE.Mesh(g,ajustar({name:'branco'}));me.castShadow=me.receiveShadow=R.shadowMap.enabled;S.add(me);
 }
-function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;
+function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;escala();
+  /* mesmo enquadramento em qualquer tela: abaixo de 16:9 abre o campo de visão para caber a mesma largura */
+  cam.fov=w>900&&w/h<16/9?2*Math.atan(Math.tan(FOV0*Math.PI/360)*(16/9)/(w/h))*180/Math.PI:FOV0;
   if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else if(sel&&modo==='aptos'){cam.setViewOffset(w,h,0,h*.26,w,h);}else if(modo==='aptos'&&!document.querySelector('#painel').classList.contains('recolhida')){cam.setViewOffset(w,h,Math.min(w*.44,180)/2,0,w,h);}else{cam.clearViewOffset();}
   cam.updateProjectionMatrix();}
 addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);enquadrar();});
