@@ -89,6 +89,7 @@ button,input,select{font:inherit;color:inherit}
 .nota{font-size:11px;color:var(--dim);margin-top:10px;line-height:1.5}
 /* legenda + dica */
 .leg{position:fixed;right:max(22px,env(safe-area-inset-right,0px));bottom:20px;z-index:3;display:flex;gap:14px;align-items:center;font-size:12px;color:var(--ink);background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:8px 14px;backdrop-filter:blur(10px)}
+.legpoi{display:none!important}
 .leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .tip{position:fixed;z-index:6;pointer-events:none;background:rgba(243,239,232,.95);color:#16191c;font-size:12.5px;padding:7px 10px;border-radius:4px;transform:translate(-50%,-130%);white-space:nowrap;display:none}
 .tip b{font-weight:700}
@@ -230,8 +231,6 @@ body.explorando .ajuda{opacity:1!important}
     <div class="chips" id="fFinal"></div>
     <div class="lb">Andar <span id="vAndar"></span></div>
     <div class="rng"><span>6º</span><input type="range" id="fAndarMin" min="6" max="22" value="6"><input type="range" id="fAndarMax" min="6" max="22" value="22"><span>22º</span></div>
-    <div class="lb">Valor até <span id="vPreco"></span></div>
-    <div class="rng"><input type="range" id="fPreco" min="1050000" max="2410000" step="10000" value="2410000"></div>
     <div style="display:flex;gap:18px;flex-wrap:wrap"><label class="tg"><input type="checkbox" id="fDisp"> Somente disponíveis</label><label class="tg"><input type="checkbox" id="fRes"> Somente reservados</label></div>
   </div>
   <div class="cont"><span id="nAchados"></span><button id="limpar">Limpar</button></div>
@@ -476,17 +475,16 @@ function pintar(){
 }
 
 /* ---------- lista e filtros ---------- */
-const passa=u=>(!F.final.size||F.final.has(u.final))&&u.andar>=F.aMin&&u.andar<=F.aMax&&u.total<=F.preco&&(!F.disp||u.status==='disponivel')&&(!F.res||u.status==='reservado');
+const passa=u=>(!F.final.size||F.final.has(u.final))&&u.andar>=F.aMin&&u.andar<=F.aMax&&(!F.disp||u.status==='disponivel')&&(!F.res||u.status==='reservado');
 function montarFiltros(){
   $('#fFinal').innerHTML=[1,2,3,4,5].map(f=>`<button class="chip" data-f="${f}" aria-pressed="false">Final ${f} · ${TIPO[f]}</button>`).join('');
   $('#fFinal').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=+b.dataset.f;F.final.has(f)?F.final.delete(f):F.final.add(f);b.setAttribute('aria-pressed',F.final.has(f));atualizar();};
-  const amin=$('#fAndarMin'),amax=$('#fAndarMax'),pr=$('#fPreco');
+  const amin=$('#fAndarMin'),amax=$('#fAndarMax');
   const lerA=()=>{let a=+amin.value,b=+amax.value;if(a>b)[a,b]=[b,a];F.aMin=a;F.aMax=b;$('#vAndar').textContent=`· ${a}º ao ${b}º`;atualizar();};
   amin.oninput=lerA;amax.oninput=lerA;
-  pr.oninput=()=>{F.preco=+pr.value;$('#vPreco').textContent='· '+brl(F.preco);atualizar();};
   $('#fDisp').onchange=e=>{F.disp=e.target.checked;if(F.disp){F.res=false;$('#fRes').checked=false;}atualizar();};
   $('#fRes').onchange=e=>{F.res=e.target.checked;if(F.res){F.disp=false;$('#fDisp').checked=false;}atualizar();};
-  $('#limpar').onclick=()=>{F.final.clear();F.aMin=6;F.aMax=22;F.preco=2410000;F.disp=false;F.res=false;$('#fRes').checked=false;amin.value=6;amax.value=22;pr.value=2410000;$('#fDisp').checked=false;$('#vAndar').textContent='';$('#vPreco').textContent='';document.querySelectorAll('#fFinal .chip').forEach(c=>c.setAttribute('aria-pressed','false'));atualizar();};
+  $('#limpar').onclick=()=>{F.final.clear();F.aMin=6;F.aMax=22;F.preco=2410000;F.disp=false;F.res=false;$('#fRes').checked=false;amin.value=6;amax.value=22;$('#fDisp').checked=false;$('#vAndar').textContent='';document.querySelectorAll('#fFinal .chip').forEach(c=>c.setAttribute('aria-pressed','false'));atualizar();};
 }
 function atualizar(){
   const l=U.filter(passa);
@@ -494,7 +492,7 @@ function atualizar(){
   $('#lista').innerHTML=l.map(u=>`<button class="un ${u.status==='vendido'?'vend':''}" data-un="${u.un}" aria-current="${sel?.un===u.un}">
     <span class="n"><small>APTO</small><b>${u.un}</b></span>
     <span class="k">${u.andar}º andar · Final ${u.final}<br>${TIPO[u.final]} · ${m2(u.util).replace(' m²','')} m² · ${u.vagas} vaga${u.vagas>1?'s':''}</span>
-    <span class="p">${u.status!=='disponivel'?'—':brl(u.total)}<em class="st-${u.status}">${STL[u.status]}</em></span></button>`).join('')||'<p style="color:var(--mut);padding:10px">Nenhum apartamento com esses filtros.</p>';
+    <span class="p"><em class="st-${u.status}">${STL[u.status]}</em></span></button>`).join('')||'<p style="color:var(--mut);padding:10px">Nenhum apartamento com esses filtros.</p>';
   pintar();
 }
 $('#aba').onclick=()=>{$('#painel').classList.toggle('recolhida');enquadrar();};
@@ -513,14 +511,8 @@ function selecionar(un,voar){
       <tr><td>Área privativa</td><td>${m2(u.priv)}</td></tr>
       <tr><td>Vagas demarcadas</td><td>${u.vagas} · ${u.piso_vaga}</td></tr>
     </table>
-    ${vend?'':`<div class="sec">Condição de pagamento</div><table class="tb">
-      <tr><td>Ato</td><td>${brl(u.ato)}</td></tr>
-      <tr><td>48 mensais de</td><td>${brl(u.mensal)}</td></tr>
-      <tr><td>Chaves</td><td>${brl(u.chaves)}</td></tr>
-      <tr><td>Financiamento</td><td>${brl(u.financ)}</td></tr>
-      <tr class="tot"><td>Valor total</td><td>${brl(u.total)}</td></tr></table>`}
     <div class="acoes"><a class="cta" target="_blank" rel="noopener" href="${zap(`Olá! Tenho interesse no apartamento ${u.un} (${u.andar}º andar, final ${u.final}) do Residencial Vivá.`)}">${vend?'Ver outras unidades':'Tenho interesse'}</a></div>
-    <p class="nota">Tabela de vendas de junho/2026. Valores sujeitos a alteração sem aviso prévio; parcelas reajustadas pelo INCC até as chaves. Imagens e plantas ilustrativas.</p>`;
+    <p class="nota">Consulte valores e condições de pagamento com a nossa equipe. Imagens e plantas ilustrativas.</p>`;
   $('#det').hidden=false;document.body.classList.add('det-aberto');
   $('#det .x').onclick=()=>{sel=null;$('#det').hidden=true;document.body.classList.remove('det-aberto');document.querySelectorAll('.un').forEach(b=>b.setAttribute('aria-current','false'));pintar();if(innerWidth<=900)enquadrar();};
   $('#planta').onclick=()=>{const z=document.createElement('div');z.className='zoom';z.innerHTML=`<img src="plantas/humanizada-final-${u.final}.jpg" alt="">`;z.onclick=()=>z.remove();document.body.appendChild(z);};
