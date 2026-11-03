@@ -667,12 +667,7 @@ const LAZER=[
 const Y_COB=66.40+OFF;
 const IMG_ROOF='https://www.terralconstrutora.com.br/wp-content/uploads/2026/03/Ebook-Viva-LANCAMENTO_page-0018.jpg';
 const COB=[
-  {n:'Rooftop multiuso',a:'Área de uso exclusivo dos condôminos no topo do prédio, com 275,80 m² descobertos e vista para o mar.',p:[-1.5,10.5],img:[IMG_ROOF],ext:true},
-  {n:'Bar e bancada',a:'Bancada com banquetas para receber os amigos.',p:[-2.3,12.8],img:[IMG_ROOF],ext:true},
-  {n:'Lounge',a:'Sofás e bancos para descansar e ver o pôr do sol.',p:[3.2,3.2],img:[IMG_ROOF],ext:true},
-  {n:'Jardins e palmeiras',a:'Canteiros com palmeiras e vegetação em volta do rooftop.',p:[4.7,10.8],img:[IMG_ROOF],ext:true},
-  {n:'Área de leitura',a:'Área contemplativa e de leitura, com bancos e jardins.',p:[3.4,17.6],img:[IMG_ROOF],ext:true},
-  {n:'Mesas',a:'Mesas e bancos para refeições e convivência.',p:[-6.3,7.5],img:[IMG_ROOF],ext:true}
+  {n:'Rooftop multiuso',a:'Área de uso exclusivo dos condôminos no topo do prédio, com 275,80 m² descobertos: bar e bancada, lounge, área de leitura, mesas e jardins, com vista para o mar.',p:[-1.5,10.5],img:[IMG_ROOF],ext:true}
 ];
 const CAB_LAZER='<h2>Lazer</h2><p>O andar de lazer fica em cima das garagens (nível +16,00). Toque nos pontos ou na lista para ver cada ambiente.</p>';
 const CAB_COB='<h2>Cobertura</h2><p>Rooftop de uso exclusivo dos condôminos, no topo do prédio (nível +66,40). Toque nos pontos ou na lista para ver cada espaço.</p>';
@@ -686,8 +681,8 @@ function montarListaLazer(){const L2=lista();
 function modoCob(on){
   if(on===cobOn)return;cobOn=on;document.body.classList.toggle('m-cob',on);
   $('#lzCard').hidden=true;lzSel=-1;montarListaLazer();
-  /* na cobertura o prédio aparece inteiro (sem o corte do lazer) */
-  R.localClippingEnabled=lazerOn&&!on;if(lazer3d)lazer3d.visible=lazerOn&&!on;dupLazer.forEach(n=>n.visible=!(lazerOn&&!on));aplicarPisos(lazerOn&&!on);
+  /* na cobertura o corte sobe para logo acima do piso do rooftop: some o teto (casa de máquinas, caixas d'água e cobertura) */
+  corteLazer.constant=on?Y_COB+2.7:Y_LAZER+2.6;R.localClippingEnabled=lazerOn;if(lazer3d)lazer3d.visible=lazerOn&&!on;dupLazer.forEach(n=>n.visible=!(lazerOn&&!on));aplicarPisos(lazerOn&&!on);
   const alvo=on?new THREE.Vector3(-1,Y_COB,10.5):new THREE.Vector3(-12,Y_LAZER,10);const d=innerWidth<900?(on?95:120):(on?68:85);
   anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(new THREE.Vector3(d*0.45,d*0.85,d*0.55)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
 }
@@ -761,7 +756,7 @@ function carregarLazer(){
   },x=>{const e=$('#lzPct');if(e&&x.total)e.textContent=Math.round(x.loaded/x.total*100)+'%';},e=>{console.warn('lazer',e);av.remove();lazerCarregando=false;});
 }
 function modoLazer(on){
-  if(on===lazerOn)return;if(!on&&cobOn){cobOn=false;document.body.classList.remove('m-cob');montarListaLazer();}lazerOn=on;document.body.classList.toggle('m-lazer',on);
+  if(on===lazerOn)return;if(!on&&cobOn){cobOn=false;document.body.classList.remove('m-cob');corteLazer.constant=Y_LAZER+2.6;montarListaLazer();}lazerOn=on;document.body.classList.toggle('m-lazer',on);
   R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=false; /* o modelo já tem as paredes do lazer */if(grupo)grupo.visible=!on;
   $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
   if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);aplicarPisos(on);
