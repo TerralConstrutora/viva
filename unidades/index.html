@@ -132,6 +132,9 @@ body.m-lazer .lz-pins{display:block}
 .lz-pin:hover,.lz-pin.ativo{background:#c97b63}.lz-pin:hover b,.lz-pin.ativo b{background:#fff;color:#c97b63}
 .lz-painel{position:fixed;left:max(22px,env(safe-area-inset-left,0px));top:86px;bottom:22px;width:330px;z-index:4;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;overflow:hidden}
 .lz-painel[hidden]{display:none}
+.ver-cob{position:fixed;left:calc(max(22px,env(safe-area-inset-left,0px)) + 350px);top:86px;z-index:4;display:none;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(243,239,232,.55);color:#f3efe8;padding:12px 22px;letter-spacing:.12em;text-transform:uppercase;font:600 12.5px var(--f);border-radius:4px;cursor:pointer}
+.ver-cob:hover{background:#f3efe8;color:#16191c}
+body.m-lazer .ver-cob{display:inline-flex}
 .lz-cab{padding:18px 18px 8px}.lz-cab h2{font-family:var(--f-disp);font-weight:500;font-size:30px;margin:0}.lz-cab p{font-size:12.5px;color:var(--mut);margin:6px 0 0;line-height:1.5}
 .lz-lista{flex:1;overflow:auto;padding:6px 12px 14px}
 .lz-it{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;width:100%;text-align:left;background:var(--glass-2);border:1px solid var(--line);border-radius:4px;padding:6px;margin-bottom:7px;cursor:pointer;color:var(--ink);font:inherit}
@@ -147,6 +150,7 @@ body.m-lazer .explorar.arr{display:none}
 @media (max-width:900px){
   .lz-painel{left:auto;right:0;top:calc(60px + env(safe-area-inset-top,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));width:min(44vw,180px);border-radius:12px 0 0 12px}
   .lz-cab p{display:none}.lz-cab h2{font-size:18px}.lz-cab{padding:10px}
+  .ver-cob{left:12px;top:calc(64px + env(safe-area-inset-top,0px));padding:9px 14px;font-size:11px}
   .lz-it{grid-template-columns:1fr;padding:5px}.lz-it img{width:100%;height:60px}.lz-it span{font-size:11.5px}
   .lz-card{left:0;right:0;top:auto;bottom:calc(52px + env(safe-area-inset-bottom,0px));width:auto;border-radius:12px 12px 0 0;max-height:62%;overflow:auto}
   .lz-pin{font-size:10px;padding:3px 7px 3px 3px}.lz-pin b{width:17px;height:17px;font-size:10px}
@@ -201,7 +205,7 @@ body.explorando .ajuda{opacity:1!important}
 .logo-link{display:inline-flex;cursor:pointer}
 /* escala única: o layout de 1920x1080 é reproduzido proporcionalmente em qualquer tela de computador */
 .poi,.lz-pin{transform-origin:0 0}
-@media (min-width:901px){.topo,.hero,.painel,.det,.leg,.explorar,.legpoi,.lz-painel,.lz-card,.creditos,.ajuda,.carregando>*{zoom:var(--k,1)}}
+@media (min-width:901px){.topo,.hero,.painel,.det,.leg,.explorar,.legpoi,.lz-painel,.lz-card,.ver-cob,.creditos,.ajuda,.carregando>*{zoom:var(--k,1)}}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -248,9 +252,10 @@ body.explorando .ajuda{opacity:1!important}
 <button class="explorar" id="explorar" hidden><span class="ic">🧭</span><span id="explorarTxt">Explorar a cidade</span></button>
 <div class="lz-pins" id="lzPins"></div>
 <aside class="lz-painel" id="lzPainel" hidden>
-  <div class="lz-cab"><h2>Lazer</h2><p>O andar de lazer fica em cima das garagens (nível +16,00). Toque nos pontos ou na lista para ver cada ambiente.</p></div>
+  <div class="lz-cab" id="lzCab"><h2>Lazer</h2><p>O andar de lazer fica em cima das garagens (nível +16,00). Toque nos pontos ou na lista para ver cada ambiente.</p></div>
   <div class="lz-lista" id="lzLista"></div>
 </aside>
+<button class="ver-cob" id="verCob">Ver cobertura</button>
 <div class="lz-card" id="lzCard" hidden></div>
 <div class="creditos" id="creditos" hidden><b>Google</b><span id="credTxt"></span></div>
 <div class="ajuda" id="ajuda">Arraste para girar · role ou use dois dedos para aproximar</div>
@@ -658,6 +663,34 @@ const LAZER=[
   {n:'Espaço gourmet/friends',a:'Cozinha e bancada para receber os amigos.',p:P19(1035,625),img:['gourmet']},
   {n:'Espaço grill/pizza',a:'Churrasqueira e forno de pizza.',p:P19(855,570),img:['grill']}
 ];
+/* COBERTURA (rooftop de uso exclusivo dos condôminos, nível +66,40): pontos tirados do próprio modelo 3D */
+const Y_COB=66.40+OFF;
+const IMG_ROOF='https://www.terralconstrutora.com.br/wp-content/uploads/2026/03/Ebook-Viva-LANCAMENTO_page-0018.jpg';
+const COB=[
+  {n:'Rooftop multiuso',a:'Área de uso exclusivo dos condôminos no topo do prédio, com 275,80 m² descobertos e vista para o mar.',p:[-1.5,10.5],img:[IMG_ROOF],ext:true},
+  {n:'Bar e bancada',a:'Bancada com banquetas para receber os amigos.',p:[-2.3,12.8],img:[IMG_ROOF],ext:true},
+  {n:'Lounge',a:'Sofás e bancos para descansar e ver o pôr do sol.',p:[3.2,3.2],img:[IMG_ROOF],ext:true},
+  {n:'Jardins e palmeiras',a:'Canteiros com palmeiras e vegetação em volta do rooftop.',p:[4.7,10.8],img:[IMG_ROOF],ext:true},
+  {n:'Área de leitura',a:'Área contemplativa e de leitura, com bancos e jardins.',p:[3.4,17.6],img:[IMG_ROOF],ext:true},
+  {n:'Mesas',a:'Mesas e bancos para refeições e convivência.',p:[-6.3,7.5],img:[IMG_ROOF],ext:true}
+];
+const CAB_LAZER='<h2>Lazer</h2><p>O andar de lazer fica em cima das garagens (nível +16,00). Toque nos pontos ou na lista para ver cada ambiente.</p>';
+const CAB_COB='<h2>Cobertura</h2><p>Rooftop de uso exclusivo dos condôminos, no topo do prédio (nível +66,40). Toque nos pontos ou na lista para ver cada espaço.</p>';
+let cobOn=false;const lista=()=>cobOn?COB:LAZER;const yAtual=()=>cobOn?Y_COB:Y_LAZER;
+const miniDe=a=>a.ext?a.img[0]:`lazer/mini-${a.img[0]}.jpg`,fotoDe=(a,k)=>a.ext?a.img[k]:`lazer/${a.img[k]}.jpg`;
+function montarListaLazer(){const L2=lista();
+  $('#lzCab').innerHTML=cobOn?CAB_COB:CAB_LAZER;
+  $('#lzPins').innerHTML=L2.map((a,i)=>`<button class="lz-pin" data-i="${i}"><b>${i+1}</b><span>${a.n}</span></button>`).join('');
+  $('#lzLista').innerHTML=L2.map((a,i)=>`<button class="lz-it" data-i="${i}"><img src="${miniDe(a)}" alt="" loading="lazy"><span>${i+1}. ${a.n}<small>${a.a.split('.')[0]}</small></span></button>`).join('');
+  $('#verCob').textContent=cobOn?'Voltar ao lazer':'Ver cobertura';}
+function modoCob(on){
+  if(on===cobOn)return;cobOn=on;document.body.classList.toggle('m-cob',on);
+  $('#lzCard').hidden=true;lzSel=-1;montarListaLazer();
+  /* na cobertura o prédio aparece inteiro (sem o corte do lazer) */
+  R.localClippingEnabled=lazerOn&&!on;if(lazer3d)lazer3d.visible=lazerOn&&!on;dupLazer.forEach(n=>n.visible=!(lazerOn&&!on));aplicarPisos(lazerOn&&!on);
+  const alvo=on?new THREE.Vector3(-1,Y_COB,10.5):new THREE.Vector3(-12,Y_LAZER,10);const d=innerWidth<900?(on?95:120):(on?68:85);
+  anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(new THREE.Vector3(d*0.45,d*0.85,d*0.55)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
+}
 let lazerOn=false,lzSel=-1,lzFoto=0,planoLazer=null;const corteLazer=new THREE.Plane(new THREE.Vector3(0,-1,0),Y_LAZER+2.6);
 function prepararLazer(o){
   /* corte: tudo acima do teto do lazer some quando o modo está ligado */
@@ -671,21 +704,20 @@ function prepararLazer(o){
   planoLazer=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:.93,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4,toneMapped:false}));
   planoLazer.position.set((xa+xb)/2,Y_LAZER+0.06,(za+zb)/2);planoLazer.visible=false;planoLazer.renderOrder=1;S.add(planoLazer);
   /* pontos e lista */
-  $('#lzPins').innerHTML=LAZER.map((a,i)=>`<button class="lz-pin" data-i="${i}"><b>${i+1}</b><span>${a.n}</span></button>`).join('');
-  $('#lzLista').innerHTML=LAZER.map((a,i)=>`<button class="lz-it" data-i="${i}"><img src="lazer/mini-${a.img[0]}.jpg" alt="" loading="lazy"><span>${i+1}. ${a.n}<small>${a.a.split('.')[0]}</small></span></button>`).join('');
+  montarListaLazer();$('#verCob').onclick=()=>modoCob(!cobOn);
   $('#lzPins').onclick=$('#lzLista').onclick=e=>{const b=e.target.closest('[data-i]');if(b)abrirAmbiente(+b.dataset.i);};
 }
 function abrirAmbiente(i){
-  lzSel=i;lzFoto=0;const a=LAZER[i];
+  lzSel=i;lzFoto=0;const a=lista()[i];
   document.querySelectorAll('.lz-pin,.lz-it').forEach(b=>{const on=+b.dataset.i===i;b.classList.toggle('ativo',on);if(b.classList.contains('lz-it'))b.setAttribute('aria-current',on);});
-  const foto=()=>`lazer/${a.img[lzFoto]}.jpg`;
+  const foto=()=>fotoDe(a,lzFoto);
   $('#lzCard').innerHTML=`<button class="x" aria-label="Fechar">×</button><div class="ft"><img src="${foto()}" alt="${a.n}">${a.img.length>1?`<div class="nav2">${a.img.map((_,k)=>`<button data-f="${k}">${k+1}/${a.img.length}</button>`).join('')}</div>`:''}</div><div class="tx"><h3>${a.n}</h3><p>${a.a}</p><p style="font-size:11px;margin-top:8px">Imagem ilustrativa.</p></div>`;
   $('#lzCard').hidden=false;
   $('#lzCard .x').onclick=()=>{$('#lzCard').hidden=true;lzSel=-1;document.querySelectorAll('.lz-pin,.lz-it').forEach(b=>{b.classList.remove('ativo');b.setAttribute('aria-current','false');});};
   $('#lzCard .ft img').onclick=()=>{const z=document.createElement('div');z.className='zoom';z.innerHTML=`<img src="${foto()}" alt="">`;z.onclick=()=>z.remove();document.body.appendChild(z);};
   $('#lzCard').querySelectorAll('[data-f]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();lzFoto=+b.dataset.f;$('#lzCard .ft img').src=foto();});
   /* câmera se aproxima do ambiente */
-  const [x,z]=a.p;const alvo=new THREE.Vector3(x,Y_LAZER+1,z);const dir=cam.position.clone().sub(C.target).setY(0).normalize();
+  const [x,z]=a.p;const alvo=new THREE.Vector3(x,yAtual()+1,z);const dir=cam.position.clone().sub(C.target).setY(0).normalize();
   const d=innerWidth<900?60:48;anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.multiplyScalar(d*0.55)).add(new THREE.Vector3(0,d*0.85,0)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
 }
 /* 3D completo do lazer (móveis e acabamentos), exportado do Humanizada_Lazer; carrega só quando o modo é aberto */
@@ -714,7 +746,7 @@ function carregarLazer(){
      o.traverse(n=>{if(!n.isMesh)return;bb.setFromObject(n);if(bb.max.z>16&&bb.min.x<-7&&bb.max.x>-24){
        n.material=Array.isArray(n.material)?n.material.map(m=>{const c=m.clone();c.clippingPlanes=pls;return c;}):(()=>{const c=n.material.clone();c.clippingPlanes=pls;return c;})();}});}
     o.traverse(n=>{if(n.name==='Piso_Brinquedoteca001')n.visible=false;}); /* piso retangular que sai pela quina arredondada; o piso da fachada cobre os terraços */
-    o.visible=lazerOn;S.add(o);lazer3d=o;
+    o.visible=lazerOn&&!cobOn;S.add(o);lazer3d=o;
     /* da fachada saem só as peças internas do andar de lazer (piso, paredes, piscina, plantas), que o 3D completo substitui;
        guarda-corpos, vidros, esquadrias de alumínio, cobogó e pedra continuam */
     if(modeloFachada){const fica=['guarda','vidro','vidroLazer','alu','cobogo','brick','marrom','pedra','calcada'];const bb=new THREE.Box3();
@@ -724,12 +756,12 @@ function carregarLazer(){
           /* pisos (peças planas) da fachada não somem: sobem para o nível do piso do lazer completo e fecham os vãos */
           if(bb.max.y-bb.min.y<0.08&&!n.isInstancedMesh&&n.material.name==='branco'){n.userData.dyLazer=(PISO_LAZER-0.02)-bb.max.y;pisosLazer.push(n);}
           else dupLazer.push(n);}});}
-    dupLazer.forEach(n=>n.visible=!lazerOn);aplicarPisos(lazerOn);
+    dupLazer.forEach(n=>n.visible=!(lazerOn&&!cobOn));aplicarPisos(lazerOn&&!cobOn);
     av.remove();
   },x=>{const e=$('#lzPct');if(e&&x.total)e.textContent=Math.round(x.loaded/x.total*100)+'%';},e=>{console.warn('lazer',e);av.remove();lazerCarregando=false;});
 }
 function modoLazer(on){
-  if(on===lazerOn)return;lazerOn=on;document.body.classList.toggle('m-lazer',on);
+  if(on===lazerOn)return;if(!on&&cobOn){cobOn=false;document.body.classList.remove('m-cob');montarListaLazer();}lazerOn=on;document.body.classList.toggle('m-lazer',on);
   R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=false; /* o modelo já tem as paredes do lazer */if(grupo)grupo.visible=!on;
   $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
   if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);aplicarPisos(on);
@@ -744,7 +776,7 @@ function modoLazer(on){
 const _w=new THREE.Vector3();
 function desenharLazer(){
   if(!lazerOn)return;const w=innerWidth,h=innerHeight;
-  document.querySelectorAll('.lz-pin').forEach(b=>{const [x,z]=LAZER[+b.dataset.i].p;_w.set(x,Y_LAZER+1.2,z).project(cam);
+  const L2=lista(),yy=yAtual();document.querySelectorAll('.lz-pin').forEach(b=>{const it=L2[+b.dataset.i];if(!it)return;const [x,z]=it.p;_w.set(x,yy+1.2,z).project(cam);
     const vis=_w.z<1&&Math.abs(_w.x)<1.1&&Math.abs(_w.y)<1.1;b.style.display=vis?'':'none';if(vis)b.style.transform=`translate(${(_w.x+1)/2*w}px,${(1-_w.y)/2*h}px) scale(${K}) translate(-50%,-50%)`;});
 }
 /* ---------- explorar a cidade livremente (botão) ---------- */
