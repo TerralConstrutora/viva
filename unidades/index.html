@@ -795,7 +795,7 @@ function alternarExplorar(){
 }
 $('#explorar').onclick=alternarExplorar;
 let down=null;R.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];$('#ajuda').style.opacity=0;});
-R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;if(modo!=='aptos'||explorando)return;const u=pick(e);if(u)selecionar(u.un,false);});
+R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;if(modo!=='aptos'||explorando)return;const u=pick(e);if(u){selecionar(u.un,true);document.querySelector(`.un[data-un="${u.un}"]`)?.scrollIntoView({block:"nearest",behavior:"smooth"});}});
 
 /* ---------- modos ---------- */
 let modo='inicio';
