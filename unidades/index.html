@@ -271,7 +271,7 @@ body.arq-on .arq-pins,body.arq-on .arq-linhas{display:block}
 .arq-pin small{display:none;font-weight:400;color:#5a554d;font-size:10px;margin-top:2px}
 .arq-pin{z-index:2}.arq-pin.mini{z-index:1}.arq-pin.aberto{z-index:3}.arq-pin.aberto small{display:block}
 .arq-pin.mini{padding:4px}.arq-pin.mini span{display:none}.arq-pin.mini.aberto{padding:4px 10px 4px 6px}.arq-pin.mini.aberto span{display:block}
-.arq-grupo{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;min-width:26px;height:26px;padding:0 7px;border-radius:999px;border:2px solid #fff;background:var(--ouro,#c9a86a);color:#16191c;font:700 12px/22px var(--f);text-align:center;box-shadow:0 0 0 3px rgba(201,168,106,.35),0 4px 14px rgba(0,0,0,.3);z-index:2;will-change:transform}.arq-grupo:hover{background:#fff}
+.arq-grupo{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;width:22px;height:22px;padding:0;border-radius:50%;border:none;background:rgba(243,239,232,.95);box-shadow:3px -3px 0 -1px rgba(243,239,232,.75),0 4px 14px rgba(0,0,0,.3);z-index:2;will-change:transform}.arq-grupo::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--ouro,#c9a86a)}.arq-grupo:hover{transform-origin:50% 100%;filter:brightness(1.05)}
 .arq-pin:hover{z-index:3}.arq-pin.mini:hover{padding:4px 10px 4px 6px}.arq-pin.mini:hover span{display:block}
 .arq-leg{position:fixed;left:50%;transform:translateX(-50%);top:70px;z-index:3;display:none;flex-direction:column;align-items:center;gap:1px;background:rgba(18,21,24,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#f3efe8;padding:7px 16px;border-radius:12px;font:12px var(--f);text-align:center}
 .arq-leg b{font-family:var(--f-disp);font-weight:500;font-size:18px;letter-spacing:.02em}.arq-leg span{color:rgba(243,239,232,.75);font-size:11px}
@@ -793,9 +793,9 @@ function desenharArq(){
     /* grupo: esconde os pins e mostra só a bolinha; o ponto no chão de cada prédio continua */
     for(const v of g.m){const o=v.o;o.el.style.display=o.ln.style.display='none';o.dot.style.display='';o.dot.setAttribute('cx',v.x0);o.dot.setAttribute('cy',v.y0);}
     let b=arqGrupos[gi];if(!b){b=document.createElement('button');b.className='arq-grupo';b.onclick=()=>abrirGrupo(b._m);$('#arqPins').appendChild(b);arqGrupos[gi]=b;}
-    gi++;b._m=g.m.map(v=>v.o);b.style.display='';if(b.textContent!==String(g.m.length))b.textContent=g.m.length;
+    gi++;b._m=g.m.map(v=>v.o);b.style.display='';
     b.title=g.m.map(v=>v.o.el.title.split(' · ')[0]).join('\n');
-    b.style.transform=`translate(${g.x}px,${g.y}px) translate(-50%,-100%)`;rects.push([g.x-16,g.y-32,g.x+16,g.y]);}
+    b.style.transform=`translate(${g.x}px,${g.y}px) translate(-50%,-100%)`;rects.push([g.x-14,g.y-26,g.x+14,g.y]);}
   for(;gi<arqGrupos.length;gi++)arqGrupos[gi].style.display='none';
 }
 const arqGrupos=[];
