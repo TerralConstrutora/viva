@@ -1,722 +1,714 @@
 [
-{
-"nome": "Residencial Guayi",
-"construtora": "Terral Construtora",
-"bairro": "Aviação",
-"end": "Av. Pres. Castelo Branco, 3972, Aviação",
-"lat": -24.0173178,
-"lon": -46.4385074
-},
-{
-"nome": "Residencial A'Villa",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Aviação",
-"end": "Av. Pres. Castelo Branco, 3400, Aviação",
-"lat": -24.0159822,
-"lon": -46.4330826
-},
-{
-"nome": "Residencial Ilha da Madeira",
-"construtora": "RG Construtora",
-"bairro": "Aviação",
-"end": "Av. Pres. Castelo Branco, 4380, Aviação",
-"lat": -24.0185023,
-"lon": -46.4424924
-},
-{
-"nome": "Residencial Ilha da Madeira III",
-"construtora": "RG Construtora",
-"bairro": "Aviação",
-"end": "Av. Pres. Castelo Branco, 4330, Aviação",
-"lat": -24.0183849,
-"lon": -46.4420893
-},
-{
-"nome": "Residencial Paulo Roberto II",
-"construtora": "J.R. Construtora",
-"bairro": "Vila Tupi",
-"end": "Av. Pres. Castelo Branco, 6038, Vila Tupi",
-"lat": -24.0359056,
-"lon": -46.4906528
-},
-{
-"nome": "Residencial Jardim do Atlântico",
-"construtora": "Igaratá Construtora",
-"bairro": "Vila Tupi",
-"end": "Av. Pres. Castelo Branco, 5412, Vila Tupi",
-"lat": -24.0214746,
-"lon": -46.4520946
-},
-{
-"nome": "Edifício Panorama",
-"construtora": "Igaratá Construtora",
-"bairro": "Guilhermina",
-"end": "Av. Pres. Castelo Branco, 2944, Jardim Guilhermina",
-"lat": -24.0149409,
-"lon": -46.4288659
-},
-{
-"nome": "Residencial Tiwa",
-"construtora": "Terral Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Rui Barbosa, 116, Canto do Forte",
-"lat": -24.0129537,
-"lon": -46.4079283
-},
-{
-"nome": "Residencial Barcelona",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Rui Barbosa, 146, Canto do Forte",
-"lat": -24.0127092,
-"lon": -46.4078901
-},
-{
-"nome": "Residencial Joshephina Masotti",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Rui Barbosa, 190, Canto do Forte",
-"lat": -24.0124139,
-"lon": -46.4078767
-},
-{
-"nome": "Residencial Agostinho Masotti",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Rui Barbosa, 268, Canto do Forte",
-"lat": -24.011663,
-"lon": -46.4079048
-},
-{
-"nome": "Residencial Sevilha",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Rui Barbosa, 187, Canto do Forte",
-"lat": -24.0123538,
-"lon": -46.4082356
-},
-{
-"nome": "Residencial Baia Branca",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Rui Barbosa, 461, Canto do Forte",
-"lat": -24.0098525,
-"lon": -46.4080096
-},
-{
-"nome": "Residencial Baia Dourada",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Amazonas, 405, Canto do Forte",
-"lat": -24.0097444,
-"lon": -46.4081921
-},
-{
-"nome": "Edifício Comercial Masotti",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Bahia, 378, Canto do Forte",
-"lat": -24.0123525,
-"lon": -46.408606
-},
-{
-"nome": "Residencial Roberto",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "Av. Marechal Maurício José Cardoso, 403, Canto do Forte",
-"lat": -24.0102303,
-"lon": -46.4094083
-},
-{
-"nome": "Residencial Tijuca",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Canto do Forte",
-"end": "Av. Marechal Maurício José Cardoso, 543, Canto do Forte",
-"lat": -24.0090046,
-"lon": -46.4092639
-},
-{
-"nome": "Residencial Alberto Serodio",
-"construtora": "Martino Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Tiradentes, 121, Canto do Forte",
-"lat": -24.0132171,
-"lon": -46.4056266
-},
-{
-"nome": "Residencial Mares do Sul",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "Rua Tiradentes, 255, Canto do Forte",
-"lat": -24.0124607,
-"lon": -46.4055515
-},
-{
-"nome": "Residencial Costão do Forte",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Canto do Forte",
-"end": "Av. Marechal Hermes da Fonseca, 260, Canto do Forte",
-"lat": -24.012048,
-"lon": -46.4059747
-},
-{
-"nome": "Residencial Suzana Masotti",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "Av. Marechal Hermes da Fonseca, 399, Canto do Forte",
-"lat": -24.0106186,
-"lon": -46.4068249
-},
-{
-"nome": "Residencial Smart",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Ipanema, 360, Jardim Guilhermina",
-"lat": -24.0106094,
-"lon": -46.4230979
-},
-{
-"nome": "Residencial Apolo",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Gonzaga, 32, Jardim Guilhermina",
-"lat": -24.0113681,
-"lon": -46.4235871
-},
-{
-"nome": "Residencial Torre do Sol",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Bolívia, 140, Jardim Guilhermina",
-"lat": -24.0114708,
-"lon": -46.4243475
-},
-{
-"nome": "Residencial Ródano",
-"construtora": "Zafer Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Itararé, 396, Jardim Guilhermina",
-"lat": -24.0104525,
-"lon": -46.4221479
-},
-{
-"nome": "Residencial Marbella",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Doutor João Sampaio, 197, Jardim Guilhermina",
-"lat": -24.0128668,
-"lon": -46.4251392
-},
-{
-"nome": "Residencial San Diego",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Doutor João Sampaio, 269, Jardim Guilhermina",
-"lat": -24.0120395,
-"lon": -46.4253626
-},
-{
-"nome": "Residencial Farol da Barra",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Colômbia, 181, Jardim Guilhermina",
-"lat": -24.0130119,
-"lon": -46.4258115
-},
-{
-"nome": "Residencial Porto Esperança",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Guilhermina",
-"end": "Praça José de Anchieta, 345, Jardim Guilhermina",
-"lat": -24.0117867,
-"lon": -46.4265408
-},
-{
-"nome": "Residencial California",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Nicarágua, 153, Jardim Guilhermina",
-"lat": -24.0143124,
-"lon": -46.4311551
-},
-{
-"nome": "Residencial San Marino",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Venezuela, 277, Jardim Guilhermina",
-"lat": -24.0136812,
-"lon": -46.4330274
-},
-{
-"nome": "Residencial Balboa",
-"construtora": "Atlantika Incorporadora",
-"bairro": "Guilhermina",
-"end": "Rua Leblon, 493, Jardim Guilhermina",
-"lat": -24.0094579,
-"lon": -46.4207461
-},
-{
-"nome": "Residencial Grafite",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Ipanema, 379, Jardim Guilhermina",
-"lat": -24.0104979,
-"lon": -46.4235174
-},
-{
-"nome": "Residencial Nankin",
-"construtora": "Terral Construtora",
-"bairro": "Guilhermina",
-"end": "Rua Ipanema, 235, Jardim Guilhermina",
-"lat": -24.0116903,
-"lon": -46.4229415
-},
-{
-"nome": "Residencial Acauã",
-"construtora": "Terral Construtora",
-"bairro": "Aviação",
-"end": "Rua Men de Sá, 169, Aviação",
-"lat": -24.0170399,
-"lon": -46.4417675
-},
-{
-"nome": "Residencial Luara",
-"construtora": "R.A Gomes Pacheco Construtora",
-"bairro": "Aviação",
-"end": "Av. São Pedro, 201, Aviação",
-"lat": -24.0170481,
-"lon": -46.4429738
-},
-{
-"nome": "Residencial Alpha",
-"construtora": "Terral Construtora",
-"bairro": "Aviação",
-"end": "Av. General Marcondes Salgado, 82, Aviação",
-"lat": -24.0175819,
-"lon": -46.440833
-},
-{
-"nome": "Residencial Gaudi",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Aviação",
-"end": "Av. General Marcondes Salgado, 212, Aviação",
-"lat": -24.0164745,
-"lon": -46.4415168
-},
-{
-"nome": "Residencial Daniel Mazotti",
-"construtora": "Mazotti Construtora",
-"bairro": "Aviação",
-"end": "Rua Padre José de Anchieta, 309, Aviação",
-"lat": -24.0180606,
-"lon": -46.4428283
-},
-{
-"nome": "Residencial Rosales",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Aviação",
-"end": "Rua Pero Vaz de Caminha, 69, Aviação",
-"lat": -24.0183386,
-"lon": -46.443652
-},
-{
-"nome": "Residencial Marina",
-"construtora": "Terral Construtora",
-"bairro": "Aviação",
-"end": "Rua Ophelia Caccetari Reis, 113, Aviação",
-"lat": -24.0169499,
-"lon": -46.4397529
-},
-{
-"nome": "Residencial Saint Regis",
-"construtora": "Ancora Construtora",
-"bairro": "Guilhermina",
-"end": "R. Nicarágua, 54 - Guilhermina",
-"lat": -24.01494,
-"lon": -46.4303627
-},
-{
-"nome": "Residencial Ilha de Capri",
-"construtora": "Alberto Maragoni",
-"bairro": "Cidade Ocian",
-"end": "R. Oceânica Amábile, 421 - Cidade Ocian",
-"lat": -24.0274822,
-"lon": -46.4779715
-},
-{
-"nome": "Residencial Ilha de Creta",
-"construtora": "Alberto Maragoni",
-"bairro": "Canto do Forte",
-"end": "R. Gen. Euclides de Figueiredo, 390 - Canto do Forte",
-"lat": -24.0138797,
-"lon": -46.4027496
-},
-{
-"nome": "Residencial Cornide I",
-"construtora": "Cornide Construtora",
-"bairro": "Aviação",
-"end": "R. João Pereira Inácio, 79 - Aviação",
-"lat": -24.0174454,
-"lon": -46.4403715
-},
-{
-"nome": "Residencial Cornide II",
-"construtora": "Cornide Construtora",
-"bairro": "Aviação",
-"end": "Av. Dona Ophelia Caccerari Reis, 114 - Aviação",
-"lat": -24.0169068,
-"lon": -46.4394558
-},
-{
-"nome": "Edifício Santa Barbara",
-"construtora": "Elo Adm. de Condomínios",
-"bairro": "Canto do Forte",
-"end": "Av. Mal. Hermes, 400 - Canto do Forte",
-"lat": -24.0108472,
-"lon": -46.4059184
-},
-{
-"nome": "Residencial Uirapuru",
-"construtora": "Fausto Moretti Construtora",
-"bairro": "Guilhermina",
-"end": "R. Mexico, 112 - Guilhermina",
-"lat": -24.011942,
-"lon": -46.4250587
-},
-{
-"nome": "Edifício Serra Nevada",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Canto do Forte",
-"end": "R. Bahia, 409 - Canto do Forte",
-"lat": -24.0126299,
-"lon": -46.4088971
-},
-{
-"nome": "Edifício Córdoba",
-"construtora": "Hidalgo Gimenez e Hidalgo Construtora",
-"bairro": "Boqueirão",
-"end": "R. Campinas, 564 - Boqueirão",
-"lat": -24.0096605,
-"lon": -46.4176074
-},
-{
-"nome": "Edifício São Matheus",
-"construtora": "JBX Ferragens",
-"bairro": "Vila Tupi",
-"end": "R. Caiapós, 80 - Vila Tupi",
-"lat": -24.0227838,
-"lon": -46.4568072
-},
-{
-"nome": "Edifício Karoline",
-"construtora": "J.C Santos Construtora",
-"bairro": "Guilhermina",
-"end": "R. Copacabana, 107 - Guilhermina",
-"lat": -24.0125994,
-"lon": -46.4184126
-},
-{
-"nome": "Residencial Barrabella",
-"construtora": "Jorge L. Martinho",
-"bairro": "Vila Tupi",
-"end": "R. Dr. Napoleão Laureano, 546 - Vila Tupi",
-"lat": -24.022294,
-"lon": -46.467503
-},
-{
-"nome": "Residencial Paulo Roberto VIII",
-"construtora": "J.R. Construtora",
-"bairro": "Vila Tupi",
-"end": "R. Guaianases, 198 - Vila Tupi",
-"lat": -24.0203312,
-"lon": -46.455345
-},
-{
-"nome": "Residencial Ilha do Mel",
-"construtora": "Laguna Construtora",
-"bairro": "Vila Caiçara",
-"end": "R. São Benedito, 36 - Vila Caiçara",
-"lat": -24.049558,
-"lon": -46.5227245
-},
-{
-"nome": "Edifício Marcelino",
-"construtora": "Marcelo Grejo",
-"bairro": "Guilhermina",
-"end": "Av. Guilhermina, 519 - Guilhermina",
-"lat": -24.0089866,
-"lon": -46.4221313
-},
-{
-"nome": "Edifício Santo Antonio",
-"construtora": "Marcelo Ventura",
-"bairro": "Cidade Ocian",
-"end": "Av. Osasco, 105 - Cidade Ocian",
-"lat": -24.0259229,
-"lon": -46.4661863
-},
-{
-"nome": "Residencial Eduardo",
-"construtora": "Masotti Construtora",
-"bairro": "Vila Tupi",
-"end": "R. José da Silva Machado, 69 - Vila Tupi",
-"lat": -24.0221777,
-"lon": -46.455289
-},
-{
-"nome": "Residencial Regina",
-"construtora": "Masotti Construtora",
-"bairro": "Canto do Forte",
-"end": "R. Rui Barbosa, 294 - Canto do Forte",
-"lat": -24.01137,
-"lon": -46.407727
-},
-{
-"nome": "Residencial Vandui Lima",
-"construtora": "Masotti Construtora",
-"bairro": "Boqueirão",
-"end": "R. Emancipador Paulo Fefin, 524 - Boqueirão",
-"lat": -24.009583,
-"lon": -46.4173482
-},
-{
-"nome": "Residencial Gabriel Masotti",
-"construtora": "Masotti Construtora",
-"bairro": "Boqueirão",
-"end": "R. Bahia, 618 - Boqueirão",
-"lat": -24.0122882,
-"lon": -46.4110661
-},
-{
-"nome": "Edifício Península",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Aviação",
-"end": "Av. Gen. Marcondes Salgado, 71 - Aviação",
-"lat": -24.017667,
-"lon": -46.4410889
-},
-{
-"nome": "Residencial La Coruña",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Vila Tupi",
-"end": "R. Guaranis, 154 - Vila Tupi",
-"lat": -24.021117,
-"lon": -46.454344
-},
-{
-"nome": "Residencial Leon",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Guilhermina",
-"end": "R. Peru, 210 - Guilhermina",
-"lat": -24.0139179,
-"lon": -46.4320129
-},
-{
-"nome": "Residencial Asturias",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Aviação",
-"end": "Av. Dona Ophelia Caccerari Reis, 173 - Aviação",
-"lat": -24.0156173,
-"lon": -46.4394979
-},
-{
-"nome": "Residencial Santiago",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Aviação",
-"end": "Av. Dona Ophelia Caccerari Reis, 197 - Aviação",
-"lat": -24.0163243,
-"lon": -46.4400957
-},
-{
-"nome": "Residencial Valencia",
-"construtora": "Mata Atlântica Construtora",
-"bairro": "Guilhermina",
-"end": "R. Venezuela, 197 - Guilhermina",
-"lat": -24.0142329,
-"lon": -46.4326943
-},
-{
-"nome": "Residencial Algas Marinha",
-"construtora": "Maura Vieira Construtora",
-"bairro": "Aviação",
-"end": "R. Vasco da Gama, 79 - Aviação",
-"lat": -24.0188658,
-"lon": -46.4458664
-},
-{
-"nome": "Residencial Azul do Mar",
-"construtora": "Maura Vieira Construtora",
-"bairro": "Guilhermina",
-"end": "R. Honduras, 229 - Guilhermina",
-"lat": -24.0124098,
-"lon": -46.427929
-},
-{
-"nome": "Residencial Arco-íris",
-"construtora": "Maura Vieira Construtora",
-"bairro": "Aviação",
-"end": "Av. Martiniano de Andrade Bittencourt, 513 - Aviação",
-"lat": -24.013462,
-"lon": -46.4411724
-},
-{
-"nome": "Residencial Estrela do Mar",
-"construtora": "Maura Vieira Construtora",
-"bairro": "Aviação",
-"end": "Av. Dona Ophelia Caccerari Reis - Aviação",
-"lat": -24.0156312,
-"lon": -46.4403383
-},
-{
-"nome": "Residencial Sereno Mar",
-"construtora": "Maura Vieira Construtora",
-"bairro": "Guilhermina",
-"end": "R. Honduras, 326 - Guilhermina",
-"lat": -24.0117357,
-"lon": -46.4281553
-},
-{
-"nome": "Residencial Ondas de Prata",
-"construtora": "Maura Vieira Construtora",
-"bairro": "Aviação",
-"end": "Rua Pero Vaz de Caminha, 245 - Aviação",
-"lat": -24.0169073,
-"lon": -46.4443185
-},
-{
-"nome": "Residencial Genival M. Jr",
-"construtora": "Menezes Construtora",
-"bairro": "Guilhermina",
-"end": "R. Haiti, 74 - Guilhermina",
-"lat": -24.0139582,
-"lon": -46.4261395
-},
-{
-"nome": "Residencial Parati I",
-"construtora": "Oki Galli Construtora",
-"bairro": "Aviação",
-"end": "R. Martiniano de Andrade Bitencourt, 394 - Aviação",
-"lat": -24.0144144,
-"lon": -46.4400117
-},
-{
-"nome": "Residencial Paraty II",
-"construtora": "Oki Galli Construtora",
-"bairro": "Vila Tupi",
-"end": "Av. Pres. Castelo Branco, 6680 - Vila Tupi",
-"lat": -24.025634,
-"lon": -46.4638406
-},
-{
-"nome": "Residencial Amanda",
-"construtora": "RG Construtora",
-"bairro": "Guilhermina",
-"end": "Av. Guilhermina, 626 - Guilhermina",
-"lat": -24.008044,
-"lon": -46.4222353
-},
-{
-"nome": "Residencial Alexandre",
-"construtora": "RG Construtora",
-"bairro": "Aviação",
-"end": "Av. Jorge Hagge, 215 - Aviação",
-"lat": -24.0155135,
-"lon": -46.4382294
-},
-{
-"nome": "Edifício Ponta do Sol",
-"construtora": "RG Construtora",
-"bairro": "Guilhermina",
-"end": "R. Copacabana, 410 - Guilhermina",
-"lat": -24.0099206,
-"lon": -46.419133
-},
-{
-"nome": "Edifício Fabiana",
-"construtora": "RG Construtora",
-"bairro": "Guilhermina",
-"end": "R. Perequê, 59 - Guilhermina",
-"lat": -24.0090525,
-"lon": -46.4190336
-},
-{
-"nome": "Residencial Saint Thomaz",
-"construtora": "Termaq Construtora",
-"bairro": "Vila Tupi",
-"end": "R. Tapajós, 70 - Vila Tupi",
-"lat": -24.0242993,
-"lon": -46.461143
-},
-{
-"nome": "Edifício Ceres",
-"construtora": "Terral Construtora",
-"bairro": "Aviação",
-"end": "Aviação",
-"lat": -24.0157444,
-"lon": -46.4363946
-},
-{
-"nome": "Edifício Escala",
-"construtora": "Terral Construtora",
-"bairro": "Boqueirão",
-"end": "R. Dr. Roberto Shoji, 472 - Boqueirão",
-"lat": -24.009304,
-"lon": -46.4158289
-},
-{
-"nome": "Sede da Terral Construtora",
-"construtora": "Terral Construtora",
-"bairro": "Aviação",
-"end": "Av. Pres. Castelo Branco, 4370 - Aviação",
-"lat": -24.0184359,
-"lon": -46.4423255
-},
-{
-"nome": "Residencial Serra Morena",
-"construtora": "Vera Lucia Construtora",
-"bairro": "Vila Tupi",
-"end": "R. Tupã, 216 - Vila Tupi",
-"lat": -24.0185136,
-"lon": -46.456584
-},
-{
-"nome": "Residencial Rio Perola",
-"construtora": "Zafer Construtora",
-"bairro": "Aviação",
-"end": "Rua Pero Vaz de Caminha, 183 - Aviação",
-"lat": -24.0174983,
-"lon": -46.4441425
-},
-{
-"nome": "Residencial Rio Gualdaquivir",
-"construtora": "Zafer Construtora",
-"bairro": "Aviação",
-"end": "Rua Padre José de Anchieta, 169 - Aviação",
-"lat": -24.0177632,
-"lon": -46.441518
-},
-{
-"nome": "Residencial Rio Angara",
-"construtora": "Zafer Construtora",
-"bairro": "Guilhermina",
-"end": "R. Colômbia, 291 - Guilhermina",
-"lat": -24.0121031,
-"lon": -46.4262673
-},
-{
-"nome": "Residencial Rio Manzanares",
-"construtora": "Zafer Construtora",
-"bairro": "Guilhermina",
-"end": "R. Dr. Cyro Carneiro, 107 - Guilhermina",
-"lat": -24.0145416,
-"lon": -46.4298592
-},
-{
-"nome": "Residencial Rio Elba",
-"construtora": "Zafer Construtora",
-"bairro": "Guilhermina",
-"end": "R. Bolívia, 31 - Guilhermina",
-"lat": -24.0126781,
-"lon": -46.4241853
-}
+ {
+  "nome": "Residencial Guayi",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Pres. Castelo Branco, 3972, Aviação",
+  "lat": -24.0173178,
+  "lon": -46.4385074
+ },
+ {
+  "nome": "Residencial A'Villa",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Pres. Castelo Branco, 3400, Aviação",
+  "lat": -24.0159822,
+  "lon": -46.4330826
+ },
+ {
+  "nome": "Residencial Ilha da Madeira",
+  "construtora": "RG Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Pres. Castelo Branco, 4380, Aviação",
+  "lat": -24.0185023,
+  "lon": -46.4424924
+ },
+ {
+  "nome": "Residencial Ilha da Madeira III",
+  "construtora": "RG Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Pres. Castelo Branco, 4330, Aviação",
+  "lat": -24.0183849,
+  "lon": -46.4420893
+ },
+ {
+  "nome": "Residencial Paulo Roberto II",
+  "construtora": "J.R. Construtora",
+  "bairro": "Vila Tupi",
+  "end": "Av. Pres. Castelo Branco, 6038, Vila Tupi",
+  "lat": -24.0359056,
+  "lon": -46.4906528
+ },
+ {
+  "nome": "Residencial Jardim do Atlântico",
+  "construtora": "Igaratá Construtora",
+  "bairro": "Vila Tupi",
+  "end": "Av. Pres. Castelo Branco, 5412, Vila Tupi",
+  "lat": -24.0214746,
+  "lon": -46.4520946
+ },
+ {
+  "nome": "Edifício Panorama",
+  "construtora": "Igaratá Construtora",
+  "bairro": "Guilhermina",
+  "end": "Av. Pres. Castelo Branco, 2944, Jardim Guilhermina",
+  "lat": -24.0149409,
+  "lon": -46.4288659
+ },
+ {
+  "nome": "Residencial Tiwa",
+  "construtora": "Terral Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Rui Barbosa, 116, Canto do Forte",
+  "lat": -24.0129537,
+  "lon": -46.4079283
+ },
+ {
+  "nome": "Residencial Barcelona",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Rui Barbosa, 146, Canto do Forte",
+  "lat": -24.0127092,
+  "lon": -46.4078901
+ },
+ {
+  "nome": "Residencial Joshephina Masotti",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Rui Barbosa, 190, Canto do Forte",
+  "lat": -24.0124139,
+  "lon": -46.4078767
+ },
+ {
+  "nome": "Residencial Agostinho Masotti",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Rui Barbosa, 268, Canto do Forte",
+  "lat": -24.011663,
+  "lon": -46.4079048
+ },
+ {
+  "nome": "Residencial Sevilha",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Rui Barbosa, 187, Canto do Forte",
+  "lat": -24.0123538,
+  "lon": -46.4082356
+ },
+ {
+  "nome": "Residencial Baia Branca",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Rui Barbosa, 461, Canto do Forte",
+  "lat": -24.0098525,
+  "lon": -46.4080096
+ },
+ {
+  "nome": "Residencial Baia Dourada",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Amazonas, 405, Canto do Forte",
+  "lat": -24.0097444,
+  "lon": -46.4081921
+ },
+ {
+  "nome": "Edifício Comercial Masotti",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Bahia, 378, Canto do Forte",
+  "lat": -24.0123525,
+  "lon": -46.408606
+ },
+ {
+  "nome": "Residencial Roberto",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Av. Marechal Maurício José Cardoso, 403, Canto do Forte",
+  "lat": -24.0102303,
+  "lon": -46.4094083
+ },
+ {
+  "nome": "Residencial Tijuca",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Av. Marechal Maurício José Cardoso, 543, Canto do Forte",
+  "lat": -24.0090046,
+  "lon": -46.4092639
+ },
+ {
+  "nome": "Residencial Alberto Serodio",
+  "construtora": "Martino Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Tiradentes, 121, Canto do Forte",
+  "lat": -24.0132171,
+  "lon": -46.4056266
+ },
+ {
+  "nome": "Residencial Mares do Sul",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Rua Tiradentes, 255, Canto do Forte",
+  "lat": -24.0124607,
+  "lon": -46.4055515
+ },
+ {
+  "nome": "Residencial Costão do Forte",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Av. Marechal Hermes da Fonseca, 260, Canto do Forte",
+  "lat": -24.012048,
+  "lon": -46.4059747
+ },
+ {
+  "nome": "Residencial Suzana Masotti",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "Av. Marechal Hermes da Fonseca, 399, Canto do Forte",
+  "lat": -24.0106186,
+  "lon": -46.4068249
+ },
+ {
+  "nome": "Residencial Smart",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Ipanema, 360, Jardim Guilhermina",
+  "lat": -24.0106094,
+  "lon": -46.4230979
+ },
+ {
+  "nome": "Residencial Apolo",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Gonzaga, 32, Jardim Guilhermina",
+  "lat": -24.0113681,
+  "lon": -46.4235871
+ },
+ {
+  "nome": "Residencial Torre do Sol",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Bolívia, 140, Jardim Guilhermina",
+  "lat": -24.0114708,
+  "lon": -46.4243475
+ },
+ {
+  "nome": "Residencial Ródano",
+  "construtora": "Zafer Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Itararé, 396, Jardim Guilhermina",
+  "lat": -24.0104525,
+  "lon": -46.4221479
+ },
+ {
+  "nome": "Residencial Marbella",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Doutor João Sampaio, 197, Jardim Guilhermina",
+  "lat": -24.0128668,
+  "lon": -46.4251392
+ },
+ {
+  "nome": "Residencial San Diego",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Doutor João Sampaio, 269, Jardim Guilhermina",
+  "lat": -24.0120395,
+  "lon": -46.4253626
+ },
+ {
+  "nome": "Residencial Farol da Barra",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Colômbia, 181, Jardim Guilhermina",
+  "lat": -24.0130119,
+  "lon": -46.4258115
+ },
+ {
+  "nome": "Residencial Porto Esperança",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Guilhermina",
+  "end": "Praça José de Anchieta, 345, Jardim Guilhermina",
+  "lat": -24.0117867,
+  "lon": -46.4265408
+ },
+ {
+  "nome": "Residencial California",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Nicarágua, 153, Jardim Guilhermina",
+  "lat": -24.0143124,
+  "lon": -46.4311551
+ },
+ {
+  "nome": "Residencial San Marino",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Venezuela, 277, Jardim Guilhermina",
+  "lat": -24.0136812,
+  "lon": -46.4330274
+ },
+ {
+  "nome": "Residencial Balboa",
+  "construtora": "Atlantika Incorporadora",
+  "bairro": "Guilhermina",
+  "end": "Rua Leblon, 493, Jardim Guilhermina",
+  "lat": -24.0094579,
+  "lon": -46.4207461
+ },
+ {
+  "nome": "Residencial Grafite",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Ipanema, 379, Jardim Guilhermina",
+  "lat": -24.0104979,
+  "lon": -46.4235174
+ },
+ {
+  "nome": "Residencial Nankin",
+  "construtora": "Terral Construtora",
+  "bairro": "Guilhermina",
+  "end": "Rua Ipanema, 235, Jardim Guilhermina",
+  "lat": -24.0116903,
+  "lon": -46.4229415
+ },
+ {
+  "nome": "Residencial Acauã",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Men de Sá, 169, Aviação",
+  "lat": -24.0170399,
+  "lon": -46.4417675
+ },
+ {
+  "nome": "Residencial Luara",
+  "construtora": "R.A Gomes Pacheco Construtora",
+  "bairro": "Aviação",
+  "end": "Av. São Pedro, 201, Aviação",
+  "lat": -24.0170481,
+  "lon": -46.4429738
+ },
+ {
+  "nome": "Residencial Alpha",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "Av. General Marcondes Salgado, 82, Aviação",
+  "lat": -24.0175819,
+  "lon": -46.440833
+ },
+ {
+  "nome": "Residencial Gaudi",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Av. General Marcondes Salgado, 212, Aviação",
+  "lat": -24.0164745,
+  "lon": -46.4415168
+ },
+ {
+  "nome": "Residencial Daniel Mazotti",
+  "construtora": "Mazotti Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Padre José de Anchieta, 309, Aviação",
+  "lat": -24.0180606,
+  "lon": -46.4428283
+ },
+ {
+  "nome": "Residencial Rosales",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Pero Vaz de Caminha, 69, Aviação",
+  "lat": -24.0183386,
+  "lon": -46.443652
+ },
+ {
+  "nome": "Residencial Marina",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Ophelia Caccetari Reis, 113, Aviação",
+  "lat": -24.0169499,
+  "lon": -46.4397529
+ },
+ {
+  "nome": "Residencial Saint Regis",
+  "construtora": "Ancora Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Nicarágua, 54 - Guilhermina",
+  "lat": -24.01494,
+  "lon": -46.4303627
+ },
+ {
+  "nome": "Residencial Ilha de Creta",
+  "construtora": "Alberto Maragoni",
+  "bairro": "Canto do Forte",
+  "end": "R. Gen. Euclides de Figueiredo, 390 - Canto do Forte",
+  "lat": -24.0138797,
+  "lon": -46.4027496
+ },
+ {
+  "nome": "Residencial Cornide I",
+  "construtora": "Cornide Construtora",
+  "bairro": "Aviação",
+  "end": "R. João Pereira Inácio, 79 - Aviação",
+  "lat": -24.0174454,
+  "lon": -46.4403715
+ },
+ {
+  "nome": "Residencial Cornide II",
+  "construtora": "Cornide Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Dona Ophelia Caccerari Reis, 114 - Aviação",
+  "lat": -24.0169068,
+  "lon": -46.4394558
+ },
+ {
+  "nome": "Edifício Santa Barbara",
+  "construtora": "Elo Adm. de Condomínios",
+  "bairro": "Canto do Forte",
+  "end": "Av. Mal. Hermes, 400 - Canto do Forte",
+  "lat": -24.0108472,
+  "lon": -46.4059184
+ },
+ {
+  "nome": "Edifício Córdoba",
+  "construtora": "Hidalgo Gimenez e Hidalgo Construtora",
+  "bairro": "Boqueirão",
+  "end": "R. Campinas, 564 - Boqueirão",
+  "lat": -24.0096605,
+  "lon": -46.4176074
+ },
+ {
+  "nome": "Edifício São Matheus",
+  "construtora": "JBX Ferragens",
+  "bairro": "Vila Tupi",
+  "end": "R. Caiapós, 80 - Vila Tupi",
+  "lat": -24.0227838,
+  "lon": -46.4568072
+ },
+ {
+  "nome": "Edifício Karoline",
+  "construtora": "J.C Santos Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Copacabana, 107 - Guilhermina",
+  "lat": -24.0125994,
+  "lon": -46.4184126
+ },
+ {
+  "nome": "Residencial Barrabella",
+  "construtora": "Jorge L. Martinho",
+  "bairro": "Vila Tupi",
+  "end": "R. Dr. Napoleão Laureano, 546 - Vila Tupi",
+  "lat": -24.022294,
+  "lon": -46.467503
+ },
+ {
+  "nome": "Residencial Paulo Roberto VIII",
+  "construtora": "J.R. Construtora",
+  "bairro": "Vila Tupi",
+  "end": "R. Guaianases, 198 - Vila Tupi",
+  "lat": -24.0203312,
+  "lon": -46.455345
+ },
+ {
+  "nome": "Residencial Ilha do Mel",
+  "construtora": "Laguna Construtora",
+  "bairro": "Vila Caiçara",
+  "end": "R. São Benedito, 36 - Vila Caiçara",
+  "lat": -24.049558,
+  "lon": -46.5227245
+ },
+ {
+  "nome": "Edifício Marcelino",
+  "construtora": "Marcelo Grejo",
+  "bairro": "Guilhermina",
+  "end": "Av. Guilhermina, 519 - Guilhermina",
+  "lat": -24.0089866,
+  "lon": -46.4221313
+ },
+ {
+  "nome": "Residencial Regina",
+  "construtora": "Masotti Construtora",
+  "bairro": "Canto do Forte",
+  "end": "R. Rui Barbosa, 294 - Canto do Forte",
+  "lat": -24.01137,
+  "lon": -46.407727
+ },
+ {
+  "nome": "Residencial Vandui Lima",
+  "construtora": "Masotti Construtora",
+  "bairro": "Boqueirão",
+  "end": "R. Emancipador Paulo Fefin, 524 - Boqueirão",
+  "lat": -24.009583,
+  "lon": -46.4173482
+ },
+ {
+  "nome": "Residencial Gabriel Masotti",
+  "construtora": "Masotti Construtora",
+  "bairro": "Boqueirão",
+  "end": "R. Bahia, 618 - Boqueirão",
+  "lat": -24.0122882,
+  "lon": -46.4110661
+ },
+ {
+  "nome": "Edifício Península",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Gen. Marcondes Salgado, 71 - Aviação",
+  "lat": -24.017667,
+  "lon": -46.4410889
+ },
+ {
+  "nome": "Residencial La Coruña",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Vila Tupi",
+  "end": "R. Guaranis, 154 - Vila Tupi",
+  "lat": -24.021117,
+  "lon": -46.454344
+ },
+ {
+  "nome": "Residencial Leon",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Peru, 210 - Guilhermina",
+  "lat": -24.0139179,
+  "lon": -46.4320129
+ },
+ {
+  "nome": "Residencial Asturias",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Dona Ophelia Caccerari Reis, 173 - Aviação",
+  "lat": -24.0156173,
+  "lon": -46.4394979
+ },
+ {
+  "nome": "Residencial Santiago",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Dona Ophelia Caccerari Reis, 197 - Aviação",
+  "lat": -24.0163243,
+  "lon": -46.4400957
+ },
+ {
+  "nome": "Residencial Valencia",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Venezuela, 197 - Guilhermina",
+  "lat": -24.0142329,
+  "lon": -46.4326943
+ },
+ {
+  "nome": "Residencial Algas Marinha",
+  "construtora": "Maura Vieira Construtora",
+  "bairro": "Aviação",
+  "end": "R. Vasco da Gama, 79 - Aviação",
+  "lat": -24.0188658,
+  "lon": -46.4458664
+ },
+ {
+  "nome": "Residencial Azul do Mar",
+  "construtora": "Maura Vieira Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Honduras, 229 - Guilhermina",
+  "lat": -24.0124098,
+  "lon": -46.427929
+ },
+ {
+  "nome": "Residencial Arco-íris",
+  "construtora": "Maura Vieira Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Martiniano de Andrade Bittencourt, 513 - Aviação",
+  "lat": -24.013462,
+  "lon": -46.4411724
+ },
+ {
+  "nome": "Residencial Sereno Mar",
+  "construtora": "Maura Vieira Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Honduras, 326 - Guilhermina",
+  "lat": -24.0117357,
+  "lon": -46.4281553
+ },
+ {
+  "nome": "Residencial Ondas de Prata",
+  "construtora": "Maura Vieira Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Pero Vaz de Caminha, 245 - Aviação",
+  "lat": -24.0169073,
+  "lon": -46.4443185
+ },
+ {
+  "nome": "Residencial Genival M. Jr",
+  "construtora": "Menezes Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Haiti, 74 - Guilhermina",
+  "lat": -24.0139582,
+  "lon": -46.4261395
+ },
+ {
+  "nome": "Residencial Parati I",
+  "construtora": "Oki Galli Construtora",
+  "bairro": "Aviação",
+  "end": "R. Martiniano de Andrade Bitencourt, 394 - Aviação",
+  "lat": -24.0144144,
+  "lon": -46.4400117
+ },
+ {
+  "nome": "Residencial Amanda",
+  "construtora": "RG Construtora",
+  "bairro": "Guilhermina",
+  "end": "Av. Guilhermina, 626 - Guilhermina",
+  "lat": -24.008044,
+  "lon": -46.4222353
+ },
+ {
+  "nome": "Residencial Alexandre",
+  "construtora": "RG Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Jorge Hagge, 215 - Aviação",
+  "lat": -24.0155135,
+  "lon": -46.4382294
+ },
+ {
+  "nome": "Edifício Ponta do Sol",
+  "construtora": "RG Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Copacabana, 410 - Guilhermina",
+  "lat": -24.0099206,
+  "lon": -46.419133
+ },
+ {
+  "nome": "Edifício Fabiana",
+  "construtora": "RG Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Perequê, 59 - Guilhermina",
+  "lat": -24.0090525,
+  "lon": -46.4190336
+ },
+ {
+  "nome": "Residencial Saint Thomaz",
+  "construtora": "Termaq Construtora",
+  "bairro": "Vila Tupi",
+  "end": "R. Tapajós, 70 - Vila Tupi",
+  "lat": -24.0242993,
+  "lon": -46.461143
+ },
+ {
+  "nome": "Edifício Escala",
+  "construtora": "Terral Construtora",
+  "bairro": "Boqueirão",
+  "end": "R. Dr. Roberto Shoji, 472 - Boqueirão",
+  "lat": -24.009304,
+  "lon": -46.4158289
+ },
+ {
+  "nome": "Sede da Terral Construtora",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Pres. Castelo Branco, 4370 - Aviação",
+  "lat": -24.0184359,
+  "lon": -46.4423255
+ },
+ {
+  "nome": "Residencial Serra Morena",
+  "construtora": "Vera Lucia Construtora",
+  "bairro": "Vila Tupi",
+  "end": "R. Tupã, 216 - Vila Tupi",
+  "lat": -24.0185136,
+  "lon": -46.456584
+ },
+ {
+  "nome": "Residencial Rio Perola",
+  "construtora": "Zafer Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Pero Vaz de Caminha, 183 - Aviação",
+  "lat": -24.0174983,
+  "lon": -46.4441425
+ },
+ {
+  "nome": "Residencial Rio Gualdaquivir",
+  "construtora": "Zafer Construtora",
+  "bairro": "Aviação",
+  "end": "Rua Padre José de Anchieta, 169 - Aviação",
+  "lat": -24.0177632,
+  "lon": -46.441518
+ },
+ {
+  "nome": "Residencial Rio Angara",
+  "construtora": "Zafer Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Colômbia, 291 - Guilhermina",
+  "lat": -24.0121031,
+  "lon": -46.4262673
+ },
+ {
+  "nome": "Residencial Rio Manzanares",
+  "construtora": "Zafer Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Dr. Cyro Carneiro, 107 - Guilhermina",
+  "lat": -24.0145416,
+  "lon": -46.4298592
+ },
+ {
+  "nome": "Residencial Rio Elba",
+  "construtora": "Zafer Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Bolívia, 31 - Guilhermina",
+  "lat": -24.0126781,
+  "lon": -46.4241853
+ },
+ {
+  "nome": "Ed. Ibérico",
+  "construtora": "Mata Atlântica Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Gen. Marcondes Salgado, 81",
+  "lat": -24.0176426,
+  "lon": -46.4411034
+ },
+ {
+  "nome": "Ed. Ceres",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "R. Gago Coutinho, 36",
+  "lat": -24.0157652,
+  "lon": -46.4364665
+ },
+ {
+  "nome": "Res. Rio Sena",
+  "construtora": "Brisamar Construtora",
+  "bairro": "Aviação",
+  "end": "Av. Gen. Marcondes Salgado, 112",
+  "lat": -24.0171663,
+  "lon": -46.4410031
+ },
+ {
+  "nome": "Res. Rio Danúbio",
+  "construtora": "Zafer Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Colômbia, 110",
+  "lat": -24.0134734,
+  "lon": -46.4251255
+ },
+ {
+  "nome": "Res. Rio Volga",
+  "construtora": "Brisamar Construtora",
+  "bairro": "Vila Tupi",
+  "end": "R. Guaianases, 177",
+  "lat": -24.0204865,
+  "lon": -46.4550988
+ },
+ {
+  "nome": "Res. Rio Tibre",
+  "construtora": "Zafer Construtora",
+  "bairro": "Guilhermina",
+  "end": "R. Colômbia, 279",
+  "lat": -24.0123477,
+  "lon": -46.4262031
+ },
+ {
+  "nome": "Ed. Ecoline",
+  "construtora": "Terral Construtora",
+  "bairro": "Aviação",
+  "end": "R. Mém de Sá, 100",
+  "lat": -24.0167477,
+  "lon": -46.4411868
+ }
 ]
