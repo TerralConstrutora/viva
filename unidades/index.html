@@ -869,6 +869,8 @@ L.load('viva.glb',g=>{
      else if(/^(Box306[2-7]\d|Box32257(_\d)?|Box3226[012])$/.test(nm)||nm==='ARQ_PERGOLADO'||(/GRADIL/.test(nm)&&bb.min.x>3&&h>2))m=mad;
      if(m){n.material=m;cont[m.name]=(cont[m.name]||0)+1;}});
    console.log('térreo',cont);}
+  /* compila os materiais antes de mostrar (evita o congelamento no primeiro quadro) */
+  R.compileAsync(o,cam,S).catch(()=>{}).then(()=>{
   S.add(o);modeloFachada=o;grupo=grupoUnidades();pintar();
   const b=new THREE.Box3().setFromObject(o);const c=b.getCenter(new THREE.Vector3());chao.position.y=b.min.y-0.05;
   C.target.set(c.x,c.y-3,c.z);cam.position.set(c.x+110,c.y+22,c.z+125);enquadrar();C.update();CASA={p:cam.position.clone(),t:C.target.clone()};
@@ -877,7 +879,9 @@ L.load('viva.glb',g=>{
   const h=location.hash.slice(1);irModo(h==='aptos'||h==='lazer'?h:'inicio');
   window.pronto=true;
   montarPois(b.min.y+0.93);
-  iniciarCidade(b.min.y);
+  /* a cidade do Google só começa depois que o prédio já está na tela */
+  setTimeout(()=>iniciarCidade(b.min.y),2500);
+  });
 },x=>{if(x.total)$('#barra').style.width=(x.loaded/x.total*100)+'%';},e=>{$('#carregando p').textContent='Não foi possível carregar o modelo';console.error(e);});
 
 /* cobogós nas aberturas das garagens G1–G4: painéis seguindo o contorno externo das lajes */
