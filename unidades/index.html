@@ -443,7 +443,7 @@ async function iniciarCidade(yChao){
        if(extra>0)alvo.error/=Math.pow(1+extra/(innerWidth<900?120:180),1.6);
        if(!alvo.inView)alvo.error*=0.25;};}
     /* limita a memória e o trabalho por quadro da cidade (antes não havia limite e o navegador podia travar) */
-    try{t.downloadQueue.maxJobs=LEVE?4:6;t.parseQueue.maxJobs=LEVE?1:2;}catch(_){} /* o cache fica no padrão: limitar demais apagava pedaços da cidade (fundo preto) */
+    /* filas de download/processamento e cache da cidade ficam no padrão da biblioteca (mexer nelas travava o carregamento) */
     const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+0.93+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
     t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
     Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+0.93},cR:{value:38}});
@@ -787,7 +787,7 @@ $('#arqBtn').onclick=async()=>{
   if(on&&!arqEls)await criarArq();
   C.enablePan=on||explorando;C.screenSpacePanning=false;
   if(on){ /* vista aérea vinda do mar, enquadrando todos os prédios perto do Vivá (até 3,5 km) */
-    const pts=arqEls.filter(o=>Math.hypot(o.x-GEO.ax,o.z-GEO.az)<3500);
+    const pts=arqEls.filter(o=>Math.hypot(o.x-GEO.ax,o.z-GEO.az)<2600);
     const c=pts.reduce((m,o)=>(m.x+=o.x/pts.length,m.z+=o.z/pts.length,m),{x:0,z:0});
     const ext=Math.max(...pts.map(o=>Math.hypot(o.x-c.x,o.z-c.z)));
     const alvo=new THREE.Vector3(c.x,yRua,c.z);
@@ -795,8 +795,8 @@ $('#arqBtn').onclick=async()=>{
     const dir=new THREE.Vector3(mx-vx,0,mz-vz).normalize();let p1,d;
     if(cam.aspect<1){ /* celular em pé: vista quase de cima, com a orla na vertical da tela */
       const [ax,az]=geoParaModelo(-24.0125,-46.408),[bx,bz]=geoParaModelo(-24.0215,-46.452);const cd=new THREE.Vector3(bx-ax,0,bz-az).normalize();
-      d=Math.min(9000,ext/Math.tan(cam.fov*Math.PI/360)*1.15+300);p1=alvo.clone().add(cd.multiplyScalar(-d*0.3)).add(new THREE.Vector3(0,d*0.95,0));
-    }else{const hf=Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);d=Math.min(9000,ext/Math.tan(hf)*1.25+300);
+      d=Math.min(3200,ext/Math.tan(cam.fov*Math.PI/360)*0.8+150);p1=alvo.clone().add(cd.multiplyScalar(-d*0.3)).add(new THREE.Vector3(0,d*0.95,0));
+    }else{const hf=Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);d=Math.min(2600,ext/Math.tan(hf)*0.85+150);
       p1=alvo.clone().add(dir.multiplyScalar(d*0.62)).add(new THREE.Vector3(0,d*0.78,0));}
     C.maxDistance=Math.max(C.maxDistance,d*1.6);anim={t:0,p0:cam.position.clone(),p1,a0:C.target.clone(),a1:alvo};C.autoRotate=false;
   }else{voltarCasa();}
