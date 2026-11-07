@@ -206,6 +206,7 @@ body.explorando .ajuda{opacity:1!important}
 /* escala única: o layout de 1920x1080 é reproduzido proporcionalmente em qualquer tela de computador */
 .poi,.lz-pin{transform-origin:0 0}
 @media (min-width:901px){.topo,.hero,.painel,.det,.leg,.explorar,.legpoi,.lz-painel,.lz-card,.ver-cob,.creditos,.ajuda,.carregando>*{zoom:var(--k,1)}}
+.aviso-gpu{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:99;max-width:560px;background:#fff8e1;color:#5d4300;border:1px solid #f0c36d;border-radius:10px;padding:10px 14px;font:13px/1.4 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.18)}.aviso-gpu button{margin-left:8px;border:0;background:#f0c36d;border-radius:6px;padding:3px 10px;cursor:pointer}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -286,11 +287,22 @@ const OFF=-66.63; const yAndar=a=>18.80+2.80*(a-6)+OFF; // 6º andar = 1º tipo 
 
 /* ---------- cena ---------- */
 const box=$('#cena');
-const R=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
-R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);
+/* desempenho: detecta placa fraca ou navegador sem aceleração de hardware (renderização por software trava a máquina) */
+const GPU=(()=>{try{const c=document.createElement('canvas');const g=c.getContext('webgl2',{failIfMajorPerformanceCaveat:true})||c.getContext('webgl',{failIfMajorPerformanceCaveat:true});
+  if(!g)return{soft:true,nome:'sem aceleração'};const e=g.getExtension('WEBGL_debug_renderer_info');const nome=e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):'';
+  g.getExtension('WEBGL_lose_context')?.loseContext();return{soft:/swiftshader|llvmpipe|softpipe|basic render|software/i.test(nome),nome};}catch(_){return{soft:false,nome:''};}})();
+const FRACO=GPU.soft||(navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4);
+/* resolução: no máx. 1,5x a da tela e no máx. ~3,7 milhões de pixels (telas 4K/retina ficavam pesadíssimas) */
+function pr(){const base=Math.min(devicePixelRatio||1,FRACO?1:1.5);return Math.max(.75,Math.min(base,Math.sqrt(3.7e6/(innerWidth*innerHeight))));}
+const R=new THREE.WebGLRenderer({antialias:!FRACO,alpha:true,powerPreference:'high-performance'});
+R.setPixelRatio(pr());R.setSize(innerWidth,innerHeight);
 R.outputColorSpace=THREE.SRGBColorSpace;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;
-const LEVE=/leve/.test(location.search);if(LEVE)R.setPixelRatio(1);
+let LEVE=/leve/.test(location.search)||FRACO;if(LEVE)R.setPixelRatio(Math.min(1,pr()));
 R.shadowMap.enabled=innerWidth>900&&!LEVE;R.shadowMap.type=THREE.PCFSoftShadowMap;
+R.shadowMap.autoUpdate=false;R.shadowMap.needsUpdate=true; /* sol parado: a sombra é recalculada só de vez em quando, não a cada quadro */
+if(GPU.soft)setTimeout(()=>{const d=document.createElement('div');d.className='aviso-gpu';d.innerHTML='Seu navegador está sem <b>aceleração de hardware</b>, por isso o 3D pode ficar lento. Ative em Configurações → Sistema → “Usar aceleração de hardware quando disponível” e reabra a página. <button>OK</button>';d.querySelector('button').onclick=()=>d.remove();document.body.appendChild(d);},800);
+if(GPU.soft){R.setPixelRatio(.7);}
+R.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();});
 box.appendChild(R.domElement);
 const S=new THREE.Scene();
 const pm=new THREE.PMREMGenerator(R);S.environment=pm.fromScene(new RoomEnvironment(),0.04).texture;
@@ -341,7 +353,9 @@ async function iniciarCidade(yChao){
     t.registerPlugin(new T3.ReorientationPlugin({lat:GEO.lat*Math.PI/180,lon:GEO.lon*Math.PI/180,height:0,recenter:true}));
     t.registerPlugin(new T3.TileCompressionPlugin());t.registerPlugin(new T3.UnloadTilesPlugin());
     t.registerPlugin(new T3.GLTFExtensionsPlugin({dracoLoader:new DRACOLoader().setDecoderPath('lib/addons/libs/draco/gltf/')}));
-    t.errorTarget=innerWidth<900||LEVE?24:14;
+    t.errorTarget=innerWidth<900||LEVE?28:18;
+    /* limita a memória e o trabalho por quadro da cidade (antes não havia limite e o navegador podia travar) */
+    try{t.lruCache.minSize=250;t.lruCache.maxSize=LEVE?400:700;t.lruCache.minBytesSize=0.15*2**30;t.lruCache.maxBytesSize=(LEVE?0.25:0.4)*2**30;t.downloadQueue.maxJobs=LEVE?3:5;t.parseQueue.maxJobs=1;}catch(_){}
     const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+0.93+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
     t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
     Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+0.93},cR:{value:38}});
@@ -895,9 +909,19 @@ function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;escala();
   cam.fov=w>900&&w/h<16/9?2*Math.atan(Math.tan(FOV0*Math.PI/360)*(16/9)/(w/h))*180/Math.PI:FOV0;
   if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else if(sel&&modo==='aptos'){cam.setViewOffset(w,h,0,h*.26,w,h);}else if(modo==='aptos'&&!document.querySelector('#painel').classList.contains('recolhida')){cam.setViewOffset(w,h,Math.min(w*.44,180)/2,0,w,h);}else{cam.clearViewOffset();}
   cam.updateProjectionMatrix();}
-addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);enquadrar();});
+addEventListener('resize',()=>{if(!rebaixou)R.setPixelRatio(GPU.soft?.7:LEVE?Math.min(1,pr()):pr());R.setSize(innerWidth,innerHeight);R.shadowMap.needsUpdate=true;enquadrar();});
 const clock=new THREE.Clock();let nq=0;
-R.setAnimationLoop(()=>{const dt=clock.getDelta();
+let quadro=0,ocioso=0,medT=0,medN=0,rebaixou=0,pulou=false;
+C.addEventListener('start',()=>{ocioso=-1;});C.addEventListener('end',()=>{ocioso=0;});
+function rebaixar(){rebaixou++;
+  if(rebaixou===1){R.setPixelRatio(Math.min(1,pr()));R.setSize(innerWidth,innerHeight);if(R.shadowMap.enabled){R.shadowMap.enabled=false;S.traverse(n=>{if(n.material)[].concat(n.material).forEach(m=>m.needsUpdate=true);});}if(cidade.tiles)cidade.tiles.errorTarget=30;}
+  else if(rebaixou===2){if(cidade.tiles){cidade.tiles.errorTarget=40;try{cidade.tiles.lruCache.maxSize=300;}catch(_){}}R.setPixelRatio(.75);R.setSize(innerWidth,innerHeight);}}
+R.setAnimationLoop(()=>{const dt=clock.getDelta();quadro++;
+  /* parado (só girando sozinho): desenha 1 de cada 2 quadros para aliviar a placa */
+  if(ocioso>=0)ocioso+=dt;if(GPU.soft&&!anim&&ocioso>=0&&quadro%6){pulou=true;return;}if(!anim&&ocioso>3&&quadro%2){pulou=true;return;}const dq=pulou?dt/(GPU.soft?6:2):dt;pulou=false;
+  if(quadro%20===0)R.shadowMap.needsUpdate=true;
+  /* se ficar abaixo de ~22 quadros/s, baixa a qualidade sozinho (até 2 vezes) */
+  if(document.visibilityState==='visible'&&dq<0.5&&clock.elapsedTime>10&&!lazerCarregando){medT+=dq;medN++;if(medT>4){if(medT/medN>0.045&&rebaixou<2)rebaixar();medT=0;medN=0;}}
   if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
   if(sel&&vol[sel.un]){const k=.5+.5*Math.sin(clock.elapsedTime*3.2);vol[sel.un].material.opacity=.55+.3*k;}
   C.update();if(cidade.on&&!cidade.ok&&++cidade.espera>1200){desligarCidade();}
