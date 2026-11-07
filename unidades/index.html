@@ -207,6 +207,33 @@ body.explorando .ajuda{opacity:1!important}
 .poi,.lz-pin{transform-origin:0 0}
 @media (min-width:901px){.topo,.hero,.painel,.det,.leg,.explorar,.legpoi,.lz-painel,.lz-card,.ver-cob,.creditos,.ajuda,.carregando>*{zoom:var(--k,1)}}
 .aviso-gpu{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:99;max-width:560px;background:#fff8e1;color:#5d4300;border:1px solid #f0c36d;border-radius:10px;padding:10px 14px;font:13px/1.4 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.18)}.aviso-gpu button{margin-left:8px;border:0;background:#f0c36d;border-radius:6px;padding:3px 10px;cursor:pointer}
+
+/* ===== celular: diagramação compacta (botões não se sobrepõem, textos e botões menores) ===== */
+@media (max-width:900px){
+  .topo{gap:10px;padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px}
+  .topo img{height:30px}
+  .cta.topo-cta{padding:7px 11px;font-size:10.5px;letter-spacing:.05em}
+  .nav button{padding:9px 6px;font-size:10.5px;letter-spacing:.1em}
+  .hero{left:16px;right:16px;bottom:calc(70px + env(safe-area-inset-bottom,0px));padding-bottom:0}
+  .hero h1{font-size:27px;line-height:1.05;margin-bottom:6px;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+  .hero p{font-size:12px;line-height:1.45;margin-bottom:10px;max-width:340px;text-shadow:0 1px 8px rgba(0,0,0,.6);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .nums{gap:18px;margin-bottom:10px}.nums b{font-size:22px}.nums span{font-size:10.5px}
+  .btns-ver{gap:8px;flex-wrap:nowrap}
+  .btn-ver{margin-top:0;flex:1;padding:9px 8px;font-size:10.5px;letter-spacing:.1em;background:rgba(10,12,14,.35)}
+  /* Comércios ao redor e Explorar a cidade: lado a lado, logo abaixo do topo */
+  .explorar,.explorar.arr{top:calc(54px + env(safe-area-inset-top,0px));bottom:auto!important;right:auto;padding:7px 11px;font-size:11px;gap:5px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+  .explorar.arr{left:14px}
+  .explorar#explorar{left:auto;right:14px}
+  .explorar .ic{font-size:12px}
+  body.m-aptos .explorar#explorar{right:auto;left:calc(14px + 168px)}
+  body.m-lazer .explorar#explorar{right:auto;left:14px}
+  body.m-aptos .painel,body.m-lazer .lz-painel{top:calc(96px + env(safe-area-inset-top,0px))}
+  body.m-lazer .ajuda,body.m-aptos .ajuda{display:none}
+  .aviso-gpu{display:none}
+  .ver-cob{top:calc(92px + env(safe-area-inset-top,0px))}
+  .ajuda{top:calc(92px + env(safe-area-inset-top,0px));font-size:10.5px;padding:5px 11px;white-space:nowrap}
+  .creditos{bottom:calc(54px + env(safe-area-inset-bottom,0px));font-size:9px;max-width:70vw}.creditos b{font-size:11px}
+}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -300,7 +327,7 @@ R.outputColorSpace=THREE.SRGBColorSpace;R.toneMapping=THREE.ACESFilmicToneMappin
 let LEVE=/leve/.test(location.search)||FRACO;if(LEVE)R.setPixelRatio(Math.min(1,pr()));
 R.shadowMap.enabled=innerWidth>900&&!LEVE;R.shadowMap.type=THREE.PCFSoftShadowMap;
 R.shadowMap.autoUpdate=false;R.shadowMap.needsUpdate=true; /* sol parado: a sombra é recalculada só de vez em quando, não a cada quadro */
-if(GPU.soft)setTimeout(()=>{const d=document.createElement('div');d.className='aviso-gpu';d.innerHTML='Seu navegador está sem <b>aceleração de hardware</b>, por isso o 3D pode ficar lento. Ative em Configurações → Sistema → “Usar aceleração de hardware quando disponível” e reabra a página. <button>OK</button>';d.querySelector('button').onclick=()=>d.remove();document.body.appendChild(d);},800);
+if(GPU.soft&&innerWidth>900&&!/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent))setTimeout(()=>{const d=document.createElement('div');d.className='aviso-gpu';d.innerHTML='Seu navegador está sem <b>aceleração de hardware</b>, por isso o 3D pode ficar lento. Ative em Configurações → Sistema → “Usar aceleração de hardware quando disponível” e reabra a página. <button>OK</button>';d.querySelector('button').onclick=()=>d.remove();document.body.appendChild(d);},800);
 if(GPU.soft){R.setPixelRatio(.7);}
 R.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();});
 box.appendChild(R.domElement);
@@ -813,7 +840,7 @@ R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-dow
 
 /* ---------- modos ---------- */
 let modo='inicio';
-function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;modoLazer(m==='lazer');document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
+function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;document.body.classList.toggle('m-aptos',m==='aptos');modoLazer(m==='lazer');document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
   $('#hero').style.opacity=m==='inicio'?1:0;$('#hero').style.pointerEvents=m==='inicio'?'':'none';
   $('#painel').hidden=m!=='aptos';$('#leg').style.display=m==='aptos'&&innerWidth>900?'':'none';
   modoSituacao=m==='aptos';enquadrar();document.body.classList.toggle('det-aberto',false);if(m==='inicio'){sel=null;$('#det').hidden=true;C.autoRotate=true;}pintar();
