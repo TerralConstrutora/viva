@@ -234,6 +234,22 @@ body.explorando .ajuda{opacity:1!important}
   .ajuda{top:calc(92px + env(safe-area-inset-top,0px));font-size:10.5px;padding:5px 11px;white-space:nowrap}
   .creditos{bottom:calc(54px + env(safe-area-inset-bottom,0px));font-size:9px;max-width:70vw}.creditos b{font-size:11px}
 }
+
+/* ===== celular: lazer/cobertura em faixa horizontal embaixo; ficha do apto mais compacta ===== */
+@media (max-width:900px){
+  .lz-painel,body.m-lazer .lz-painel{left:0;right:0;width:auto;top:auto!important;bottom:calc(52px + env(safe-area-inset-bottom,0px));height:auto;border-radius:12px 12px 0 0;border-right:1px solid var(--line)}
+  .lz-cab{padding:8px 12px 0}.lz-cab h2{font-size:15px;margin:0}
+  .lz-lista{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:6px 10px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .lz-it{flex:0 0 116px;display:block;margin:0;padding:4px;scroll-snap-align:start}
+  .lz-it img{width:100%;height:58px;display:block;margin-bottom:4px}
+  .lz-it span{font-size:10.5px;line-height:1.25;display:block}.lz-it small{display:none}
+  .lz-card{bottom:calc(52px + env(safe-area-inset-bottom,0px));max-height:58%;z-index:6}
+  .lz-card h3{font-size:22px}.lz-card p{font-size:12px}.lz-card .ft img{max-height:34vh}
+  .ver-cob{padding:7px 12px;font-size:10.5px;border-radius:999px;letter-spacing:.08em}
+  .det{height:50%;padding:12px 14px}.det h3{font-size:26px}.det .sub{font-size:12px;margin:0 0 8px}
+  .creditos{bottom:calc(196px + env(safe-area-inset-bottom,0px))}
+  body:not(.m-lazer) .creditos{bottom:calc(54px + env(safe-area-inset-bottom,0px))}
+}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -413,7 +429,7 @@ function nivelar(){
   if(hs.length>=3){hs.sort((a,b)=>a-b);const med=hs[hs.length>>1];const d=cidade.cY.value-med;const ny=cidade.geo.position.y+d;if(Math.abs(d)>0.05&&Math.abs(ny-cidade.yChao)<40&&!QS.get('dy'))cidade.geo.position.y=ny;}
   if(++nivelN<12)setTimeout(nivelar,1500);
 }
-function creditos(){if(!cidade.on||!cidade.tiles)return;const a=[];cidade.tiles.getAttributions(a);const s=a.filter(x=>x.type==='string').map(x=>x.value).join(' ');const el=$('#credTxt');if(el.textContent!==s)el.textContent=s;}
+function creditos(){if(!cidade.on||!cidade.tiles)return;const a=[];cidade.tiles.getAttributions(a);const s=a.filter(x=>x.type==='string').map(x=>x.value).join(' ').replace(/^\s*Google\b[\s,;·]*/i,'');const el=$('#credTxt');if(el.textContent!==s)el.textContent=s;}
 
 /* materiais da maquete (provisórios até chegarem os materiais originais) */
 const M={
@@ -840,7 +856,7 @@ R.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-dow
 
 /* ---------- modos ---------- */
 let modo='inicio';
-function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;document.body.classList.toggle('m-aptos',m==='aptos');modoLazer(m==='lazer');document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
+function irModo(m){if(m==='obra')return;if(explorando)alternarExplorar();modo=m;document.body.classList.toggle('m-aptos',m==='aptos');if(m!=='aptos'){$('#det').hidden=true;sel=null;document.body.classList.remove('det-aberto');}modoLazer(m==='lazer');document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.m===m));
   $('#hero').style.opacity=m==='inicio'?1:0;$('#hero').style.pointerEvents=m==='inicio'?'':'none';
   $('#painel').hidden=m!=='aptos';$('#leg').style.display=m==='aptos'&&innerWidth>900?'':'none';
   modoSituacao=m==='aptos';enquadrar();document.body.classList.toggle('det-aberto',false);if(m==='inicio'){sel=null;$('#det').hidden=true;C.autoRotate=true;}pintar();
