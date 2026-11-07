@@ -744,12 +744,12 @@ $('#arredores').onclick=()=>{
 /* ---------- ARQTETANDO: prédios projetados pela arquiteta, com pin sobre cada um ---------- */
 let arqEls=null,arqLista=null;const _ray=new THREE.Raycaster(),_dn=new THREE.Vector3(0,-1,0);
 async function criarArq(){
-  arqLista=await fetch('arqtetando.json?v=1').then(r=>r.json()).catch(()=>[]);$('#arqN').textContent=arqLista.length+' edifícios';
+  arqLista=await fetch('arqtetando.json?v=2').then(r=>r.json()).catch(()=>[]);$('#arqN').textContent=arqLista.length+' edifícios';
   const box=$('#arqPins'),svg=$('#arqLinhas');box.innerHTML='';svg.innerHTML='';
   arqLista=[{nome:'Residencial Vivá',end:'Lançamento · Av. Guilhermina, 109',lat:-24.01248,lon:-46.42055,viva:1},...arqLista];
   arqEls=arqLista.map(a=>{const [x,z]=geoParaModelo(a.lat,a.lon);
-    const el=document.createElement('div');el.className='arq-pin'+(a.viva?' viva':'');el.title=a.nome+' · '+a.end;
-    el.innerHTML=`<i></i><span>${a.nome.replace(/^Residencial /,'Res. ')}<small>${a.end}</small></span>`;
+    const el=document.createElement('div');el.className='arq-pin'+(a.viva?' viva':'');el.title=[a.nome,a.construtora,a.bairro].filter(Boolean).join(' · ');
+    el.innerHTML=`<i></i><span>${a.nome.replace(/^Residencial /,'Res. ').replace(/^Edifício /,'Ed. ')}<small>${a.viva?a.end:[a.construtora,a.bairro].filter(Boolean).join('<br>')}</small></span>`;
     el.onclick=()=>{const ab=!el.classList.contains('aberto');arqEls.forEach(o=>o.el.classList.remove('aberto'));el.classList.toggle('aberto',ab);};
     box.appendChild(el);
     const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('stroke','rgba(243,239,232,.85)');ln.setAttribute('stroke-width','1');
@@ -785,18 +785,18 @@ $('#arqBtn').onclick=async()=>{
   const on=document.body.classList.toggle('arq-on');$('#arqBtn').setAttribute('aria-pressed',on);
   if(on&&document.body.classList.contains('arr-on'))$('#arredores').click();
   if(on&&!arqEls)await criarArq();
-  C.enablePan=on||explorando;C.screenSpacePanning=false;
+  C.enablePan=on||explorando;C.screenSpacePanning=false;enquadrar();
   if(on){ /* vista aérea vinda do mar, enquadrando todos os prédios perto do Vivá (até 3,5 km) */
     const pts=arqEls.filter(o=>Math.hypot(o.x-GEO.ax,o.z-GEO.az)<2600);
-    const c=pts.reduce((m,o)=>(m.x+=o.x/pts.length,m.z+=o.z/pts.length,m),{x:0,z:0});
+    const xs=pts.map(o=>o.x),zs=pts.map(o=>o.z);const c={x:(Math.min(...xs)+Math.max(...xs))/2,z:(Math.min(...zs)+Math.max(...zs))/2};
     const ext=Math.max(...pts.map(o=>Math.hypot(o.x-c.x,o.z-c.z)));
     const alvo=new THREE.Vector3(c.x,yRua,c.z);
     const [mx,mz]=geoParaModelo(-24.035,-46.418);const [vx,vz]=geoParaModelo(-24.0125,-46.4205);
     const dir=new THREE.Vector3(mx-vx,0,mz-vz).normalize();let p1,d;
     if(cam.aspect<1){ /* celular em pé: vista quase de cima, com a orla na vertical da tela */
       const [ax,az]=geoParaModelo(-24.0125,-46.408),[bx,bz]=geoParaModelo(-24.0215,-46.452);const cd=new THREE.Vector3(bx-ax,0,bz-az).normalize();
-      d=Math.min(3200,ext/Math.tan(cam.fov*Math.PI/360)*0.8+150);p1=alvo.clone().add(cd.multiplyScalar(-d*0.3)).add(new THREE.Vector3(0,d*0.95,0));
-    }else{const hf=Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);d=Math.min(2600,ext/Math.tan(hf)*0.85+150);
+      d=Math.min(3800,ext/Math.tan(cam.fov*Math.PI/360)*0.8+150);p1=alvo.clone().add(cd.multiplyScalar(-d*0.3)).add(new THREE.Vector3(0,d*0.95,0));
+    }else{const hf=Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);d=Math.min(4600,ext/Math.tan(hf)*0.95+150);
       p1=alvo.clone().add(dir.multiplyScalar(d*0.62)).add(new THREE.Vector3(0,d*0.78,0));}
     C.maxDistance=Math.max(C.maxDistance,d*1.6);anim={t:0,p0:cam.position.clone(),p1,a0:C.target.clone(),a1:alvo};C.autoRotate=false;
   }else{voltarCasa();}
@@ -1060,7 +1060,8 @@ function cobogos(lajes,pedras=[]){
 function enquadrar(){const w=innerWidth,h=innerHeight;cam.aspect=w/h;escala();
   /* mesmo enquadramento em qualquer tela: abaixo de 16:9 abre o campo de visão para caber a mesma largura */
   cam.fov=w>900&&w/h<16/9?2*Math.atan(Math.tan(FOV0*Math.PI/360)*(16/9)/(w/h))*180/Math.PI:FOV0;
-  if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else if(sel&&modo==='aptos'){cam.setViewOffset(w,h,0,h*.26,w,h);}else if(modo==='aptos'&&!document.querySelector('#painel').classList.contains('recolhida')){cam.setViewOffset(w,h,Math.min(w*.44,180)/2,0,w,h);}else{cam.clearViewOffset();}
+  if(document.body.classList.contains('arq-on')){cam.clearViewOffset();}
+  else if(w>900){const dx=modo==='aptos'?-(sel?0:0.08)*w:-0.14*w;cam.setViewOffset(w,h,dx,0,w,h);}else if(sel&&modo==='aptos'){cam.setViewOffset(w,h,0,h*.26,w,h);}else if(modo==='aptos'&&!document.querySelector('#painel').classList.contains('recolhida')){cam.setViewOffset(w,h,Math.min(w*.44,180)/2,0,w,h);}else{cam.clearViewOffset();}
   cam.updateProjectionMatrix();}
 addEventListener('resize',()=>{if(!rebaixou)R.setPixelRatio(GPU.soft?.7:LEVE?Math.min(1,pr()):pr());R.setSize(innerWidth,innerHeight);R.shadowMap.needsUpdate=true;enquadrar();});
 const clock=new THREE.Clock();let nq=0;
