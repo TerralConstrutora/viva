@@ -406,6 +406,13 @@ async function iniciarCidade(yChao){
     t.registerPlugin(new T3.TileCompressionPlugin());t.registerPlugin(new T3.UnloadTilesPlugin());
     t.registerPlugin(new T3.GLTFExtensionsPlugin({dracoLoader:new DRACOLoader().setDecoderPath('lib/addons/libs/draco/gltf/')}));
     t.errorTarget=innerWidth<900||LEVE?28:18;
+    /* menos detalhe ao longe: quanto mais longe do ponto que a câmera olha, menor o detalhe pedido ao Google
+       (perto do prédio continua nítido; os bairros distantes vêm em versão simplificada e vão refinando conforme a câmera se aproxima) */
+    {const orig=t.calculateTileViewError.bind(t);
+     t.calculateTileViewError=(tile,alvo)=>{orig(tile,alvo);
+       const foco=cam.position.distanceTo(C.target);const extra=alvo.distanceFromCamera-foco*1.15;
+       if(extra>0)alvo.error/=Math.pow(1+extra/(innerWidth<900?120:180),1.6);
+       if(!alvo.inView)alvo.error*=0.25;};}
     /* limita a memória e o trabalho por quadro da cidade (antes não havia limite e o navegador podia travar) */
     try{t.downloadQueue.maxJobs=LEVE?4:6;t.parseQueue.maxJobs=LEVE?1:2;}catch(_){} /* o cache fica no padrão: limitar demais apagava pedaços da cidade (fundo preto) */
     const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+0.93+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
