@@ -744,7 +744,7 @@ $('#arredores').onclick=()=>{
 /* ---------- ARQTETANDO: prédios projetados pela arquiteta, com pin sobre cada um ---------- */
 let arqEls=null,arqLista=null;const _ray=new THREE.Raycaster(),_dn=new THREE.Vector3(0,-1,0);
 async function criarArq(){
-  arqLista=await fetch('arqtetando.json?v=2').then(r=>r.json()).catch(()=>[]);$('#arqN').textContent=arqLista.length+' edifícios';
+  arqLista=await fetch('arqtetando.json?v=3').then(r=>r.json()).catch(()=>[]);$('#arqN').textContent=arqLista.length+' edifícios';
   const box=$('#arqPins'),svg=$('#arqLinhas');box.innerHTML='';svg.innerHTML='';
   arqLista=[{nome:'Residencial Vivá',end:'Lançamento · Av. Guilhermina, 109',lat:-24.01248,lon:-46.42055,viva:1},...arqLista];
   arqEls=arqLista.map(a=>{const [x,z]=geoParaModelo(a.lat,a.lon);
