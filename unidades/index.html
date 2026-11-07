@@ -250,6 +250,15 @@ body.explorando .ajuda{opacity:1!important}
   .creditos{bottom:calc(196px + env(safe-area-inset-bottom,0px))}
   body:not(.m-lazer) .creditos{bottom:calc(54px + env(safe-area-inset-bottom,0px))}
 }
+
+@media (max-width:900px){
+  /* ficha do ambiente do lazer compacta: foto pequena ao lado do texto, sem tampar o 3D */
+  .lz-card{max-height:none;display:grid;grid-template-columns:42% 1fr;align-items:stretch;overflow:hidden}
+  .lz-card .ft{grid-row:1/3;min-height:118px}.lz-card .ft img{height:100%;max-height:150px;object-fit:cover}
+  .lz-card .tx{padding:10px 40px 10px 12px}.lz-card h3{font-size:19px;line-height:1.1}.lz-card p{font-size:11.5px;line-height:1.35;margin-top:3px}
+  .lz-card .x{left:auto;right:6px;top:6px;width:28px;height:28px;font-size:17px}
+  .lz-card .nav2{bottom:6px;right:6px}.lz-card .nav2 button{padding:4px 9px;font-size:10px}
+}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -334,7 +343,7 @@ const box=$('#cena');
 const GPU=(()=>{try{const c=document.createElement('canvas');const g=c.getContext('webgl2',{failIfMajorPerformanceCaveat:true})||c.getContext('webgl',{failIfMajorPerformanceCaveat:true});
   if(!g)return{soft:true,nome:'sem aceleração'};const e=g.getExtension('WEBGL_debug_renderer_info');const nome=e?g.getParameter(e.UNMASKED_RENDERER_WEBGL):'';
   g.getExtension('WEBGL_lose_context')?.loseContext();return{soft:/swiftshader|llvmpipe|softpipe|basic render|software/i.test(nome),nome};}catch(_){return{soft:false,nome:''};}})();
-const FRACO=GPU.soft||(navigator.deviceMemory&&navigator.deviceMemory<=4)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4);
+const FRACO=GPU.soft||(navigator.deviceMemory&&navigator.deviceMemory<=2);
 /* resolução: no máx. 1,5x a da tela e no máx. ~3,7 milhões de pixels (telas 4K/retina ficavam pesadíssimas) */
 function pr(){const base=Math.min(devicePixelRatio||1,FRACO?1:1.5);return Math.max(.75,Math.min(base,Math.sqrt(3.7e6/(innerWidth*innerHeight))));}
 const R=new THREE.WebGLRenderer({antialias:!FRACO,alpha:true,powerPreference:'high-performance'});
@@ -398,7 +407,7 @@ async function iniciarCidade(yChao){
     t.registerPlugin(new T3.GLTFExtensionsPlugin({dracoLoader:new DRACOLoader().setDecoderPath('lib/addons/libs/draco/gltf/')}));
     t.errorTarget=innerWidth<900||LEVE?28:18;
     /* limita a memória e o trabalho por quadro da cidade (antes não havia limite e o navegador podia travar) */
-    try{t.lruCache.minSize=250;t.lruCache.maxSize=LEVE?400:700;t.lruCache.minBytesSize=0.15*2**30;t.lruCache.maxBytesSize=(LEVE?0.25:0.4)*2**30;t.downloadQueue.maxJobs=LEVE?3:5;t.parseQueue.maxJobs=1;}catch(_){}
+    try{t.downloadQueue.maxJobs=LEVE?4:6;t.parseQueue.maxJobs=LEVE?1:2;}catch(_){} /* o cache fica no padrão: limitar demais apagava pedaços da cidade (fundo preto) */
     const geo=new THREE.Group();geo.position.set(GEO.ax,yChao+0.93+GEO.dy,GEO.az);geo.rotation.y=GEO.rot*Math.PI/180;geo.add(t.group);S.add(geo);
     t.setCamera(cam);t.setResolutionFromRenderer(cam,R);
     Object.assign(cidade,{on:true,tiles:t,geo,yChao,ok:false,cY:{value:yChao+0.93},cR:{value:38}});
@@ -408,7 +417,7 @@ async function iniciarCidade(yChao){
     cidade.espera=0; /* desiste se o Google não responder em ~20 s de tela visível */
     const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x4f4d4a,roughness:.95}));
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
-    chao.visible=false;S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
+    chao.visible=false;S.background=new THREE.Color(0xc9d9e6);S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
     $('#creditos').hidden=false;$('#explorar').hidden=false;
     if(innerWidth<=900&&!sel&&!anim){cam.position.copy(C.target).add(new THREE.Vector3(190,120,60));C.update();CASA={p:cam.position.clone(),t:C.target.clone()};}
     nivelar();
