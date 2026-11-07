@@ -1,0 +1,248 @@
+[
+{
+"nome": "Residencial Guayi",
+"end": "Av. Pres. Castelo Branco, 3972, Aviação · Praia Grande",
+"lat": -24.0173178,
+"lon": -46.4385074
+},
+{
+"nome": "Residencial A'Villa",
+"end": "Av. Pres. Castelo Branco, 3400, Aviação · Praia Grande",
+"lat": -24.0159822,
+"lon": -46.4330826
+},
+{
+"nome": "Residencial Ilha da Madeira",
+"end": "Av. Pres. Castelo Branco, 4380, Aviação · Praia Grande",
+"lat": -24.0185023,
+"lon": -46.4424924
+},
+{
+"nome": "Residencial Ilha da Madeira III",
+"end": "Av. Pres. Castelo Branco, 4330, Aviação · Praia Grande",
+"lat": -24.0183849,
+"lon": -46.4420893
+},
+{
+"nome": "Residencial Paulo Roberto II",
+"end": "Av. Pres. Castelo Branco, 6038, Vila Tupi · Praia Grande",
+"lat": -24.0359056,
+"lon": -46.4906528
+},
+{
+"nome": "Residencial Jardim do Atlântico",
+"end": "Av. Pres. Castelo Branco, 5412, Vila Tupi · Praia Grande",
+"lat": -24.0214746,
+"lon": -46.4520946
+},
+{
+"nome": "Edifício Panorama",
+"end": "Av. Pres. Castelo Branco, 2944, Jardim Guilhermina · Praia Grande",
+"lat": -24.0149409,
+"lon": -46.4288659
+},
+{
+"nome": "Residencial Tiwa",
+"end": "Rua Rui Barbosa, 116, Canto do Forte · Praia Grande",
+"lat": -24.0129537,
+"lon": -46.4079283
+},
+{
+"nome": "Residencial Barcelona",
+"end": "Rua Rui Barbosa, 146, Canto do Forte · Praia Grande",
+"lat": -24.0127092,
+"lon": -46.4078901
+},
+{
+"nome": "Residencial Joshephina Masotti",
+"end": "Rua Rui Barbosa, 190, Canto do Forte · Praia Grande",
+"lat": -24.0124139,
+"lon": -46.4078767
+},
+{
+"nome": "Residencial Agostinho Masotti",
+"end": "Rua Rui Barbosa, 268, Canto do Forte · Praia Grande",
+"lat": -24.011663,
+"lon": -46.4079048
+},
+{
+"nome": "Residencial Sevilha",
+"end": "Rua Rui Barbosa, 187, Canto do Forte · Praia Grande",
+"lat": -24.0123538,
+"lon": -46.4082356
+},
+{
+"nome": "Residencial Baia Branca",
+"end": "Rua Rui Barbosa, 461, Canto do Forte · Praia Grande",
+"lat": -24.0098525,
+"lon": -46.4080096
+},
+{
+"nome": "Residencial Baia Dourada",
+"end": "Rua Amazonas, 405, Canto do Forte · Praia Grande",
+"lat": -24.0097444,
+"lon": -46.4081921
+},
+{
+"nome": "Edifício Comercial Masotti",
+"end": "Rua Bahia, 378, Canto do Forte · Praia Grande",
+"lat": -24.0123525,
+"lon": -46.408606
+},
+{
+"nome": "Residencial Roberto",
+"end": "Av. Marechal Maurício José Cardoso, 403, Canto do Forte · Praia Grande",
+"lat": -24.0102303,
+"lon": -46.4094083
+},
+{
+"nome": "Residencial Tijuca",
+"end": "Av. Marechal Maurício José Cardoso, 543, Canto do Forte · Praia Grande",
+"lat": -24.0090046,
+"lon": -46.4092639
+},
+{
+"nome": "Residencial Alberto Serodio",
+"end": "Rua Tiradentes, 121, Canto do Forte · Praia Grande",
+"lat": -24.0132171,
+"lon": -46.4056266
+},
+{
+"nome": "Residencial Mares do Sul",
+"end": "Rua Tiradentes, 255, Canto do Forte · Praia Grande",
+"lat": -24.0124607,
+"lon": -46.4055515
+},
+{
+"nome": "Residencial Costão do Forte",
+"end": "Av. Marechal Hermes da Fonseca, 260, Canto do Forte · Praia Grande",
+"lat": -24.012048,
+"lon": -46.4059747
+},
+{
+"nome": "Residencial Suzana Masotti",
+"end": "Av. Marechal Hermes da Fonseca, 399, Canto do Forte · Praia Grande",
+"lat": -24.0106186,
+"lon": -46.4068249
+},
+{
+"nome": "Residencial Smart",
+"end": "Rua Ipanema, 360, Jardim Guilhermina · Praia Grande",
+"lat": -24.0106094,
+"lon": -46.4230979
+},
+{
+"nome": "Residencial Apolo",
+"end": "Rua Gonzaga, 32, Jardim Guilhermina · Praia Grande",
+"lat": -24.0113681,
+"lon": -46.4235871
+},
+{
+"nome": "Residencial Torre do Sol",
+"end": "Rua Bolívia, 140, Jardim Guilhermina · Praia Grande",
+"lat": -24.0114708,
+"lon": -46.4243475
+},
+{
+"nome": "Residencial Ródano",
+"end": "Rua Itararé, 396, Jardim Guilhermina · Praia Grande",
+"lat": -24.0104525,
+"lon": -46.4221479
+},
+{
+"nome": "Residencial Marbella",
+"end": "Rua Doutor João Sampaio, 197, Jardim Guilhermina · Praia Grande",
+"lat": -24.0128668,
+"lon": -46.4251392
+},
+{
+"nome": "Residencial San Diego",
+"end": "Rua Doutor João Sampaio, 269, Jardim Guilhermina · Praia Grande",
+"lat": -24.0120395,
+"lon": -46.4253626
+},
+{
+"nome": "Residencial Farol da Barra",
+"end": "Rua Colômbia, 181, Jardim Guilhermina · Praia Grande",
+"lat": -24.0130119,
+"lon": -46.4258115
+},
+{
+"nome": "Residencial Porto Esperança",
+"end": "Praça José de Anchieta, 345, Jardim Guilhermina · Praia Grande",
+"lat": -24.0117867,
+"lon": -46.4265408
+},
+{
+"nome": "Residencial California",
+"end": "Rua Nicarágua, 153, Jardim Guilhermina · Praia Grande",
+"lat": -24.0143124,
+"lon": -46.4311551
+},
+{
+"nome": "Residencial San Marino",
+"end": "Rua Venezuela, 277, Jardim Guilhermina · Praia Grande",
+"lat": -24.0136812,
+"lon": -46.4330274
+},
+{
+"nome": "Residencial Balboa",
+"end": "Rua Leblon, 493, Jardim Guilhermina · Praia Grande",
+"lat": -24.0094579,
+"lon": -46.4207461
+},
+{
+"nome": "Residencial Grafite",
+"end": "Rua Ipanema, 379, Jardim Guilhermina · Praia Grande",
+"lat": -24.0104979,
+"lon": -46.4235174
+},
+{
+"nome": "Residencial Nankin",
+"end": "Rua Ipanema, 235, Jardim Guilhermina · Praia Grande",
+"lat": -24.0116903,
+"lon": -46.4229415
+},
+{
+"nome": "Residencial Acauã",
+"end": "Rua Men de Sá, 169, Aviação · Praia Grande",
+"lat": -24.0170399,
+"lon": -46.4417675
+},
+{
+"nome": "Residencial Luara",
+"end": "Av. São Pedro, 201, Aviação · Praia Grande",
+"lat": -24.0170481,
+"lon": -46.4429738
+},
+{
+"nome": "Residencial Alpha",
+"end": "Av. General Marcondes Salgado, 82, Aviação · Praia Grande",
+"lat": -24.0175819,
+"lon": -46.440833
+},
+{
+"nome": "Residencial Gaudi",
+"end": "Av. General Marcondes Salgado, 212, Aviação · Praia Grande",
+"lat": -24.0164745,
+"lon": -46.4415168
+},
+{
+"nome": "Residencial Daniel Mazotti",
+"end": "Rua Padre José de Anchieta, 309, Aviação · Praia Grande",
+"lat": -24.0180606,
+"lon": -46.4428283
+},
+{
+"nome": "Residencial Rosales",
+"end": "Rua Pero Vaz de Caminha, 69, Aviação · Praia Grande",
+"lat": -24.0183386,
+"lon": -46.443652
+},
+{
+"nome": "Residencial Marina",
+"end": "Rua Ophelia Caccetari Reis, 113, Aviação · Praia Grande",
+"lat": -24.0169499,
+"lon": -46.4397529
+}
+]

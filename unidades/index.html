@@ -259,6 +259,32 @@ body.explorando .ajuda{opacity:1!important}
   .lz-card .x{left:auto;right:6px;top:6px;width:28px;height:28px;font-size:17px}
   .lz-card .nav2{bottom:6px;right:6px}.lz-card .nav2 button{padding:4px 9px;font-size:10px}
 }
+
+/* ===== Arqtetando: projetos da arquiteta pela cidade ===== */
+.explorar.arq{bottom:160px}
+body.arq-on .explorar.arq{background:#f3efe8;color:#16191c;border-color:#f3efe8}
+.arq-pins,.arq-linhas{position:fixed;inset:0;pointer-events:none;z-index:3;display:none}.arq-linhas{width:100%;height:100%}
+body.arq-on .arq-pins,body.arq-on .arq-linhas{display:block}
+.arq-pin{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;border-radius:999px;background:rgba(243,239,232,.93);color:#16191c;font:600 11px/1.15 var(--f);letter-spacing:.02em;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28);transform-origin:50% 100%;will-change:transform}
+.arq-pin i{width:7px;height:7px;border-radius:50%;background:var(--ouro,#c9a86a);flex:none}
+.arq-pin.viva{background:var(--terra,#c97b63);color:#fff}.arq-pin.viva i{background:#fff}.arq-pin.viva small{color:rgba(255,255,255,.85)}
+.arq-pin small{display:none;font-weight:400;color:#5a554d;font-size:10px;margin-top:2px}
+.arq-pin{z-index:2}.arq-pin.mini{z-index:1}.arq-pin.aberto{z-index:3}.arq-pin.aberto small{display:block}
+.arq-pin.mini{padding:4px}.arq-pin.mini span{display:none}.arq-pin.mini.aberto{padding:4px 10px 4px 6px}.arq-pin.mini.aberto span{display:block}
+.arq-pin:hover{z-index:3}.arq-pin.mini:hover{padding:4px 10px 4px 6px}.arq-pin.mini:hover span{display:block}
+.arq-leg{position:fixed;left:50%;transform:translateX(-50%);top:70px;z-index:3;display:none;flex-direction:column;align-items:center;gap:1px;background:rgba(18,21,24,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#f3efe8;padding:7px 16px;border-radius:12px;font:12px var(--f);text-align:center}
+.arq-leg b{font-family:var(--f-disp);font-weight:500;font-size:18px;letter-spacing:.02em}.arq-leg span{color:rgba(243,239,232,.75);font-size:11px}
+body.arq-on .arq-leg{display:flex}
+body.arq-on .pois,body.arq-on .poi-linhas,body.arq-on .legpoi{display:none!important}
+body.m-lazer .explorar.arq,body.det-aberto .explorar.arq{display:none}
+body.arq-on .ajuda{display:none!important}
+body.arq-on .hero,body.arq-on .painel,body.arq-on .det{opacity:0!important;pointer-events:none!important}
+@media (max-width:900px){
+  .explorar.arq{top:calc(92px + env(safe-area-inset-top,0px));left:14px;right:auto}
+  .ajuda{top:calc(128px + env(safe-area-inset-top,0px))}
+  .arq-leg{top:auto;bottom:calc(60px + env(safe-area-inset-bottom,0px));max-width:92vw;padding:6px 12px}.arq-leg b{font-size:15px}.arq-leg span{font-size:10px}
+  .arq-pin{font-size:10px;padding:3px 8px 3px 5px}
+}
 </style></head>
 <body>
 <div id="cena"></div>
@@ -302,6 +328,9 @@ body.explorando .ajuda{opacity:1!important}
 <button class="explorar arr" id="arredores" aria-pressed="false"><span class="ic">📍</span><span>Comércios ao redor</span></button>
 <div class="legpoi" id="legpoi"></div>
 <svg id="poiLinhas" class="poi-linhas" aria-hidden="true"></svg><div id="pois" class="pois" aria-label="Comércios e serviços ao redor"></div>
+<button class="explorar arq" id="arqBtn" hidden aria-pressed="false"><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg></span><span>Arqtetando</span></button>
+<div class="arq-leg" id="arqLeg"><b>Arqtetando</b><span>Projetos da Arq. Claudete A. Julio em Praia Grande · <em id="arqN"></em></span></div>
+<svg id="arqLinhas" class="arq-linhas" aria-hidden="true"></svg><div id="arqPins" class="arq-pins"></div>
 <button class="explorar" id="explorar" hidden><span class="ic">🧭</span><span id="explorarTxt">Explorar a cidade</span></button>
 <div class="lz-pins" id="lzPins"></div>
 <aside class="lz-painel" id="lzPainel" hidden>
@@ -425,7 +454,7 @@ async function iniciarCidade(yChao){
     const piso=new THREE.Mesh(new THREE.PlaneGeometry(LOTE.x1-LOTE.x0,LOTE.z1-LOTE.z0),new THREE.MeshStandardMaterial({color:0x4f4d4a,roughness:.95}));
     piso.rotation.x=-Math.PI/2;piso.position.set((LOTE.x0+LOTE.x1)/2,yChao+0.93-0.25,(LOTE.z0+LOTE.z1)/2);piso.receiveShadow=R.shadowMap.enabled;piso.visible=false;S.add(piso);cidade.piso=piso;
     chao.visible=false;S.background=new THREE.Color(0xc9d9e6);S.fog.near=700;S.fog.far=6000;S.fog.color.set(0xc9d9e6);cam.near=1;cam.far=12000;cam.updateProjectionMatrix();C.maxDistance=650;C.maxPolarAngle=Math.PI*0.42;
-    $('#creditos').hidden=false;$('#explorar').hidden=false;
+    $('#creditos').hidden=false;$('#explorar').hidden=false;$('#arqBtn').hidden=false;
     if(innerWidth<=900&&!sel&&!anim){cam.position.copy(C.target).add(new THREE.Vector3(190,120,60));C.update();CASA={p:cam.position.clone(),t:C.target.clone()};}
     nivelar();
   }catch(e){console.warn('cidade:',e);desligarCidade();}
@@ -711,6 +740,67 @@ $('#arredores').onclick=()=>{
     anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(dir.setLength(d)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
   }
 };
+
+/* ---------- ARQTETANDO: prédios projetados pela arquiteta, com pin sobre cada um ---------- */
+let arqEls=null,arqLista=null;const _ray=new THREE.Raycaster(),_dn=new THREE.Vector3(0,-1,0);
+async function criarArq(){
+  arqLista=await fetch('arqtetando.json?v=1').then(r=>r.json()).catch(()=>[]);$('#arqN').textContent=arqLista.length+' edifícios';
+  const box=$('#arqPins'),svg=$('#arqLinhas');box.innerHTML='';svg.innerHTML='';
+  arqLista=[{nome:'Residencial Vivá',end:'Lançamento · Av. Guilhermina, 109',lat:-24.01248,lon:-46.42055,viva:1},...arqLista];
+  arqEls=arqLista.map(a=>{const [x,z]=geoParaModelo(a.lat,a.lon);
+    const el=document.createElement('div');el.className='arq-pin'+(a.viva?' viva':'');el.title=a.nome+' · '+a.end;
+    el.innerHTML=`<i></i><span>${a.nome.replace(/^Residencial /,'Res. ')}<small>${a.end}</small></span>`;
+    el.onclick=()=>{const ab=!el.classList.contains('aberto');arqEls.forEach(o=>o.el.classList.remove('aberto'));el.classList.toggle('aberto',ab);};
+    box.appendChild(el);
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('stroke','rgba(243,239,232,.85)');ln.setAttribute('stroke-width','1');
+    const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('r','3');dot.setAttribute('fill','#c9a86a');dot.setAttribute('stroke','#fff');dot.setAttribute('stroke-width','1.2');
+    svg.appendChild(ln);svg.appendChild(dot);
+    if(a.viva){const tb=modeloFachada?new THREE.Box3().setFromObject(modeloFachada).max.y:yRua+72;return {el,ln,dot,x,z,teto:tb,tent:99,p0:new THREE.Vector3(x,tb+0.5,z),p1:new THREE.Vector3(x,tb+16,z)};}
+    return {el,ln,dot,x,z,teto:null,tent:0,p0:new THREE.Vector3(x,yRua+25,z),p1:new THREE.Vector3(x,yRua+45,z)};});
+}
+/* acha a altura do telhado na malha 3D da cidade (vai refinando conforme os blocos carregam) */
+function alturaArq(){
+  if(!arqEls||!cidade.on||!cidade.tiles)return;
+  let n=0;for(const o of arqEls){if(o.tent>=99||(o.tent>40&&o.teto!==null))continue;if(n++>2)break;o.tent++;
+    _ray.set(new THREE.Vector3(o.x,yRua+400,o.z),_dn);_ray.far=500;
+    const hs=_ray.intersectObject(cidade.tiles.group,true);
+    if(hs.length){const y=hs[0].point.y;if(o.teto===null||Math.abs(y-o.teto)>0.5){o.teto=y;o.p0.y=y+0.5;o.p1.y=y+16;}}}
+  arqEls.push(arqEls.shift()); /* gira a fila */
+}
+function desenharArq(){
+  if(!arqEls||!document.body.classList.contains('arq-on'))return;
+  const w=innerWidth,h=innerHeight,rects=[];
+  const vis=arqEls.map(o=>{_v.copy(o.p1).project(cam);const ok=_v.z<1&&Math.abs(_v.x)<1.15&&Math.abs(_v.y)<1.15;const x1=(_v.x+1)/2*w,y1=(1-_v.y)/2*h;
+    _v.copy(o.p0).project(cam);return {o,ok,x1,y1,x0:(_v.x+1)/2*w,y0:(1-_v.y)/2*h,d:cam.position.distanceTo(o.p1)};});
+  vis.sort((a,b)=>(b.o.el.classList.contains('viva')-a.o.el.classList.contains('viva'))||a.d-b.d); /* os mais perto têm prioridade no nome */
+  for(const v of vis){const o=v.o;o.el.style.display=o.ln.style.display=o.dot.style.display=v.ok?'':'none';if(!v.ok)continue;
+    if(!o.el.classList.contains('mini'))o.lw=Math.max(o.lw||0,o.el.offsetWidth);const lw=o.lw||120,r=[v.x1-lw/2-4,v.y1-26,v.x1+lw/2+4,v.y1+2];
+    const bate=rects.some(q=>r[0]<q[2]&&r[2]>q[0]&&r[1]<q[3]&&r[3]>q[1]);
+    o.el.classList.toggle('mini',bate&&!o.el.classList.contains('aberto'));if(!bate)rects.push(r);
+    o.el.style.transform=`translate(${v.x1}px,${v.y1}px) scale(${K}) translate(-50%,-100%)`;
+    o.ln.setAttribute('x1',v.x0);o.ln.setAttribute('y1',v.y0);o.ln.setAttribute('x2',v.x1);o.ln.setAttribute('y2',v.y1);
+    o.dot.setAttribute('cx',v.x0);o.dot.setAttribute('cy',v.y0);}
+}
+$('#arqBtn').onclick=async()=>{
+  const on=document.body.classList.toggle('arq-on');$('#arqBtn').setAttribute('aria-pressed',on);
+  if(on&&document.body.classList.contains('arr-on'))$('#arredores').click();
+  if(on&&!arqEls)await criarArq();
+  C.enablePan=on||explorando;C.screenSpacePanning=false;
+  if(on){ /* vista aérea vinda do mar, enquadrando todos os prédios perto do Vivá (até 3,5 km) */
+    const pts=arqEls.filter(o=>Math.hypot(o.x-GEO.ax,o.z-GEO.az)<3500);
+    const c=pts.reduce((m,o)=>(m.x+=o.x/pts.length,m.z+=o.z/pts.length,m),{x:0,z:0});
+    const ext=Math.max(...pts.map(o=>Math.hypot(o.x-c.x,o.z-c.z)));
+    const alvo=new THREE.Vector3(c.x,yRua,c.z);
+    const [mx,mz]=geoParaModelo(-24.035,-46.418);const [vx,vz]=geoParaModelo(-24.0125,-46.4205);
+    const dir=new THREE.Vector3(mx-vx,0,mz-vz).normalize();let p1,d;
+    if(cam.aspect<1){ /* celular em pé: vista quase de cima, com a orla na vertical da tela */
+      const [ax,az]=geoParaModelo(-24.0125,-46.408),[bx,bz]=geoParaModelo(-24.0215,-46.452);const cd=new THREE.Vector3(bx-ax,0,bz-az).normalize();
+      d=Math.min(9000,ext/Math.tan(cam.fov*Math.PI/360)*1.15+300);p1=alvo.clone().add(cd.multiplyScalar(-d*0.3)).add(new THREE.Vector3(0,d*0.95,0));
+    }else{const hf=Math.atan(Math.tan(cam.fov*Math.PI/360)*cam.aspect);d=Math.min(9000,ext/Math.tan(hf)*1.25+300);
+      p1=alvo.clone().add(dir.multiplyScalar(d*0.62)).add(new THREE.Vector3(0,d*0.78,0));}
+    C.maxDistance=Math.max(C.maxDistance,d*1.6);anim={t:0,p0:cam.position.clone(),p1,a0:C.target.clone(),a1:alvo};C.autoRotate=false;
+  }else{voltarCasa();}
+};
 let CASA=null; /* vista inicial do prédio, para onde a câmera volta */
 function voltarCasa(){if(!CASA)return;const d=document.body.classList.contains('arr-on');
   if(d){/* com os comércios ligados, volta para a vista aberta do entorno */const dir=CASA.p.clone().sub(CASA.t);const k=innerWidth<900?1700:1250;dir.y=0;dir.setLength(k*0.6);dir.y=k*0.8;C.maxDistance=1900;anim={t:0,p0:cam.position.clone(),p1:CASA.t.clone().add(dir.setLength(k)),a0:C.target.clone(),a1:CASA.t.clone()};}
@@ -988,7 +1078,7 @@ R.setAnimationLoop(()=>{const dt=clock.getDelta();quadro++;
   if(anim){anim.t=Math.min(1,anim.t+dt/1.4);const k=anim.t<.5?2*anim.t*anim.t:1-Math.pow(-2*anim.t+2,2)/2;cam.position.lerpVectors(anim.p0,anim.p1,k);C.target.lerpVectors(anim.a0,anim.a1,k);if(anim.t>=1)anim=null;}
   if(sel&&vol[sel.un]){const k=.5+.5*Math.sin(clock.elapsedTime*3.2);vol[sel.un].material.opacity=.55+.3*k;}
   C.update();if(cidade.on&&!cidade.ok&&++cidade.espera>1200){desligarCidade();}
-  if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);desenharPois();desenharLazer();});
+  if(cidade.on){cam.updateMatrixWorld();cidade.tiles.setResolutionFromRenderer(cam,R);cidade.tiles.update();if((nq=(nq+1)%60)===0)creditos();}R.render(S,cam);desenharPois();desenharLazer();desenharArq();if(quadro%10===0)alturaArq();});
 window.__v={selecionar,irModo,cam,C,R,S,cidade,quadro(n=1){for(let i=0;i<n;i++){if(anim){anim.t=1;cam.position.copy(anim.p1);C.target.copy(anim.a1);anim=null;}C.update();R.render(S,cam);}}};
 </script>
 </body></html>
