@@ -206,7 +206,7 @@ body.explorando .ajuda{opacity:1!important}
 /* escala única: o layout de 1920x1080 é reproduzido proporcionalmente em qualquer tela de computador */
 .poi,.lz-pin{transform-origin:0 0}
 @media (min-width:901px){.topo,.hero,.painel,.det,.leg,.explorar,.legpoi,.lz-painel,.lz-card,.ver-cob,.creditos,.ajuda,.carregando>*{zoom:var(--k,1)}}
-.aviso-gpu{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:99;max-width:560px;background:#fff8e1;color:#5d4300;border:1px solid #f0c36d;border-radius:10px;padding:10px 14px;font:13px/1.4 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.18)}.aviso-gpu button{margin-left:8px;border:0;background:#f0c36d;border-radius:6px;padding:3px 10px;cursor:pointer}
+.aviso-gpu{position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:99;max-width:560px;background:#fff8e1;color:#5d4300;border:1px solid #f0c36d;border-radius:10px;padding:10px 14px;font:13px/1.4 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.18)}.aviso-gpu button{margin-left:8px;border:0;background:#f0c36d;border-radius:6px;padding:3px 10px;cursor:pointer}
 
 /* ===== celular: diagramação compacta (botões não se sobrepõem, textos e botões menores) ===== */
 @media (max-width:900px){
@@ -788,7 +788,7 @@ function aplicarPisos(on){pisosLazer.forEach(n=>{const d=n.userData.dyLazer;if(o
 function carregarLazer(){
   if(lazer3d||lazerCarregando)return;lazerCarregando=true;
   const av=document.createElement('div');av.className='lz-aviso';av.id='lzAviso';av.innerHTML='Carregando o lazer em 3D… <b id="lzPct">0%</b>';document.body.appendChild(av);
-  L.load('lazer.glb',g=>{
+  L.load('lazer.glb?v=2',g=>{
     const o=g.scene;
     o.traverse(n=>{if(!n.isMesh)return;
       const ms=Array.isArray(n.material)?n.material:[n.material];
@@ -877,7 +877,7 @@ const L=new GLTFLoader();L.setMeshoptDecoder(MeshoptDecoder);
 const [dados]=await Promise.all([fetch('unidades.json?v='+Date.now()).then(r=>r.json())]);
 U=dados.unidades;$('#nDisp').textContent=U.filter(u=>u.status==='disponivel').length;$('#nTot').textContent=U.length;
 montarFiltros();atualizar();
-L.load('viva.glb',g=>{
+L.load('viva.glb?v=2',g=>{
   const o=g.scene;
   const yLazer=yAndar(6)-2.80; /* fachada das garagens (abaixo do lazer) recebe cobogó no lugar dos painéis escuros */
   o.updateMatrixWorld(true);
