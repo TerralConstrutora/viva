@@ -271,6 +271,7 @@ body.arq-on .arq-pins,body.arq-on .arq-linhas{display:block}
 .arq-pin small{display:none;font-weight:400;color:#5a554d;font-size:10px;margin-top:2px}
 .arq-pin{z-index:2}.arq-pin.mini{z-index:1}.arq-pin.aberto{z-index:3}.arq-pin.aberto small{display:block}
 .arq-pin.mini{padding:4px}.arq-pin.mini span{display:none}.arq-pin.mini.aberto{padding:4px 10px 4px 6px}.arq-pin.mini.aberto span{display:block}
+.arq-grupo{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;min-width:26px;height:26px;padding:0 7px;border-radius:999px;border:2px solid #fff;background:var(--ouro,#c9a86a);color:#16191c;font:700 12px/22px var(--f);text-align:center;box-shadow:0 0 0 3px rgba(201,168,106,.35),0 4px 14px rgba(0,0,0,.3);z-index:2;will-change:transform}.arq-grupo:hover{background:#fff}
 .arq-pin:hover{z-index:3}.arq-pin.mini:hover{padding:4px 10px 4px 6px}.arq-pin.mini:hover span{display:block}
 .arq-leg{position:fixed;left:50%;transform:translateX(-50%);top:70px;z-index:3;display:none;flex-direction:column;align-items:center;gap:1px;background:rgba(18,21,24,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#f3efe8;padding:7px 16px;border-radius:12px;font:12px var(--f);text-align:center}
 .arq-leg b{font-family:var(--f-disp);font-weight:500;font-size:18px;letter-spacing:.02em}.arq-leg span{color:rgba(243,239,232,.75);font-size:11px}
@@ -769,17 +770,42 @@ function alturaArq(){
 }
 function desenharArq(){
   if(!arqEls||!document.body.classList.contains('arq-on'))return;
-  const w=innerWidth,h=innerHeight,rects=[];
+  const w=innerWidth,h=innerHeight,rects=[],R=w<900?40:46;
   const vis=arqEls.map(o=>{_v.copy(o.p1).project(cam);const ok=_v.z<1&&Math.abs(_v.x)<1.15&&Math.abs(_v.y)<1.15;const x1=(_v.x+1)/2*w,y1=(1-_v.y)/2*h;
     _v.copy(o.p0).project(cam);return {o,ok,x1,y1,x0:(_v.x+1)/2*w,y0:(1-_v.y)/2*h,d:cam.position.distanceTo(o.p1)};});
   vis.sort((a,b)=>(b.o.el.classList.contains('viva')-a.o.el.classList.contains('viva'))||a.d-b.d); /* os mais perto têm prioridade no nome */
-  for(const v of vis){const o=v.o;o.el.style.display=o.ln.style.display=o.dot.style.display=v.ok?'':'none';if(!v.ok)continue;
-    if(!o.el.classList.contains('mini'))o.lw=Math.max(o.lw||0,o.el.offsetWidth);const lw=o.lw||120,r=[v.x1-lw/2-4,v.y1-26,v.x1+lw/2+4,v.y1+2];
-    const bate=rects.some(q=>r[0]<q[2]&&r[2]>q[0]&&r[1]<q[3]&&r[3]>q[1]);
-    o.el.classList.toggle('mini',bate&&!o.el.classList.contains('aberto'));if(!bate)rects.push(r);
-    o.el.style.transform=`translate(${v.x1}px,${v.y1}px) scale(${K}) translate(-50%,-100%)`;
-    o.ln.setAttribute('x1',v.x0);o.ln.setAttribute('y1',v.y0);o.ln.setAttribute('x2',v.x1);o.ln.setAttribute('y2',v.y1);
-    o.dot.setAttribute('cx',v.x0);o.dot.setAttribute('cy',v.y0);}
+  /* agrupa os pins que caem muito perto na tela: vira uma bolinha com o número de prédios */
+  const grupos=[];
+  for(const v of vis){if(!v.ok)continue;const fixo=v.o.el.classList.contains('viva')||v.o.el.classList.contains('aberto');
+    const g=fixo?null:grupos.find(g=>!g.fixo&&Math.hypot(g.x-v.x1,g.y-v.y1)<R);
+    if(g){g.m.push(v);g.x=(g.x*(g.m.length-1)+v.x1)/g.m.length;g.y=(g.y*(g.m.length-1)+v.y1)/g.m.length;}
+    else grupos.push({m:[v],x:v.x1,y:v.y1,fixo});}
+  for(const v of vis)if(!v.ok)v.o.el.style.display=v.o.ln.style.display=v.o.dot.style.display='none';
+  let gi=0;
+  for(const g of grupos){
+    if(g.m.length===1){const v=g.m[0],o=v.o;o.el.style.display=o.ln.style.display=o.dot.style.display='';
+      if(!o.el.classList.contains('mini'))o.lw=Math.max(o.lw||0,o.el.offsetWidth);const lw=o.lw||120,r=[v.x1-lw/2-4,v.y1-26,v.x1+lw/2+4,v.y1+2];
+      const bate=rects.some(q=>r[0]<q[2]&&r[2]>q[0]&&r[1]<q[3]&&r[3]>q[1]);
+      o.el.classList.toggle('mini',bate&&!o.el.classList.contains('aberto'));rects.push(bate?[v.x1-8,v.y1-16,v.x1+8,v.y1]:r);
+      o.el.style.transform=`translate(${v.x1}px,${v.y1}px) scale(${K}) translate(-50%,-100%)`;
+      o.ln.setAttribute('x1',v.x0);o.ln.setAttribute('y1',v.y0);o.ln.setAttribute('x2',v.x1);o.ln.setAttribute('y2',v.y1);
+      o.dot.setAttribute('cx',v.x0);o.dot.setAttribute('cy',v.y0);continue;}
+    /* grupo: esconde os pins e mostra só a bolinha; o ponto no chão de cada prédio continua */
+    for(const v of g.m){const o=v.o;o.el.style.display=o.ln.style.display='none';o.dot.style.display='';o.dot.setAttribute('cx',v.x0);o.dot.setAttribute('cy',v.y0);}
+    let b=arqGrupos[gi];if(!b){b=document.createElement('button');b.className='arq-grupo';b.onclick=()=>abrirGrupo(b._m);$('#arqPins').appendChild(b);arqGrupos[gi]=b;}
+    gi++;b._m=g.m.map(v=>v.o);b.style.display='';if(b.textContent!==String(g.m.length))b.textContent=g.m.length;
+    b.title=g.m.map(v=>v.o.el.title.split(' · ')[0]).join('\n');
+    b.style.transform=`translate(${g.x}px,${g.y}px) translate(-50%,-100%)`;rects.push([g.x-16,g.y-32,g.x+16,g.y]);}
+  for(;gi<arqGrupos.length;gi++)arqGrupos[gi].style.display='none';
+}
+const arqGrupos=[];
+/* clicar no grupo aproxima a câmera só o bastante para os prédios se separarem */
+function abrirGrupo(m){
+  const c=new THREE.Vector3();m.forEach(o=>c.add(o.p0));c.multiplyScalar(1/m.length);c.y=yRua;
+  const ext=Math.max(60,...m.map(o=>Math.hypot(o.x-c.x,o.z-c.z)));
+  const d0=cam.position.distanceTo(C.target),d=Math.max(220,Math.min(d0*0.55,ext*9));
+  const off=cam.position.clone().sub(C.target).normalize().multiplyScalar(d);
+  anim={t:0,p0:cam.position.clone(),p1:c.clone().add(off),a0:C.target.clone(),a1:c};C.autoRotate=false;
 }
 $('#arqBtn').onclick=async()=>{
   const on=document.body.classList.toggle('arq-on');$('#arqBtn').setAttribute('aria-pressed',on);
