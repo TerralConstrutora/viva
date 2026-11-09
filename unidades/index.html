@@ -375,7 +375,7 @@ const GPU=(()=>{try{const c=document.createElement('canvas');const g=c.getContex
   g.getExtension('WEBGL_lose_context')?.loseContext();return{soft:/swiftshader|llvmpipe|softpipe|basic render|software/i.test(nome),nome};}catch(_){return{soft:false,nome:''};}})();
 const FRACO=GPU.soft||(navigator.deviceMemory&&navigator.deviceMemory<=2);
 /* resolução: no máx. 1,5x a da tela e no máx. ~3,7 milhões de pixels (telas 4K/retina ficavam pesadíssimas) */
-function pr(){const base=Math.min(devicePixelRatio||1,FRACO?1:1.5);return Math.max(.75,Math.min(base,Math.sqrt(3.7e6/(innerWidth*innerHeight))));}
+function pr(){const base=Math.min(devicePixelRatio||1,FRACO?1:innerWidth<900?1.5:1.25);return Math.max(.75,Math.min(base,Math.sqrt(3.7e6/(innerWidth*innerHeight))));}
 const R=new THREE.WebGLRenderer({antialias:!FRACO,alpha:true,powerPreference:'high-performance'});
 R.setPixelRatio(pr());R.setSize(innerWidth,innerHeight);
 R.outputColorSpace=THREE.SRGBColorSpace;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.05;
@@ -435,7 +435,7 @@ async function iniciarCidade(yChao){
     t.registerPlugin(new T3.ReorientationPlugin({lat:GEO.lat*Math.PI/180,lon:GEO.lon*Math.PI/180,height:0,recenter:true}));
     t.registerPlugin(new T3.TileCompressionPlugin());t.registerPlugin(new T3.UnloadTilesPlugin());
     t.registerPlugin(new T3.GLTFExtensionsPlugin({dracoLoader:new DRACOLoader().setDecoderPath('lib/addons/libs/draco/gltf/')}));
-    t.errorTarget=innerWidth<900||LEVE?28:18;
+    t.errorTarget=innerWidth<900||LEVE?32:22;
     /* menos detalhe ao longe: quanto mais longe do ponto que a câmera olha, menor o detalhe pedido ao Google
        (perto do prédio continua nítido; os bairros distantes vêm em versão simplificada e vão refinando conforme a câmera se aproxima) */
     {const orig=t.calculateTileViewError.bind(t);
@@ -871,7 +871,7 @@ function modoCob(on){
   if(on===cobOn)return;cobOn=on;document.body.classList.toggle('m-cob',on);
   $('#lzCard').hidden=true;lzSel=-1;montarListaLazer();
   /* na cobertura o corte sobe para logo acima do piso do rooftop: some o teto (casa de máquinas, caixas d'água e cobertura) */
-  corteLazer.constant=on?Y_COB+2.7:Y_LAZER+2.6;R.localClippingEnabled=lazerOn;if(lazer3d)lazer3d.visible=lazerOn&&!on;dupLazer.forEach(n=>n.visible=!(lazerOn&&!on));aplicarPisos(lazerOn&&!on);
+  corteLazer.constant=on?Y_COB+2.7:Y_LAZER+2.6;esconderAcima(lazerOn?corteLazer.constant:null);R.localClippingEnabled=lazerOn;if(lazer3d)lazer3d.visible=lazerOn&&!on;dupLazer.forEach(n=>n.visible=!(lazerOn&&!on));aplicarPisos(lazerOn&&!on);
   const alvo=on?new THREE.Vector3(-1,Y_COB,10.5):new THREE.Vector3(-12,Y_LAZER,10);const d=innerWidth<900?(on?95:120):(on?68:85);
   anim={t:0,p0:cam.position.clone(),p1:alvo.clone().add(new THREE.Vector3(d*0.45,d*0.85,d*0.55)),a0:C.target.clone(),a1:alvo};C.autoRotate=false;
 }
@@ -944,11 +944,30 @@ function carregarLazer(){
     av.remove();
   },x=>{const e=$('#lzPct');if(e&&x.total)e.textContent=Math.round(x.loaded/x.total*100)+'%';},e=>{console.warn('lazer',e);av.remove();lazerCarregando=false;});
 }
+/* no lazer/cobertura o prédio acima do corte não aparece (é cortado), mas a placa continuava desenhando tudo:
+   aqui ele deixa de ser desenhado de verdade (peças inteiras acima do corte e andares-tipo repetidos acima do corte) */
+let _acimaY=null;
+function esconderAcima(y){
+  if(!modeloFachada||y===_acimaY)return;_acimaY=y;const bb=new THREE.Box3(),m4=new THREE.Matrix4(),v=new THREE.Vector3();
+  modeloFachada.traverse(n=>{if(!n.isMesh)return;const u=n.userData;
+    if(n.isInstancedMesh){
+      if(!u.orig){if(!n.geometry.boundingBox)n.geometry.computeBoundingBox();u.orig=n.instanceMatrix.array.slice();u.n0=n.count;u.gy=n.geometry.boundingBox.min.y;}
+      if(y===null){n.instanceMatrix.array.set(u.orig);n.count=u.n0;n.instanceMatrix.needsUpdate=true;return;}
+      const a=n.instanceMatrix.array;let k=0;
+      for(let i=0;i<u.n0;i++){m4.fromArray(u.orig,i*16);v.set(0,u.gy,0).applyMatrix4(m4).applyMatrix4(n.matrixWorld);
+        if(v.y<y+0.5){a.set(u.orig.subarray(i*16,i*16+16),k*16);k++;}}
+      n.count=k;n.instanceMatrix.needsUpdate=true;return;}
+    if(u.minY===undefined){bb.setFromObject(n);u.minY=bb.min.y;}
+    if(y===null){if(u.escAcima){n.visible=u.visAntes;u.escAcima=false;}return;}
+    if(u.minY>y+0.5){if(!u.escAcima){u.visAntes=n.visible;u.escAcima=true;}n.visible=false;}
+    else if(u.escAcima){n.visible=u.visAntes;u.escAcima=false;}});
+  R.shadowMap.needsUpdate=true;
+}
 function modoLazer(on){
   if(on===lazerOn)return;if(!on&&cobOn){cobOn=false;document.body.classList.remove('m-cob');corteLazer.constant=Y_LAZER+2.6;montarListaLazer();}lazerOn=on;document.body.classList.toggle('m-lazer',on);
   R.localClippingEnabled=on;if(planoLazer)planoLazer.visible=false; /* o modelo já tem as paredes do lazer */if(grupo)grupo.visible=!on;
   $('#lzPainel').hidden=!on;if(!on){$('#lzCard').hidden=true;lzSel=-1;}
-  if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);aplicarPisos(on);
+  if(lazer3d)lazer3d.visible=on;dupLazer.forEach(n=>n.visible=!on);aplicarPisos(on);esconderAcima(on?corteLazer.constant:null);
   if(on){
     carregarLazer();
     if(document.body.classList.contains('arr-on'))$('#arredores').click();
@@ -1000,14 +1019,14 @@ const L=new GLTFLoader();L.setMeshoptDecoder(MeshoptDecoder);
 const [dados]=await Promise.all([fetch('unidades.json?v='+Date.now()).then(r=>r.json())]);
 U=dados.unidades;$('#nDisp').textContent=U.filter(u=>u.status==='disponivel').length;$('#nTot').textContent=U.length;
 montarFiltros();atualizar();
-L.load('viva.glb?v=2',g=>{
+L.load('viva.glb?v=3',g=>{
   const o=g.scene;
   const yLazer=yAndar(6)-2.80; /* fachada das garagens (abaixo do lazer) recebe cobogó no lugar dos painéis escuros */
   o.updateMatrixWorld(true);
   const lajesG=[];
   o.traverse(n=>{if(n.isMesh){n.material=ajustar(n.material);
     
-    n.castShadow=R.shadowMap.enabled&&n.material.name!=='guarda';n.receiveShadow=R.shadowMap.enabled;}});
+    n.castShadow=R.shadowMap.enabled&&!/^(guarda|folha|cobogo|alu|carro|tecido|vidro)$/.test(n.material.name);n.receiveShadow=R.shadowMap.enabled;}});
   /* vidros planos (bordas de laje, cobertura) e a borda curva do jardim do lazer aparecem pretos: viram brancos */
   o.traverse(n=>{if(!n.isMesh)return;const k=n.material.name;if(k!=='vidro'&&!(k==='alu'&&n.name==='Line013'))return;
     const bb=new THREE.Box3().setFromObject(n);if(k==='alu'||bb.max.y-bb.min.y<0.3||bb.min.y>-12)n.material=ajustar({name:'branco'});});
